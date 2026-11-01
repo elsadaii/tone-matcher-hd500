@@ -87,6 +87,8 @@ async function searchYouTube(q, env) {
   return (data.items || []).map(x => ({
     kind: "video", name: x.snippet?.title || "YouTube video",
     detail: x.snippet?.channelTitle || "",
+    description: x.snippet?.description || "",
+    publishedAt: x.snippet?.publishedAt || null,
     image: x.snippet?.thumbnails?.medium?.url || x.snippet?.thumbnails?.default?.url || null,
     url: "https://www.youtube.com/watch?v=" + x.id.videoId,
     id: x.id.videoId
