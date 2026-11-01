@@ -122,7 +122,13 @@ async function searchTones(){
   window.youtubeMatches=videos;
   if(!videos.length){box.innerHTML='<p class="hint">Belum ada video YouTube yang cocok. Coba nama lagu atau gitaris yang lebih spesifik.</p>';return;}
   box.innerHTML='<h3 style="grid-column:1/-1">Referensi YouTube untuk pencocokan preset</h3><p class="hint" style="grid-column:1/-1">YouTube dipakai sebagai sumber metadata (judul, channel, dan deskripsi). Pilih video untuk mencocokkan model amp, efek, cabinet, dan angka parameter yang tertulis, lalu mengisi Preset Builder. Aplikasi tidak memutar atau membuka video.</p>'+videos.map((v,i)=>'<article class="tone-card"><div class="meta">YOUTUBE · '+esc(v.detail||'VIDEO')+'</div>'+(v.image?'<img src="'+esc(v.image)+'" alt="" loading="lazy" style="width:100%;border-radius:8px;margin:6px 0">':'')+'<h3>'+esc(v.name||'Video YouTube')+'</h3><p>'+esc((v.description||'Deskripsi tidak tersedia.').slice(0,260))+'</p><button data-youtube-tone="'+i+'">Cocokkan & isi Preset Builder</button></article>').join('');
-  $$('[data-youtube-tone]').forEach(b=>b.onclick=()=>applyYouTubeTone(Number(b.dataset.youtubeTone)));
+  $('[data-youtube-tone]').forEach(b=>b.onclick=()=>{
+   try{applyYouTubeTone(Number(b.dataset.youtubeTone));}
+   catch(err){
+    const msg='Preset belum berhasil diisi: '+(err?.message||'kesalahan tidak diketahui');
+    box.insertAdjacentHTML('beforeend','<p class="hint" style="grid-column:1/-1">'+esc(msg)+'</p>');
+   }
+  });
  }catch(err){
   window.youtubeMatches=[];
   box.innerHTML='<p class="hint">Pencarian data YouTube gagal: '+esc(err.message||'gangguan jaringan')+'. Tone lokal tetap tersedia di atas.</p>';
@@ -207,7 +213,14 @@ function applyYouTubeTone(index){
  const v=window.youtubeMatches?.[index];if(!v)return;
  const query=$('#toneSearch').value.trim()||v.name||'YouTube Tone';
  const sourceText=[v.name,v.description,v.detail].filter(Boolean).join(' ');
- const base=makeOnlineTone({name:query});
+ const isMetal=/metallica|metal|thrash|heavy|djent|slayer|megadeth/i.test(query+' '+sourceText);
+ const base=isMetal?{
+  amp:'Treadplate',
+  values:['Drive','68','Bass','48','Mid','48','Treble','64','Presence','58','Volume','70']
+ }:{
+  amp:'Brit J-800',
+  values:['Drive','55','Bass','48','Mid','58','Treble','58','Presence','52','Volume','70']
+ };
  const detectedAmp=detectYoutubeAmp(sourceText);
  const amp=detectedAmp||base.amp;
  const fx=detectYoutubeEffects(sourceText);
