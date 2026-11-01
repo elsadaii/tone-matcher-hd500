@@ -233,6 +233,23 @@
  .tempo-tap-row{align-items:flex-start;flex-direction:column;gap:6px}
 }
 
+.delay-toggle-field{display:flex;flex-direction:column;gap:5px;min-width:0;color:#aebdca;font-size:10px}
+.ui-toggle,.chain-toggle{display:flex;align-items:center;justify-content:center;gap:7px;border:0!important;background:transparent!important;color:#aebdca!important;box-shadow:none!important;cursor:pointer}
+.ui-toggle{justify-content:flex-start;padding:7px 9px!important;border:1px solid #354b5d!important;border-radius:8px!important;background:#101923!important}
+.ui-toggle b{font-size:9px;letter-spacing:.1em;color:#9fb0be}
+.ui-toggle.is-on b,.chain-toggle.is-on .chain-toggle-state{color:#a8e9a8}
+.ui-toggle-track,.chain-toggle-track{position:relative;display:inline-flex;align-items:center;flex:0 0 auto;width:33px;height:18px;padding:2px;border:1px solid #586a7a;border-radius:20px;background:#34414e;transition:background .16s,border-color .16s}
+.ui-toggle-track i,.chain-toggle-track i{display:block;width:12px;height:12px;border-radius:50%;background:#c5d0da;box-shadow:0 1px 3px #0008;transition:transform .16s,background .16s}
+.ui-toggle.is-on .ui-toggle-track,.chain-toggle.is-on .chain-toggle-track{background:#315a42;border-color:#79c995}
+.ui-toggle.is-on .ui-toggle-track i,.chain-toggle.is-on .chain-toggle-track i{transform:translateX(15px);background:#c5f36b}
+.chain-toggle{flex:1;min-width:0;flex-direction:column;gap:4px;padding:2px 3px!important;border-radius:8px!important;font-size:8px;line-height:1.1}
+.chain-toggle:hover{background:#ffffff0a!important}
+.chain-toggle-track{width:30px;height:16px}
+.chain-toggle-track i{width:10px;height:10px}
+.chain-toggle.is-on .chain-toggle-track i{transform:translateX(13px)}
+.chain-toggle small{display:block;color:#aebbc8;font-size:7px;font-weight:800;letter-spacing:.06em;white-space:nowrap}
+.chain-toggle .chain-toggle-state{color:#8b9aa8;font-size:8px}
+@media(max-width:600px){.delay-toggle-field{grid-column:1/-1}}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
@@ -588,7 +605,7 @@ function syncTempoSettingsUI(){
   input.value=tempoSystemSettings.globalBpm;
   input.disabled=tempoSystemSettings.mode!=='Global';
  });
- $$('[data-tempo-trails]').forEach(select=>select.value=trailsEnabled);
+ $('[data-tempo-trails]').forEach(toggle=>{const enabled=trailsEnabled==='On';toggle.setAttribute('aria-checked',String(enabled));toggle.classList.toggle('is-on',enabled);const state=toggle.querySelector('[data-toggle-state]');if(state)state.textContent=enabled?'ON':'OFF';});
  $$('[data-tempo-tap-status]').forEach(status=>status.textContent=tempoTapStatus);
 }
 function handleTempoTap(){
@@ -663,7 +680,7 @@ function renderDelaySyncControls(node,index,nodes,spec){
     '<label>Tempo Preset (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-preset value="'+tempoPresetBpm+'"></label>'+
     '<label>System Tempo Sync<select data-tempo-mode><option value="Preset"'+(tempoSystemSettings.mode==='Preset'?' selected':'')+'>Preset</option><option value="Global"'+(tempoSystemSettings.mode==='Global'?' selected':'')+'>Global</option></select></label>'+
     '<label>Global Tempo (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-global value="'+tempoSystemSettings.globalBpm+'"'+(tempoSystemSettings.mode!=='Global'?' disabled':'')+'></label>'+
-    '<label>Trails<select data-tempo-trails><option value="On"'+(trailsEnabled==='On'?' selected':'')+'>On</option><option value="Off"'+(trailsEnabled==='Off'?' selected':'')+'>Off</option></select></label>'+
+    '<div class="delay-toggle-field"><span>Trails</span><button type="button" class="ui-toggle" role="switch" aria-checked="'+(trailsEnabled==='On'?'true':'false')+'" data-tempo-trails><span class="ui-toggle-track"><i></i></span><b data-toggle-state>'+(trailsEnabled==='On'?'ON':'OFF')+'</b></button></div>'+
    '</div>'+
    '<div class="tempo-tap-row"><button type="button" class="secondary" data-tap-tempo>● TAP TEMPO</button><span class="muted" data-tempo-tap-status>'+esc(tempoTapStatus)+'</span></div>'+
   '</div>';
@@ -679,10 +696,13 @@ function renderDelaySyncControls(node,index,nodes,spec){
  return '<div class="delay-tempo-controls">'+sharedControls+syncControls+'</div>';
 }
 function bindDelaySyncControls(){
- $$('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
-  chainDelaySettings[select.dataset.delaySyncKey]=select.value;
+ $('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
+  const key=select.dataset.delaySyncKey;
+  chainDelaySettings[key]=select.value;
+  if(select.value!=='Off')chainDelaySettings[key+'::Last']=select.value;
   renderSignalChain();
  }));
+ $('[data-chain-delay-toggle-sync]').forEach(button=>button.addEventListener('click',()=>toggleDelaySyncForBlock(button.dataset.chainDelayToggleSync)));
  $$('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
@@ -700,8 +720,8 @@ function bindDelaySyncControls(){
   persistTempoSystemSettings();
   renderSignalChain();
  }));
- $$('[data-tempo-trails]').forEach(select=>select.addEventListener('change',()=>{
-  trailsEnabled=select.value==='Off'?'Off':'On';
+ $('[data-tempo-trails]').forEach(toggle=>toggle.addEventListener('click',()=>{
+  trailsEnabled=trailsEnabled==='On'?'Off':'On';
   syncTempoSettingsUI();
   renderSignalChain();
  }));
@@ -978,18 +998,37 @@ function getDelayChainSyncAngle(node,index,nodes){
  if(!values.length)return -135;
  return values.reduce((sum,value)=>sum+map[value],0)/values.length;
 }
+function isDelaySyncEnabled(node,index,nodes){
+ const params=getDelayTimeParams(node,getChainParameterSpecs(node));
+ return params.some(param=>getDelaySyncValue(node,index,nodes,param)!=='Off');
+}
+function toggleDelaySyncForBlock(blockKey){
+ const nodes=getSignalChainNodes();
+ const index=nodes.findIndex((node,i)=>getChainBlockKey(node,i,nodes)===blockKey);
+ if(index<0)return;
+ const node=nodes[index],params=getDelayTimeParams(node,getChainParameterSpecs(node));
+ const enabled=isDelaySyncEnabled(node,index,nodes);
+ params.forEach(param=>{
+  const key=getDelaySyncKey(node,index,nodes,param),lastKey=key+'::Last';
+  const current=getDelaySyncValue(node,index,nodes,param);
+  if(enabled){
+   if(current!=='Off')chainDelaySettings[lastKey]=current;
+   chainDelaySettings[key]='Off';
+  }else{
+   chainDelaySettings[key]=chainDelaySettings[lastKey]||'1/4';
+  }
+ });
+ renderSignalChain();
+}
 function renderDelayChainKnobs(node,index,nodes){
- const sync=getDelayChainSyncReading(node,index,nodes);
+ const syncEnabled=isDelaySyncEnabled(node,index,nodes);
  const bpm=getActiveTempoBpm();
- const trails=trailsEnabled;
+ const trailsEnabledNow=trailsEnabled==='On';
  const bpmAngle=-135+Math.max(0,Math.min(1,(bpm-40)/200))*270;
- const trailsAngle=trails==='On'?90:-90;
- const controls=[
-  {name:'SYNC',value:sync,angle:getDelayChainSyncAngle(node,index,nodes)},
-  {name:'BPM',value:String(bpm),angle:bpmAngle},
-  {name:'TRAILS',value:trails.toUpperCase(),angle:trailsAngle}
- ];
- return '<div class="chain-node-knobs chain-node-knobs--delay">'+controls.map(control=>'<div class="chain-knob chain-knob--compact" title="'+esc(control.name+': '+control.value)+'"><span class="chain-knob-dial" style="--knob-angle:'+control.angle+'deg"></span><small>'+esc(control.name)+'</small><small class="chain-knob-reading">'+esc(control.value)+'</small></div>').join('')+'</div>';
+ const syncToggle='<button type="button" class="chain-toggle '+(syncEnabled?'is-on':'')+'" role="switch" aria-checked="'+String(syncEnabled)+'" data-chain-delay-toggle-sync="'+esc(getChainBlockKey(node,index,nodes))+'" title="Aktif/nonaktifkan Tempo Sync untuk efek ini"><span class="chain-toggle-track"><i></i></span><small>SYNC</small><small class="chain-toggle-state">'+(syncEnabled?'ON':'OFF')+'</small></button>';
+ const bpmKnob='<div class="chain-knob chain-knob--compact" title="BPM: '+esc(String(bpm))+'"><span class="chain-knob-dial" style="--knob-angle:'+bpmAngle+'deg"></span><small>BPM</small><small class="chain-knob-reading">'+esc(String(bpm))+'</small></div>';
+ const trailsToggle='<button type="button" class="chain-toggle '+(trailsEnabledNow?'is-on':'')+'" role="switch" aria-checked="'+String(trailsEnabledNow)+'" data-tempo-trails title="Aktif/nonaktifkan Delay Trails"><span class="chain-toggle-track"><i></i></span><small>TRAILS</small><small class="chain-toggle-state" data-toggle-state>'+(trailsEnabledNow?'ON':'OFF')+'</small></button>';
+ return '<div class="chain-node-knobs chain-node-knobs--delay">'+syncToggle+bpmKnob+trailsToggle+'</div>';
 }
 function renderChainKnobs(node,index,nodes){
  const labels=getChainKnobLabels(node);
