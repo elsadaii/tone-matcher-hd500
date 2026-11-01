@@ -605,7 +605,7 @@ function syncTempoSettingsUI(){
   input.value=tempoSystemSettings.globalBpm;
   input.disabled=tempoSystemSettings.mode!=='Global';
  });
- $('[data-tempo-trails]').forEach(toggle=>{const enabled=trailsEnabled==='On';toggle.setAttribute('aria-checked',String(enabled));toggle.classList.toggle('is-on',enabled);const state=toggle.querySelector('[data-toggle-state]');if(state)state.textContent=enabled?'ON':'OFF';});
+ $$('[data-tempo-trails]').forEach(toggle=>{const enabled=trailsEnabled==='On';toggle.setAttribute('aria-checked',String(enabled));toggle.classList.toggle('is-on',enabled);const state=toggle.querySelector('[data-toggle-state]');if(state)state.textContent=enabled?'ON':'OFF';});
  $$('[data-tempo-tap-status]').forEach(status=>status.textContent=tempoTapStatus);
 }
 function handleTempoTap(){
@@ -696,13 +696,13 @@ function renderDelaySyncControls(node,index,nodes,spec){
  return '<div class="delay-tempo-controls">'+sharedControls+syncControls+'</div>';
 }
 function bindDelaySyncControls(){
- $('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
+ $$('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
   const key=select.dataset.delaySyncKey;
   chainDelaySettings[key]=select.value;
   if(select.value!=='Off')chainDelaySettings[key+'::Last']=select.value;
   renderSignalChain();
  }));
- $('[data-chain-delay-toggle-sync]').forEach(button=>button.addEventListener('click',()=>toggleDelaySyncForBlock(button.dataset.chainDelayToggleSync)));
+ $$('[data-chain-delay-toggle-sync]').forEach(button=>button.addEventListener('click',()=>toggleDelaySyncForBlock(button.dataset.chainDelayToggleSync)));
  $$('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
@@ -720,7 +720,7 @@ function bindDelaySyncControls(){
   persistTempoSystemSettings();
   renderSignalChain();
  }));
- $('[data-tempo-trails]').forEach(toggle=>toggle.addEventListener('click',()=>{
+ $$('[data-tempo-trails]').forEach(toggle=>toggle.addEventListener('click',()=>{
   trailsEnabled=trailsEnabled==='On'?'Off':'On';
   syncTempoSettingsUI();
   renderSignalChain();
