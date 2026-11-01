@@ -271,31 +271,39 @@ function extractYoutubeAmpValues(text){
  return result;
 }
 function detectYoutubeToneProfile(text,query){
- const n=normalizeToneText(text);
- const q=normalizeToneText(query);
- const all=n+' '+q;
+ const all=normalizeToneText(text);
  const profiles={
   metal:{label:'Metal / High Gain',amp:'Treadplate',cab:'4|2 Tread V-30',effects:['Noise Gate','Heavy Dist'],values:['Drive','74','Bass','46','Mid','42','Treble','66','Presence','63','Volume','70']},
-  blues:{label:'Blues / Edge of Breakup',amp:'Blackface ‘Lux Vibrato',cab:'1|2 BF ‘Lux',effects:['Tube Comp','Tube Drive','Spring'],values:['Drive','38','Bass','52','Mid','58','Treble','57','Presence','43','Volume','72']},
+  thrash:{label:'Thrash / Tight Rhythm',amp:'Brit J-800',cab:'4|2 Brit T-75',effects:['Noise Gate','Screamer','Graphic EQ'],values:['Drive','68','Bass','46','Mid','56','Treble','63','Presence','57','Volume','70']},
+  metalLead:{label:'Metal / Lead Solo',amp:'Angel F-Ball',cab:'4|2 Tread V-30',effects:['Noise Gate','Digital Delay','Plate'],values:['Drive','70','Bass','44','Mid','60','Treble','62','Presence','56','Volume','72']},
   clean:{label:'Clean / Acoustic',amp:'Blackface Double Normal',cab:'2|2 Blackface Double',effects:['Tube Comp','Analog Chorus'],values:['Drive','22','Bass','48','Mid','53','Treble','62','Presence','46','Volume','72']},
+  cleanCrunch:{label:'Clean to Crunch',amp:'Blackface ‘Lux Vibrato',cab:'1|2 BF ‘Lux',effects:['Tube Comp','Tube Drive','Spring'],values:['Drive','36','Bass','52','Mid','58','Treble','57','Presence','43','Volume','72']},
+  lead:{label:'Lead / Guitar Solo',amp:'Solo 100 OD',cab:'4|2 Uber',effects:['Tube Drive','Digital Delay','Plate'],values:['Drive','64','Bass','47','Mid','62','Treble','58','Presence','52','Volume','72']},
   ambient:{label:'Ambient / Shoegaze',amp:'Class A-30 TB',cab:'1|2 Blue Bell',effects:['Analog Chorus','Tape Echo','Hall'],values:['Drive','30','Bass','46','Mid','52','Treble','58','Presence','44','Volume','70']},
   funk:{label:'Funk / Perkusi',amp:'Class A-30 TB',cab:'1|2 Blue Bell',effects:['Q Filter','Opto Tremolo','Studio EQ'],values:['Drive','24','Bass','48','Mid','55','Treble','64','Presence','48','Volume','72']},
   country:{label:'Country / Twang',amp:'Class A-30 TB',cab:'1|2 Blue Bell',effects:['Tube Comp','Spring','Analog Echo'],values:['Drive','32','Bass','46','Mid','55','Treble','65','Presence','54','Volume','72']},
   jazz:{label:'Jazz / Warm Clean',amp:'Blackface Double Normal',cab:'2|2 Blackface Double',effects:['Studio EQ'],values:['Drive','18','Bass','56','Mid','50','Treble','48','Presence','38','Volume','74']},
+  blues:{label:'Blues / Edge of Breakup',amp:'Blackface ‘Lux Vibrato',cab:'1|2 BF ‘Lux',effects:['Tube Comp','Tube Drive','Spring'],values:['Drive','38','Bass','52','Mid','58','Treble','57','Presence','43','Volume','72']},
   punk:{label:'Punk / Alternative',amp:'Brit J-800',cab:'4|2 Brit T-75',effects:['Noise Gate','Classic Dist'],values:['Drive','63','Bass','54','Mid','62','Treble','58','Presence','52','Volume','70']},
   classic:{label:'Classic Rock',amp:'Plexi Lead 100 Bright',cab:'4|2 Greenback 25',effects:['Tube Drive','Tape Echo'],values:['Drive','52','Bass','49','Mid','61','Treble','59','Presence','55','Volume','70']},
   rock:{label:'Rock General',amp:'Brit J-45 Bright',cab:'4|2 Greenback 25',effects:['Tube Drive','Analog Echo'],values:['Drive','46','Bass','50','Mid','58','Treble','57','Presence','50','Volume','70']}
  };
- // Lagu dengan bagian clean/ballad didahulukan agar nama band tidak otomatis menentukan gain tinggi.
- if(/nothing else matters|fade to black|the unforgiven|one (acoustic|clean)|acoustic|fingerstyle|clean tone|clean guitar/.test(all))return profiles.clean;
- if(/ambient|shoegaze|dream pop|post rock|post-rock|swells|wall of sound|pink floyd|david gilmour|comfortably numb|shine on you crazy diamond|u2|the edge/.test(all))return profiles.ambient;
+ // Klasifikasi dimulai dari judul/deskripsi video. Kata kunci pencarian TIDAK dipakai di sini.
+ if(/master of puppets|battery|blackened|disposable heroes|damage inc|fight fire with fire/.test(all))return profiles.thrash;
+ if(/nothing else matters|fade to black|the unforgiven|welcome home sanitarium|one acoustic|acoustic intro|clean intro/.test(all))return profiles.cleanCrunch;
+ if(/enter sandman|sad but true|wherever i may roam|for whom the bell tolls/.test(all))return profiles.metal;
+ if(/guitar solo|lead guitar|lead tone|shred|shredding|solo cover|melodic solo|solo performance/.test(all))return profiles.lead;
+ if(/soloing|lead part|guitar solo/.test(all))return profiles.metalLead;
+ if(/acoustic|fingerstyle|clean tone|clean guitar|finger picking/.test(all))return profiles.clean;
+ if(/ambient|shoegaze|dream pop|post rock|swells|wall of sound|pink floyd|david gilmour|comfortably numb|shine on you crazy diamond|u2|the edge/.test(all))return profiles.ambient;
  if(/jazz|smooth jazz|bebop|fusion/.test(all))return profiles.jazz;
  if(/funk|nile rodgers|chic guitar|clean rhythmic/.test(all))return profiles.funk;
  if(/country|twang|telecaster chicken pick|brad paisley|brent mason/.test(all))return profiles.country;
- if(/blues|stevie ray vaughan|\bsrv\b|john mayer|bb king|b b king|eric clapton|gary moore/.test(all))return profiles.blues;
+ if(/blues|stevie ray vaughan| srv |john mayer|bb king|b b king|eric clapton|gary moore/.test(' '+all+' '))return profiles.blues;
  if(/punk|grunge|alternative rock|pop punk|green day|blink 182|nirvana|foo fighters/.test(all))return profiles.punk;
- if(/metallica|megadeth|slayer|pantera|lamb of god|gojira|thrash|death metal|heavy metal|djent|high gain|metal/.test(all))return profiles.metal;
+ if(/thrash|death metal|heavy metal|djent|high gain|metallica|megadeth|slayer|pantera|lamb of god|gojira|metal/.test(all))return profiles.metal;
  if(/classic rock|hard rock|ac dc|guns n roses|van halen|led zeppelin|aerosmith|deep purple|black sabbath/.test(all))return profiles.classic;
+ // Bila metadata video tidak cukup spesifik, gunakan profil netral dan beri catatan keterbatasan.
  return profiles.rock;
 }
 function applyYouTubeTone(index){
@@ -318,13 +326,13 @@ function applyYouTubeTone(index){
  const chain=[...inferredFx,amp,cab];
  const notes=[
   'Sumber referensi YouTube: '+(v.name||'Video tanpa judul')+' — '+(v.detail||'channel tidak diketahui')+'.',
-  'Karakter tone diperkirakan dari metadata sebagai '+profile.label+'. Ini profil awal berbasis kata kunci, bukan hasil analisis audio.',
+  'Karakter tone diperkirakan dari judul dan deskripsi video yang dipilih sebagai '+profile.label+'. Kata kunci pencarian tidak ikut menentukan profil. Ini profil awal berbasis metadata, bukan hasil analisis audio.',
   detectedAmp?'Model amp disebut di metadata dan cocok dengan database: '+detectedAmp+'.':'Metadata tidak menyebut model amp secara tegas; '+amp+' dipilih sebagai starting point profil.',
   detectedCab?'Cabinet disebut di metadata: '+detectedCab+'.':'Cabinet tidak disebut secara tegas; '+cab+' dipilih sebagai pasangan awal profil.',
   detectedMic?'Mikrofon terdeteksi dari metadata: '+detectedMic+'.':'Mic tidak disebut jelas; pilihan mic bawaan tidak diubah.',
   Object.keys(extracted).length?'Angka knob yang tertulis jelas di metadata ikut dimasukkan: '+Object.keys(extracted).join(', ')+'.':'Angka knob tidak ditemukan di metadata; nilai berasal dari profil karakter tone dan perlu disesuaikan.',
   fx.length?'Efek yang disebut di metadata diprioritaskan: '+fx.join(', ')+'.':'Efek dipilih dari profil karakter tone: '+inferredFx.join(', ')+'.',
-  'YouTube API hanya menyediakan judul, channel, thumbnail, dan deskripsi di alur ini. Audio video maupun subtitle/transkrip tidak dianalisis.'
+  'Jika judul/deskripsi tidak menjelaskan karakter permainan atau gear, profil fallback Rock umum mungkin masih sama untuk beberapa video. YouTube API di alur ini menyediakan judul, channel, thumbnail, dan deskripsi; audio maupun subtitle/transkrip tidak dianalisis.'
  ].join(' ');
  const tone={artist:query,song:v.name||'YouTube Reference',genre:'YouTube · '+profile.label,amp,values,chain:chain.join(' → '),notes};
  applyTone(tone);
