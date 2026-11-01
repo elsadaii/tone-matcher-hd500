@@ -106,53 +106,136 @@ function init(){
  $('#searchBtn').onclick=searchTones;$('#toneSearch').addEventListener('keydown',e=>{if(e.key==='Enter')searchTones()});$('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#fxCategory').onchange=renderFxModels;$('#fxModel').onchange=renderFxFields;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
 }
 async function searchTones(){
- let raw=$('#toneSearch').value.trim(),q=raw.toLowerCase();
+ const raw=$('#toneSearch').value.trim(),q=raw.toLowerCase();
  renderTones(tones.filter(t=>(t.artist+' '+t.song+' '+t.genre).toLowerCase().includes(q)));
  const box=$('#onlineArtistResults');
- if(!raw){box.innerHTML='<p class="hint">Ketik nama artis atau band untuk mencari referensi tambahan dari internet.</p>';return;}
- box.innerHTML='<p class="muted">Mencari referensi artis dan video YouTube…</p>';
- const jobs=[
-  (async()=>{const u='https://musicbrainz.org/ws/2/artist/?fmt=json&limit=8&query='+encodeURIComponent(raw);const r=await fetch(u,{headers:{'Accept':'application/json'}});if(!r.ok)throw new Error('MusicBrainz HTTP '+r.status);const d=await r.json();return (d.artists||[]).map(a=>({source:'MusicBrainz',name:a.name,detail:[a.type,a.area?.name,a.disambiguation].filter(Boolean).join(' · '),url:'https://musicbrainz.org/artist/'+a.id}));})(),
-  (async()=>{const u='https://www.wikidata.org/w/api.php?action=wbsearchentities&search='+encodeURIComponent(raw)+'&language=en&format=json&limit=8&origin=*';const r=await fetch(u);if(!r.ok)throw new Error('Wikidata HTTP '+r.status);const d=await r.json();return (d.search||[]).map(a=>({source:'Wikidata',name:a.label,detail:a.description||'Informasi entitas musik',url:a.concepturi||('https://www.wikidata.org/wiki/'+a.id)}));})()
+ if(!raw){window.youtubeMatches=[];box.innerHTML='<p class="hint">Ketik nama gitaris, band, atau lagu untuk mencari referensi tone dari YouTube.</p>';return;}
+ box.innerHTML='<p class="muted">Mencari video tutorial/demo tone gitar di YouTube…</p>';
+ try{
+  const searchQuery=raw+' guitar tone amp settings tutorial';
+  const u='https://tone-matcher-api.elsadaiprivat.workers.dev/search?q='+encodeURIComponent(searchQuery)+'&source=youtube';
+  const r=await fetch(u);
+  if(!r.ok)throw new Error('YouTube Worker HTTP '+r.status);
+  const d=await r.json();
+  if(d.errors?.youtube)throw new Error(d.errors.youtube);
+  const videos=d.results?.youtube||[];
+  window.youtubeMatches=videos;
+  if(!videos.length){box.innerHTML='<p class="hint">Belum ada video YouTube yang cocok. Coba nama lagu atau gitaris yang lebih spesifik.</p>';return;}
+  box.innerHTML='<h3 style="grid-column:1/-1">Referensi YouTube untuk pencocokan preset</h3><p class="hint" style="grid-column:1/-1">YouTube dipakai sebagai sumber metadata (judul, channel, dan deskripsi). Pilih video untuk mencocokkan model amp, efek, cabinet, dan angka parameter yang tertulis, lalu mengisi Preset Builder. Aplikasi tidak memutar atau membuka video.</p>'+videos.map((v,i)=>'<article class="tone-card"><div class="meta">YOUTUBE · '+esc(v.detail||'VIDEO')+'</div>'+(v.image?'<img src="'+esc(v.image)+'" alt="" loading="lazy" style="width:100%;border-radius:8px;margin:6px 0">':'')+'<h3>'+esc(v.name||'Video YouTube')+'</h3><p>'+esc((v.description||'Deskripsi tidak tersedia.').slice(0,260))+'</p><button data-youtube-tone="'+i+'">Cocokkan & isi Preset Builder</button></article>').join('');
+  $$('[data-youtube-tone]').forEach(b=>b.onclick=()=>applyYouTubeTone(Number(b.dataset.youtubeTone)));
+ }catch(err){
+  window.youtubeMatches=[];
+  box.innerHTML='<p class="hint">Pencarian data YouTube gagal: '+esc(err.message||'gangguan jaringan')+'. Tone lokal tetap tersedia di atas.</p>';
+ }
+}
+function normalizeToneText(s){
+ return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+}
+function detectYoutubeAmp(text){
+ const n=normalizeToneText(text);
+ const aliases=[
+  [/dual rectifier|treadplate/,'Treadplate'],
+  [/jcm ?800|brit j ?800/,'Brit J-800'],
+  [/jtm ?45|plexi|brit j ?45/,'Brit J-45 Bright'],
+  [/hiwatt|hiway 100/,'Hiway 100'],
+  [/vox ac ?30|ac ?30 top boost/,'Class A-30 TB'],
+  [/fender twin|twin reverb|blackface double/,'Blackface Double Vibrato'],
+  [/fender deluxe|deluxe reverb|blackface lux/,'Blackface ‘Lux Vibrato'],
+  [/uberschall/,'Bomber Uber'],
+  [/engl fireball/,'Angel F-Ball'],
+  [/park 75/,'Brit P-75 Bright'],
+  [/bassman/,'Tweed B-Man Bright']
  ];
- const youtubeJob=(async()=>{const u='https://tone-matcher-api.elsadaiprivat.workers.dev/search?q='+encodeURIComponent(raw)+'&source=youtube';const r=await fetch(u);if(!r.ok)throw new Error('YouTube Worker HTTP '+r.status);const d=await r.json();if(d.errors?.youtube)throw new Error(d.errors.youtube);return d.results?.youtube||[];})();
- const [settled,youtubeResult]=await Promise.all([Promise.allSettled(jobs),Promise.allSettled([youtubeJob])]);
- const results=settled.filter(x=>x.status==='fulfilled').flatMap(x=>x.value),failed=settled.filter(x=>x.status==='rejected');
- const videos=youtubeResult[0].status==='fulfilled'?youtubeResult[0].value:[];
- const youtubeFailed=youtubeResult[0].status==='rejected';
- window.onlineArtistMatches=results;
- const artistHtml=results.length?'<h3 style="grid-column:1/-1">Referensi artis/band dari internet</h3><p class="hint" style="grid-column:1/-1">Pilih “Buat rekomendasi tone” untuk mengisi Preset Builder. Setting adalah starting point buatan aplikasi, bukan preset resmi/terverifikasi.</p>'+results.map((a,i)=>'<article class="tone-card"><div class="meta">'+esc(a.source)+'</div><h3>'+esc(a.name||'Tanpa nama')+'</h3><p>'+esc(a.detail||'')+'</p><p><a href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">Lihat sumber ↗</a></p><button data-online-tone="'+i+'">Buat rekomendasi tone ↗</button></article>').join(''):'';
- const videoHtml=videos.length?'<h3 style="grid-column:1/-1;margin-top:22px">Video YouTube untuk referensi</h3>'+videos.map(v=>'<article class="tone-card"><div class="meta">YOUTUBE · '+esc(v.detail||'VIDEO')+'</div>'+(v.image?'<a href="'+esc(v.url)+'" target="_blank" rel="noopener noreferrer"><img src="'+esc(v.image)+'" alt="" loading="lazy" style="width:100%;border-radius:8px;margin:6px 0"></a>':'')+'<h3>'+esc(v.name)+'</h3><p><a href="'+esc(v.url)+'" target="_blank" rel="noopener noreferrer">Tonton di YouTube ↗</a></p></article>').join(''):'';
- const messages=[];
- if(!results.length&&failed.length)messages.push('Pencarian artis tidak tersedia saat ini.');
- if(youtubeFailed)messages.push('Pencarian YouTube tidak berhasil. Coba lagi beberapa saat.');
- if(!results.length&&!videos.length)messages.push('Hasil preset lokal tetap tersedia di atas.');
- if(failed.length&&results.length)messages.push('Sebagian sumber artis online tidak merespons.');
- box.innerHTML=artistHtml+videoHtml+(messages.length?'<p class="hint" style="grid-column:1/-1">'+messages.map(esc).join(' ')+'</p>':'');
- $$('[data-online-tone]').forEach(b=>b.onclick=()=>applyOnlineTone(Number(b.dataset.onlineTone)));
+ for(const item of aliases)if(item[0].test(n))return item[1];
+ const found=HD500_DB.amps.filter(a=>a[0]!=='Amp Disabled'&&n.includes(normalizeToneText(a[0]))).sort((a,b)=>b[0].length-a[0].length)[0];
+ return found?.[0]||'';
 }
-function makeOnlineTone(a){
- const name=(a.name||'Artist').trim(),low=name.toLowerCase();
- const metallica=low.includes('metallica');
- const profile=metallica?{
-  artist:name,song:'Metallica · Metal Rhythm Starting Point',genre:'Metal · Rhythm',
-  amp:'Treadplate',values:['Drive','68','Bass','48','Mid','48','Treble','64','Presence','58','Volume','70'],
-  chain:'Noise Gate → Screamer (Drive rendah, Output tinggi) → Treadplate → 4x12 cab',
-  notes:'Perkiraan tone rhythm metal modern/thrash. Gunakan pickup bridge humbucker, palm mute rapat, dan turunkan Bass bila terdengar boomy.'
- }:{
-  artist:name,song:name+' · General Tone Starting Point',genre:'General · Starting Point',
-  amp:'Brit J-800',values:['Drive','55','Bass','48','Mid','58','Treble','58','Presence','52','Volume','70'],
-  chain:'Noise Gate (bila perlu) → Overdrive ringan → Brit J-800 → 4x12 cab → Room Reverb tipis',
-  notes:'Preset generik berdasarkan karakter rock sebagai titik awal, bukan tone terverifikasi artis. Sesuaikan gain, EQ, pickup, dan output mode dengan lagu.'
- };
- return profile;
+function detectYoutubeEffects(text){
+ const rules=[
+  [/noise gate|noise suppressor|\bgate\b/,'Noise Gate'],
+  [/tube screamer|ts ?9|screamer/,'Screamer'],
+  [/tube drive/,'Tube Drive'],
+  [/compressor|compression/,'Red Comp'],
+  [/analog chorus|\bchorus\b/,'Analog Chorus'],
+  [/\bphaser\b/,'Script Phase'],
+  [/\bflanger\b/,'Analog Flanger'],
+  [/\bdelay\b|\becho\b/,'Digital Delay'],
+  [/plate reverb|\breverb\b/,'Plate'],
+  [/\bwah\b/,'Fassel']
+ ];
+ const out=[];
+ for(const [re,name] of rules)if(re.test(text)&&HD500_DB.effects.some(e=>e[1]===name)&&!out.includes(name))out.push(name);
+ return out;
 }
-function applyOnlineTone(index){
- const a=window.onlineArtistMatches?.[index];if(!a)return;
- const t=makeOnlineTone(a);applyTone(t);
- $('#notes').value=t.notes+' Referensi identitas: '+(a.source||'Online')+'. Nilai parameter adalah estimasi awal, bukan preset resmi.';
+function detectYoutubeCab(text){
+ if(/v30|vintage ?30|tread v-?30/i.test(text))return '4|2 Tread V-30';
+ if(/greenback|g12m/i.test(text))return '4|2 Greenback 25';
+ if(/g12t.?75|gt.?75|t-?75/i.test(text))return '4|2 Brit T-75';
+ if(/uber cab|überschall cab/i.test(text))return '4|2 Uber';
+ return '';
 }
-
+function detectYoutubeMic(text){
+ if(/sm ?57|57 on axis|57 on x/i.test(text))return '57 On Xs';
+ if(/57 off axis|57 off x/i.test(text))return '57 Off Xs';
+ if(/md ?421|421 dyn/i.test(text))return '421 Dyn';
+ if(/ribbon 121|r ?121|121 ribbon/i.test(text))return '121 Rbn';
+ if(/4038/i.test(text))return '4038 Rbn';
+ if(/u ?67|67 condenser/i.test(text))return '67 Cond';
+ if(/u ?87|87 condenser/i.test(text))return '87 Cond';
+ return '';
+}
+function extractYoutubeAmpValues(text){
+ const fields=[
+  ['Drive',/(?:drive|gain)\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Bass',/\bbass\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Mid',/\bmid(?:dle)?\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Treble',/\btreble\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Presence',/\bpresence\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Master',/\bmaster\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Volume',/\bvolume\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i]
+ ];
+ const result={};
+ for(const [key,re] of fields){
+  const m=text.match(re);if(!m)continue;
+  let value=Number(m[1]);if(m[3]==='10')value*=10;
+  const explicit=!!m[2];
+  if((explicit||value>=11)&&value>=0&&value<=100)result[key]=String(Math.round(value*10)/10);
+ }
+ return result;
+}
+function applyYouTubeTone(index){
+ const v=window.youtubeMatches?.[index];if(!v)return;
+ const query=$('#toneSearch').value.trim()||v.name||'YouTube Tone';
+ const sourceText=[v.name,v.description,v.detail].filter(Boolean).join(' ');
+ const base=makeOnlineTone({name:query});
+ const detectedAmp=detectYoutubeAmp(sourceText);
+ const amp=detectedAmp||base.amp;
+ const fx=detectYoutubeEffects(sourceText);
+ const inferredFx=fx.length?fx:(/metal|thrash|heavy|high gain|djent/i.test(query+' '+sourceText)?['Noise Gate','Screamer']:['Screamer']);
+ const detectedCab=detectYoutubeCab(sourceText);
+ const cab=detectedCab||(amp==='Treadplate'?'4|2 Tread V-30':'4|2 Greenback 25');
+ const detectedMic=detectYoutubeMic(sourceText);
+ const extracted=extractYoutubeAmpValues(sourceText);
+ const valueMap={};
+ for(let i=0;i<base.values.length;i+=2)valueMap[base.values[i]]=base.values[i+1];
+ Object.assign(valueMap,extracted);
+ const values=Object.entries(valueMap).flat();
+ const chain=[...inferredFx,amp,cab];
+ const notes=[
+  'Sumber referensi YouTube: '+(v.name||'Video tanpa judul')+' — '+(v.detail||'channel tidak diketahui')+'.',
+  detectedAmp?'Model amp cocok dari teks sumber: '+detectedAmp+'.':'Model amp tidak disebut dengan jelas di metadata; '+amp+' dipakai sebagai starting point perkiraan, bukan hasil verifikasi.',
+  detectedCab?'Cabinet cocok dari teks sumber: '+detectedCab+'.':'Cabinet belum teridentifikasi jelas; '+cab+' dipakai sebagai starting point.',
+  detectedMic?'Mikrofon terdeteksi dari teks sumber: '+detectedMic+'.':'Mic tidak disebut jelas; pilihan mic bawaan tidak diubah.',
+  Object.keys(extracted).length?'Angka amp yang tertulis jelas di deskripsi/judul ikut dimasukkan: '+Object.keys(extracted).join(', ')+'.':'Tidak ada angka knob 0–100 atau format x/10 yang terbaca jelas; nilai knob memakai starting point aplikasi.',
+  fx.length?'Efek yang disebut di metadata: '+fx.join(', ')+'.':'Efek tidak teridentifikasi secara spesifik; chain efek adalah rekomendasi awal berdasarkan karakter tone, bukan klaim isi video.',
+  'Data yang tersedia dari YouTube API adalah judul, channel, thumbnail, dan deskripsi. Audio video maupun subtitle/transkrip tidak dianalisis.'
+ ].join(' ');
+ const tone={artist:query,song:v.name||'YouTube Reference',genre:'YouTube · Matched Starting Point',amp,values,chain:chain.join(' → '),notes};
+ applyTone(tone);
+ $('#cabSelect').value=cab;
+ syncMicChoices();
+ if(detectedMic&&[...$('#micSelect').options].some(o=>o.value===detectedMic))$('#micSelect').value=detectedMic;
+}
 function renderTones(list){$('#toneResults').innerHTML=list.length?list.map(t=>`<article class="tone-card"><div class="meta">${t.genre}</div><h3>${t.artist}</h3><p>${t.song}</p><p><b>Amp:</b> ${t.amp}</p><p>${t.chain}</p><button data-tone="${tones.indexOf(t)}">Pakai tone ini ↗</button></article>`).join(''):'<p class="muted">Tidak ditemukan. Coba nama gitaris atau judul lagu lain.</p>';$$('[data-tone]').forEach(b=>b.onclick=()=>applyTone(tones[+b.dataset.tone]));}
 function applyTone(t){$('#presetName').value=t.artist+' - '+t.song;$('#ampSelect').value=t.amp;$('#fxChain').value=t.chain;$('#notes').value=t.notes;$$('[data-knob]').forEach(i=>i.value='');for(let i=0;i<t.values.length;i+=2){let el=$(`[data-knob="${t.values[i]}"]`);if(el)el.value=t.values[i+1]}$$('.tab').find(b=>b.dataset.tab==='editor').click();}
 function currentPreset(){let params={};$$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});let fxParams={};$$('[data-fx-param]').forEach(i=>{if(i.value.trim())fxParams[i.dataset.fxParam]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},fxCategory:$('#fxCategory').value,fxModel:$('#fxModel').value,fxParams,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}

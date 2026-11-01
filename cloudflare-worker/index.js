@@ -79,7 +79,6 @@ async function searchYouTube(q, env) {
   url.searchParams.set("q", q);
   url.searchParams.set("type", "video");
   url.searchParams.set("maxResults", "10");
-  url.searchParams.set("videoCategoryId", "10");
   url.searchParams.set("key", env.YOUTUBE_API_KEY);
   const response = await fetch(url);
   if (!response.ok) throw new Error("YouTube search gagal (" + response.status + ").");
@@ -87,6 +86,8 @@ async function searchYouTube(q, env) {
   return (data.items || []).map(x => ({
     kind: "video", name: x.snippet?.title || "YouTube video",
     detail: x.snippet?.channelTitle || "",
+    description: x.snippet?.description || "",
+    publishedAt: x.snippet?.publishedAt || null,
     image: x.snippet?.thumbnails?.medium?.url || x.snippet?.thumbnails?.default?.url || null,
     url: "https://www.youtube.com/watch?v=" + x.id.videoId,
     id: x.id.videoId
