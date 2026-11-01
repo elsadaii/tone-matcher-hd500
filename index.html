@@ -200,6 +200,9 @@
 .delay-tempo-grid select{margin-top:5px;padding:9px 10px;font-size:11px}
 .delay-sync-preview{display:block;margin-top:4px;color:#91a5b7;font-size:9px;line-height:1.4}
 .delay-tempo-note{margin:9px 0 0;color:#8194a6;font-size:9px;line-height:1.45}
+.tempo-tap-row{display:flex;align-items:center;gap:11px;margin-top:10px}
+.tempo-tap-row button{padding:8px 12px;font-size:10px;letter-spacing:.1em}
+@media(max-width:600px){.tempo-tap-row{align-items:flex-start;flex-direction:column;gap:6px}}
 @media(max-width:600px){.delay-tempo-grid{grid-template-columns:1fr 1fr}.tempo-settings .field-grid{grid-template-columns:1fr 1fr}}
 
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
@@ -230,6 +233,7 @@
   <label>Global Tempo (BPM)<input id="globalTempoBpm" type="number" inputmode="decimal" min="1" step="0.1" value="120"></label>
   <label>Trails · per preset<select id="trails"><option value="On">On</option><option value="Off">Off</option></select></label>
  </div>
+ <div class="tempo-tap-row"><button type="button" class="secondary" id="tapTempoBtn">● TAP TEMPO</button><span id="tempoTapStatus" class="muted">Ketuk beberapa kali untuk menghitung BPM.</span></div>
  <p class="muted" id="tempoSettingsHint">Preset: efek tersinkron memakai BPM dari preset ini. Trails On mempertahankan ekor Delay/Reverb saat efek dimatikan.</p>
 </section>
 <div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div>
@@ -532,6 +536,7 @@ let chainParameterValues={};
 let activeToneParameterValues={};
 let chainDelaySettings={};
 let tempoSystemSettings={mode:'Preset',globalBpm:120};
+let tempoTapMoments=[];
 function captureChainParameterValues(){
  $$('[data-chain-param-key]').forEach(input=>{
   const key=input.dataset.chainParamKey;
@@ -567,12 +572,40 @@ function syncTempoSettingsUI(){
   hint.textContent=(mode==='Global'?'Global: semua preset memakai tempo global '+bpm+' BPM.':'Preset: efek tersinkron memakai BPM preset ('+(Number($('#tempoBpm')?.value)||120)+' BPM).')+' Trails On mempertahankan ekor Delay/Reverb saat model dimatikan; tidak memberi spillover saat pindah preset.';
  }
 }
+function handleTempoTap(){
+ const now=Date.now();
+ const previous=tempoTapMoments[tempoTapMoments.length-1];
+ if(previous){
+  const interval=now-previous;
+  if(interval<250||interval>2500)tempoTapMoments=[];
+ }
+ tempoTapMoments.push(now);
+ if(tempoTapMoments.length>6)tempoTapMoments.shift();
+ if(tempoTapMoments.length<2){
+  $('#tempoTapStatus').textContent='Ketuk lagi mengikuti ketukan lagu.';
+  return;
+ }
+ const intervals=[];
+ for(let i=1;i<tempoTapMoments.length;i++)intervals.push(tempoTapMoments[i]-tempoTapMoments[i-1]);
+ const average=intervals.reduce((sum,n)=>sum+n,0)/intervals.length;
+ const bpm=Math.round((60000/average)*10)/10;
+ if($('#tempoSyncMode').value==='Global'){
+  $('#globalTempoBpm').value=bpm;
+  persistTempoSystemSettings();
+ }else{
+  $('#tempoBpm').value=bpm;
+  syncTempoSettingsUI();
+  renderSignalChain();
+ }
+ $('#tempoTapStatus').textContent='Tap Tempo: '+bpm+' BPM · ketuk lagi untuk memperbarui.';
+}
 function setupTempoControls(){
  readTempoSystemSettings();
  $('#tempoSyncMode').value=tempoSystemSettings.mode;
  $('#globalTempoBpm').value=tempoSystemSettings.globalBpm;
  $('#tempoSyncMode').addEventListener('change',persistTempoSystemSettings);
  $('#globalTempoBpm').addEventListener('change',persistTempoSystemSettings);
+ $('#tapTempoBtn').addEventListener('click',handleTempoTap);
  $('#tempoBpm').addEventListener('input',()=>{syncTempoSettingsUI();renderSignalChain();});
  $('#trails').addEventListener('change',syncTempoSettingsUI);
  syncTempoSettingsUI();
