@@ -1,0 +1,28 @@
+
+name: Validate Tone Matcher
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check website
+        run: |
+          test -f index.html
+          grep -qi '<html' index.html
+          grep -qi '</html>' index.html
+          grep -q 'toneSearch' index.html
+          grep -q 'const tones' index.html
+          echo "Tone Matcher validation passed."
