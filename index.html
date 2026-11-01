@@ -184,6 +184,24 @@
 .chain-node-name{font-size:15.5px;min-height:42px;letter-spacing:-.025em}
 .chain-node--amp .chain-node-name,.chain-node--cab .chain-node-name{font-size:15px}
 
+
+/* POD HD500 delay tempo synchronization and trails controls */
+.tempo-settings{border-color:#455b6b;background:linear-gradient(145deg,#182633,#111a24)}
+.tempo-settings h3{margin-bottom:13px}
+.tempo-settings label{margin:0}
+.tempo-settings input,.tempo-settings select{margin-top:6px}
+.tempo-settings input:disabled{opacity:.4;cursor:not-allowed}
+.delay-tempo-controls{margin-top:13px;padding:12px;border:1px solid #3c5365;border-radius:10px;background:linear-gradient(145deg,#172635,#111a24)}
+.delay-tempo-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.delay-tempo-heading strong{font-size:11px;color:#eaf1f6}
+.delay-tempo-heading span{font-size:8px;font-weight:900;letter-spacing:.14em;color:#7bb7dc}
+.delay-tempo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.delay-tempo-grid label{display:block;min-width:0;margin:0;color:#aebdca;font-size:10px}
+.delay-tempo-grid select{margin-top:5px;padding:9px 10px;font-size:11px}
+.delay-sync-preview{display:block;margin-top:4px;color:#91a5b7;font-size:9px;line-height:1.4}
+.delay-tempo-note{margin:9px 0 0;color:#8194a6;font-size:9px;line-height:1.45}
+@media(max-width:600px){.delay-tempo-grid{grid-template-columns:1fr 1fr}.tempo-settings .field-grid{grid-template-columns:1fr 1fr}}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
@@ -203,7 +221,18 @@
  <div class="chain-parameter-heading"><div><p class="eyebrow">BLOCK CONTROLS</p><h3>Parameter Amp & Efek</h3><p class="muted">Panel muncul otomatis mengikuti amp, cabinet, dan efek yang ada di Signal Chain.</p></div><span class="tag">PER BLOK</span></div>
  <div id="chainParameterList" class="chain-parameter-list"><p class="chain-param-empty">Panel parameter akan muncul mengikuti Signal Chain.</p></div>
 </section>
-<div class="builder-grid"><div class="form-card"><label>Nama preset<input id="presetName" value="My HD500 Tone"></label><div class="field-grid"><label>Model Amp<select id="ampSelect"></select></label><label>Jenis blok<select id="ampType"><option value="Full Amp">Full Amp</option><option value="Preamp">Preamp</option></select></label></div><div class="field-grid"><label>Cabinet<select id="cabSelect"></select></label><label>Mic<select id="micSelect"></select></label></div><label>Output Mode<select id="outputMode"><option>Studio/Direct</option><option>Combo Front</option><option>Stack Front</option><option>Combo Power Amp</option><option>Stack Power Amp</option></select></label><div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div>
+<div class="builder-grid"><div class="form-card"><label>Nama preset<input id="presetName" value="My HD500 Tone"></label><div class="field-grid"><label>Model Amp<select id="ampSelect"></select></label><label>Jenis blok<select id="ampType"><option value="Full Amp">Full Amp</option><option value="Preamp">Preamp</option></select></label></div><div class="field-grid"><label>Cabinet<select id="cabSelect"></select></label><label>Mic<select id="micSelect"></select></label></div><label>Output Mode<select id="outputMode"><option>Studio/Direct</option><option>Combo Front</option><option>Stack Front</option><option>Combo Power Amp</option><option>Stack Power Amp</option></select></label>
+<section class="advanced-block tempo-settings" aria-label="Tempo sync and trails settings">
+ <h3>Tempo, Sync & Trails</h3>
+ <div class="field-grid">
+  <label>Tempo Preset (BPM)<input id="tempoBpm" type="number" inputmode="decimal" min="1" step="0.1" value="120"></label>
+  <label>System Tempo Sync<select id="tempoSyncMode"><option value="Preset">Preset</option><option value="Global">Global</option></select></label>
+  <label>Global Tempo (BPM)<input id="globalTempoBpm" type="number" inputmode="decimal" min="1" step="0.1" value="120"></label>
+  <label>Trails · per preset<select id="trails"><option value="On">On</option><option value="Off">Off</option></select></label>
+ </div>
+ <p class="muted" id="tempoSettingsHint">Preset: efek tersinkron memakai BPM dari preset ini. Trails On mempertahankan ekor Delay/Reverb saat efek dimatikan.</p>
+</section>
+<div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div>
 <label>Catatan<textarea id="notes" rows="2" placeholder="Gitar, pickup, tuning, output mode, dll."></textarea></label><div class="actions"><button id="savePreset">Simpan preset</button><button class="secondary" id="exportPreset">Export JSON</button></div></div><aside class="info-card"><p class="eyebrow">CATATAN PARAMETER</p><h3>Nilai sesuai layar POD</h3><p>Kolom parameter disimpan sebagai angka/teks yang kamu masukkan. Guide resmi menjelaskan nama kontrol dan fungsi, tetapi tidak memberikan satu rentang numerik universal untuk semua knob/model.</p><ul><li>Drive, Bass, Mid, Treble, Presence, Volume</li><li>Power amp: Master, Sag, Hum, Bias, Bias Excursion</li><li>Cab: Early Reflections, Cab, Mic</li></ul><p class="muted">Untuk beberapa amp, label knob berubah mengikuti desain amp (misalnya CUT atau TONE).</p></aside></div></section>
 <section id="database" class="panel"><div class="section-head"><div><p class="eyebrow">03 / REFERENCE</p><h2>Database parameter asli</h2></div><span class="tag">MANUAL-BASED</span></div><div class="db-tools"><input id="dbSearch" placeholder="Cari model, parameter, kategori…"><select id="dbCategory"><option value="all">Semua kategori</option><option>Amp</option><option>Cab</option><option>Dynamics</option><option>Distortion</option><option>Modulation</option><option>Filter</option><option>Pitch</option><option>EQ</option><option>Preamp+EQ</option><option>Delay</option><option>Reverb</option><option>Wah</option><option>Volume/Pan</option><option>Global EQ</option></select></div><div id="dbResults" class="db-list"></div><p class="hint">Daftar model dan nama kontrol ditranskripsikan dari POD HD500 Advanced Guide v2.10. Rentang angka tidak ditebak; Model Pack Metal/Vintage/Bass bersifat opsional. Mic bass tersedia sebagai daftar khusus saat memakai cab Flip Top.</p></section>
 <section id="saved" class="panel"><div class="section-head"><div><p class="eyebrow">04 / YOUR LIBRARY</p><h2>Preset tersimpan</h2></div><button class="secondary" id="importPreset">Import JSON</button><input type="file" id="importFile" accept="application/json" hidden></div><div id="savedResults"></div></section><section id="devicefiles" class="panel"><div class="section-head"><div><p class="eyebrow">05 / DEVICE FILES</p><h2>Impor file POD HD500</h2></div><span class="tag">H5E · H5S · H5B</span></div><div class="form-card"><p>Unggah preset asli <b>.h5e</b>, Set List <b>.h5s</b>, atau Bundle <b>.h5b</b> dari POD HD500 Edit. Alat ini akan memeriksa jenis file, ukuran, signature, dan fragmen teks yang terbaca.</p><label>Pilih file POD<input type="file" id="podFile" accept=".h5e,.h5s,.h5b,.5xe,application/octet-stream"></label><div id="podFileReport" class="file-report"><p class="muted">Belum ada file dipilih.</p></div><p class="hint">Penting: format preset Line 6 bukan JSON terbuka. Versi ini belum mengubah byte .h5e menjadi parameter amp/efek, dan tidak membuat file .h5e palsu. Untuk mengembangkan pembaca penuh, perlu sampel file .h5e asli dari perangkatmu untuk menguji hasil decode.</p></div></section>
@@ -294,7 +323,7 @@ const tones=[
 ];
 function init(){
  $('#ampSelect').innerHTML=HD500_DB.amps.map(a=>`<option>${a[0]}</option>`).join('');$('#cabSelect').innerHTML=HD500_DB.cabs.map(x=>`<option>${x}</option>`).join('');$('#micSelect').innerHTML=HD500_DB.mics.map(x=>`<option>${x}</option>`).join('');$('#cabSelect').addEventListener('change',()=>{syncMicChoices();renderSignalChain();});syncMicChoices();
- setupSignalChainEditor();renderSignalChain();
+ setupSignalChainEditor();setupTempoControls();renderSignalChain();
  renderTones(tones);renderDb();renderSaved();
  $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
  $('#searchBtn').onclick=searchTones;$('#toneSearch').addEventListener('keydown',e=>{if(e.key==='Enter')searchTones()});$('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
@@ -480,6 +509,9 @@ function applyTone(t){
  activeToneParameterValues={};
  for(let i=0;i<(t.values||[]).length;i+=2)activeToneParameterValues[t.values[i]]=String(t.values[i+1]);
  $('#presetName').value=t.artist+' - '+t.song;
+ chainDelaySettings={};
+ $('#tempoBpm').value=120;
+ $('#trails').value='On';
  $('#ampSelect').value=t.amp;
  $('#fxChain').value=t.chain;
  $('#notes').value=t.notes;
@@ -487,23 +519,123 @@ function applyTone(t){
  openPresetBuilderTab();
 }
 function openPresetBuilderTab(){const tab=document.querySelector('.tab[data-tab="editor"]');if(!tab)throw new Error('Tab Preset Builder tidak ditemukan.');tab.click();}
-function currentPreset(){captureChainParameterValues();let params={...activeToneParameterValues};$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chainParameters:{...chainParameterValues},chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
+function currentPreset(){captureChainParameterValues();let params={...activeToneParameterValues};$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,tempoBpm:Number($('#tempoBpm').value)||120,trails:$('#trails').value||'On',chainDelaySettings:{...chainDelaySettings},mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chainParameters:{...chainParameterValues},chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
 function getSaved(){try{return JSON.parse(localStorage.getItem('hd500-presets')||'[]')}catch{return []}}
 function savePreset(){let p=currentPreset(),all=getSaved();all=all.filter(x=>x.name!==p.name);all.unshift(p);localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset tersimpan di browser ini.');}
 function renderSaved(){let a=getSaved();$('#savedCount').textContent=a.length;$('#savedResults').innerHTML=a.length?a.map(p=>`<div class="saved-card"><div><b>${esc(p.name)}</b><p>${esc(p.amp)} · ${esc(p.cab)} · ${new Date(p.updated).toLocaleDateString('id-ID')}</p></div><div class="saved-actions"><button class="secondary" data-load="${p.id}">Buka</button><button class="secondary" data-del="${p.id}">Hapus</button></div></div>`).join(''):'<p class="muted">Belum ada preset tersimpan di browser ini.</p>';$$('[data-load]').forEach(b=>b.onclick=()=>loadPreset(a.find(x=>x.id===b.dataset.load)));$$('[data-del]').forEach(b=>b.onclick=()=>{localStorage.setItem('hd500-presets',JSON.stringify(getSaved().filter(x=>x.id!==b.dataset.del)));renderSaved()});}
-function loadPreset(p){if(!p)return;$$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};activeToneParameterValues={...(p.params||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
+function loadPreset(p){if(!p)return;$$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};activeToneParameterValues={...(p.params||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';$('#tempoBpm').value=Number(p.tempoBpm)||120;$('#trails').value=p.trails||'On';chainDelaySettings={...(p.chainDelaySettings||{})};$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
 function exportCurrent(){let blob=new Blob([JSON.stringify(currentPreset(),null,2)],{type:'application/json'});download(blob,'pod-hd500-preset.json')}
 function importFile(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let p=JSON.parse(r.result);if(!p.name||!p.amp)throw Error();let all=getSaved();all.unshift({...p,id:String(Date.now()),updated:new Date().toISOString()});localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset berhasil diimpor.')}catch{alert('File JSON tidak dikenali sebagai preset Tone Matcher.')}};r.readAsText(f);e.target.value=''}
 function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
 
 let chainParameterValues={};
 let activeToneParameterValues={};
+let chainDelaySettings={};
+let tempoSystemSettings={mode:'Preset',globalBpm:120};
 function captureChainParameterValues(){
  $$('[data-chain-param-key]').forEach(input=>{
   const key=input.dataset.chainParamKey;
   if(!key)return;
   if(input.value.trim())chainParameterValues[key]=input.value.trim();
  });
+}
+const POD_NOTE_DIVISIONS=[
+ {value:'Whole',beats:4},{value:'1/2',beats:2},{value:'1/4',beats:1},
+ {value:'1/8',beats:0.5},{value:'1/16',beats:0.25},{value:'1/32',beats:0.125}
+];
+function readTempoSystemSettings(){
+ try{
+  const saved=JSON.parse(localStorage.getItem('hd500-tempo-system-settings')||'{}');
+  tempoSystemSettings={mode:saved.mode==='Global'?'Global':'Preset',globalBpm:Number(saved.globalBpm)>0?Number(saved.globalBpm):120};
+ }catch{tempoSystemSettings={mode:'Preset',globalBpm:120};}
+}
+function persistTempoSystemSettings(){
+ tempoSystemSettings.mode=$('#tempoSyncMode').value==='Global'?'Global':'Preset';
+ const bpm=Number($('#globalTempoBpm').value);
+ tempoSystemSettings.globalBpm=Number.isFinite(bpm)&&bpm>0?bpm:120;
+ try{localStorage.setItem('hd500-tempo-system-settings',JSON.stringify(tempoSystemSettings));}catch{}
+ syncTempoSettingsUI();
+ renderSignalChain();
+}
+function syncTempoSettingsUI(){
+ const mode=$('#tempoSyncMode')?.value||tempoSystemSettings.mode;
+ const globalField=$('#globalTempoBpm');
+ if(globalField)globalField.disabled=mode!=='Global';
+ const hint=$('#tempoSettingsHint');
+ if(hint){
+  const bpm=mode==='Global'?tempoSystemSettings.globalBpm:(Number($('#tempoBpm')?.value)||120);
+  hint.textContent=(mode==='Global'?'Global: semua preset memakai tempo global '+bpm+' BPM.':'Preset: efek tersinkron memakai BPM preset ('+(Number($('#tempoBpm')?.value)||120)+' BPM).')+' Trails On mempertahankan ekor Delay/Reverb saat model dimatikan; tidak memberi spillover saat pindah preset.';
+ }
+}
+function setupTempoControls(){
+ readTempoSystemSettings();
+ $('#tempoSyncMode').value=tempoSystemSettings.mode;
+ $('#globalTempoBpm').value=tempoSystemSettings.globalBpm;
+ $('#tempoSyncMode').addEventListener('change',persistTempoSystemSettings);
+ $('#globalTempoBpm').addEventListener('change',persistTempoSystemSettings);
+ $('#tempoBpm').addEventListener('input',()=>{syncTempoSettingsUI();renderSignalChain();});
+ $('#trails').addEventListener('change',syncTempoSettingsUI);
+ syncTempoSettingsUI();
+}
+function getActiveTempoBpm(){
+ const mode=$('#tempoSyncMode')?.value||tempoSystemSettings.mode;
+ const value=mode==='Global'?Number($('#globalTempoBpm')?.value):Number($('#tempoBpm')?.value);
+ return Number.isFinite(value)&&value>0?value:120;
+}
+function getDelayDivisionMs(division,bpm=getActiveTempoBpm()){
+ const entry=POD_NOTE_DIVISIONS.find(x=>x.value===division);
+ return entry?60000*entry.beats/bpm:null;
+}
+function getChainBlockKey(node,index,nodes){
+ const occurrence=nodes.slice(0,index).filter(n=>n.kind===node.kind&&n.label===node.label).length;
+ return [node.kind,node.label,occurrence].join('::');
+}
+function getDelaySyncKey(node,index,nodes,param){
+ return getChainBlockKey(node,index,nodes)+'::TempoSync::'+param;
+}
+function getDelaySyncValue(node,index,nodes,param){
+ const key=getDelaySyncKey(node,index,nodes,param);
+ if(!chainDelaySettings[key])chainDelaySettings[key]='Off';
+ return chainDelaySettings[key];
+}
+function getDelayTimeParams(node,spec){
+ if(node.label==='Stereo Delay')return ['Sync Left','Sync Right'];
+ return spec.params.filter(p=>/^(Time|L Time|R Time)$/i.test(p));
+}
+function getDelayTimePreview(node,index,nodes,timeParam,division){
+ if(division==='Off')return 'Waktu manual dalam ms.';
+ const ms=getDelayDivisionMs(division);
+ return ms?'Mengikuti '+(tempoSystemSettings.mode==='Global'?'tempo global':'tempo preset')+' · sekitar '+Math.round(ms)+' ms ('+getActiveTempoBpm()+' BPM).':'Mengikuti Tap Tempo perangkat.';
+}
+function renderDelaySyncControls(node,index,nodes,spec){
+ if(spec.category!=='Delay')return '';
+ const syncParams=getDelayTimeParams(node,spec);
+ if(!syncParams.length)return '';
+ const fields=syncParams.map(param=>{
+  const key=getDelaySyncKey(node,index,nodes,param);
+  const selected=getDelaySyncValue(node,index,nodes,param);
+  const label=node.label==='Stereo Delay'?param:'Tempo Sync · '+param;
+  const options=['Off',...POD_NOTE_DIVISIONS.map(x=>x.value)].map(value=>'<option value="'+esc(value)+'"'+(selected===value?' selected':'')+'>'+esc(value)+'</option>').join('');
+  const preview=getDelayTimePreview(node,index,nodes,param,selected);
+  return '<label>'+esc(label)+'<select data-delay-sync-key="'+esc(key)+'" data-delay-sync-node="'+esc(getChainBlockKey(node,index,nodes))+'">'+options+'</select><small class="delay-sync-preview" data-delay-sync-preview="'+esc(key)+'">'+esc(preview)+'</small></label>';
+ }).join('');
+ const note=node.label==='Stereo Delay'?'Stereo Delay memiliki Tempo Sync kiri dan kanan secara independen.':'Pilih Off untuk waktu manual (ms), atau nilai not agar waktu mengikuti Tap Tempo.';
+ return '<div class="delay-tempo-controls"><div class="delay-tempo-heading"><strong>Tempo Sync</strong><span>DELAY</span></div><div class="delay-tempo-grid">'+fields+'</div><p class="delay-tempo-note">'+esc(note)+'</p></div>';
+}
+function bindDelaySyncControls(){
+ $('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
+  chainDelaySettings[select.dataset.delaySyncKey]=select.value;
+  renderSignalChain();
+ }));
+}
+function formatDelayParameterValue(node,index,nodes,param,value){
+ const spec=getChainParameterSpecs(node);
+ if(spec.category!=='Delay'||!(/^(Time|L Time|R Time)$/i.test(param)))return String(value);
+ if(node.label==='Stereo Delay')return String(value)+' ms · Sync L/R di bawah';
+ const sync=getDelaySyncValue(node,index,nodes,param);
+ if(sync==='Off')return String(value)+' ms';
+ const ms=getDelayDivisionMs(sync);
+ return ms?sync+' · ≈ '+Math.round(ms)+' ms':sync;
 }
 function getChainParameterKey(node,index,nodes,param){
  const occurrence=nodes.slice(0,index).filter(n=>n.kind===node.kind&&n.label===node.label).length;
@@ -612,12 +744,14 @@ function renderChainParameterPanels(nodes){
    const key=getChainParameterKey(node,index,nodes,param);
    const meta=HD500_DB.parameterMeta?.[param];
    const extra=meta?'<small>'+esc(meta.unit)+' · '+esc(meta.range)+'</small>':'';
-   const value=String(chainParameterValues[key]);
+   const value=formatDelayParameterValue(node,index,nodes,param,chainParameterValues[key]);
    return '<label>'+esc(param)+'<div class="chain-param-value"><strong>'+esc(value)+'</strong><small>AUTO</small></div>'+extra+'</label>';
   }).join('');
-  panels.push('<article class="chain-param-card chain-param-card--'+spec.type+'"><div class="chain-param-card-head"><div><span class="chain-param-category">'+esc(spec.category)+'</span><h4>'+esc(node.label)+'</h4><small>'+esc(spec.description)+'</small></div><span class="chain-node-number">'+String(index+1).padStart(2,'0')+'</span></div><div class="chain-param-grid">'+fields+'</div><p class="chain-param-note">'+esc(spec.note)+'</p></article>');
+  const delayControls=renderDelaySyncControls(node,index,nodes,spec);
+  panels.push('<article class="chain-param-card chain-param-card--'+spec.type+'"><div class="chain-param-card-head"><div><span class="chain-param-category">'+esc(spec.category)+'</span><h4>'+esc(node.label)+'</h4><small>'+esc(spec.description)+'</small></div><span class="chain-node-number">'+String(index+1).padStart(2,'0')+'</span></div><div class="chain-param-grid">'+fields+'</div>'+delayControls+'<p class="chain-param-note">'+esc(spec.note)+'</p></article>');
  });
  host.innerHTML=panels.length?panels.join(''):'<p class="chain-param-empty">Belum ada blok amp atau efek. Panel parameter akan muncul otomatis setelah Signal Chain terisi.</p>';
+ bindDelaySyncControls();
 }
 function setupSignalChainScroll(){
  const canvas=$('#signalChainCanvas');if(!canvas||canvas.dataset.dragScrollReady)return;
