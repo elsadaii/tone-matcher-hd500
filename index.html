@@ -179,6 +179,11 @@
  .patch-jack{width:10px;height:7px}
 }
 
+
+/* Give effect model names more prominence in Signal Chain */
+.chain-node-name{font-size:15.5px;min-height:42px;letter-spacing:-.025em}
+.chain-node--amp .chain-node-name,.chain-node--cab .chain-node-name{font-size:15px}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
@@ -745,7 +750,8 @@ function renderSignalChain(){
  else nodes.forEach((node,i)=>{
   html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
-  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small>'+renderChainKnobs(node,i,nodes)+'</div>';
+  const nodeSub=(node.kind==='amp'||node.kind==='cab')?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
+  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+renderChainKnobs(node,i,nodes)+'</div>';
   html+='</article></div>';
  });
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
