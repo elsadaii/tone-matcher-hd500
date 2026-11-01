@@ -22,14 +22,23 @@
 .chain-endpoint strong{font-size:9px;letter-spacing:.13em}.chain-endpoint small{font-size:9px;color:#6f7e8e}
 .chain-link{position:relative;align-self:center;flex:0 0 26px;height:2px;margin-top:-25px;background:linear-gradient(90deg,#536577,#9aa9b9)}
 .chain-link:after{position:absolute;right:-1px;top:-4px;content:"";border-left:7px solid #9aa9b9;border-top:5px solid transparent;border-bottom:5px solid transparent}
-.chain-slot{flex:0 0 154px;width:154px;display:flex;align-items:stretch}
-.chain-node{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;min-height:140px;padding:11px 10px 9px;border:1px solid #4a5a6b;border-top:3px solid var(--node-accent,#8da1b7);border-radius:11px;background:linear-gradient(155deg,#263444,#1a2531);box-shadow:0 8px 18px #0005,inset 0 1px 0 #ffffff0b}
+.chain-slot{flex:0 0 178px;width:178px;display:flex;align-items:stretch}.chain-slot--amp{flex-basis:204px;width:204px}
+.chain-node{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;min-height:182px;padding:11px 10px 9px;border:1px solid #4a5a6b;border-top:3px solid var(--node-accent,#8da1b7);border-radius:11px;background:linear-gradient(155deg,#263444,#1a2531);box-shadow:0 8px 18px #0005,inset 0 1px 0 #ffffff0b}
 .chain-node--dynamics{--node-accent:#e0b45b}.chain-node--distortion{--node-accent:#ef795e}.chain-node--modulation{--node-accent:#5dc6bc}.chain-node--filter{--node-accent:#af8ae8}.chain-node--pitch{--node-accent:#80a6ec}.chain-node--eq,.chain-node--preamp-eq{--node-accent:#d0a1dc}.chain-node--delay{--node-accent:#69a9ec}.chain-node--reverb{--node-accent:#5cbf91}.chain-node--wah{--node-accent:#d9ad62}.chain-node--amp{--node-accent:#f08c55;background:linear-gradient(155deg,#493329,#28252a)}.chain-node--cab{--node-accent:#9aa9b8;background:linear-gradient(155deg,#34404b,#202a35)}.chain-node--other{--node-accent:#9babbc}
 .chain-node-top{display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:9px}
 .chain-node-type{color:var(--node-accent);font-size:8px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
 .chain-node-number{color:#788797;font-size:9px;font-family:ui-monospace,monospace}
 .chain-node-name{display:block;min-height:35px;color:#f1f5f8;font-size:13px;font-weight:850;line-height:1.2;overflow-wrap:anywhere}
 .chain-node-sub{display:block;margin-top:5px;color:#9eacba;font-size:9px;line-height:1.25}
+.chain-node-knobs{display:flex;align-items:flex-start;justify-content:space-between;gap:3px;margin-top:11px;padding:9px 2px 1px;border-top:1px solid #ffffff16}
+.chain-knob{flex:1;min-width:0;text-align:center;color:#aebbc8}
+.chain-knob-dial{position:relative;display:block;width:26px;height:26px;margin:0 auto 5px;border:1px solid #71808d;border-radius:50%;background:radial-gradient(circle at 34% 28%,#87939d 0,#4a5662 24%,#242d37 58%,#141b23 75%);box-shadow:inset 0 1px 2px #ffffff55,0 3px 5px #0008}
+.chain-knob-dial:before{position:absolute;inset:3px;border:1px solid #ffffff12;border-radius:50%;content:""}
+.chain-knob-dial:after{position:absolute;top:3px;left:50%;width:2px;height:8px;border-radius:2px;background:#e6edf3;content:"";transform:translateX(-50%) rotate(var(--knob-angle,0deg));transform-origin:50% 10px;box-shadow:0 0 3px #fff8}
+.chain-knob small{display:block;overflow:hidden;color:#aebbc8;font-size:7px;font-weight:800;letter-spacing:.04em;line-height:1.1;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.chain-node--amp .chain-knob-dial{width:27px;height:27px;background:radial-gradient(circle at 34% 28%,#b98c6c 0,#79543e 24%,#342a26 60%,#17191d 78%)}
+.chain-node--cab .chain-knob-dial{background:radial-gradient(circle at 34% 28%,#aab6c2 0,#647382 24%,#303a44 60%,#171e26 78%)}
+.chain-node--amp .chain-node-knobs{margin-top:13px}
 .chain-node-actions{display:flex;gap:5px;justify-content:flex-end;margin-top:10px;padding-top:8px;border-top:1px solid #ffffff12}
 .chain-node-actions button{min-width:25px;padding:4px 7px;border:1px solid #526274;border-radius:5px;background:#111a24;color:#d7e1e9;font-size:11px;line-height:1.1}
 .chain-node-actions button:hover{border-color:#c5f36b;color:#c5f36b}
@@ -43,7 +52,7 @@
 .signal-chain-add,.chain-text-editor{display:none!important}
 .chain-text-editor summary{color:#9eacba;font-size:11px;cursor:pointer}
 .chain-text-editor textarea{margin-top:9px}.chain-text-editor .muted{margin:6px 0 0}
-@media(max-width:600px){.signal-chain-editor{padding:13px}.signal-chain-heading{display:block}.chain-live-badge{margin-top:10px}.signal-chain-add{grid-template-columns:1fr 1fr}.signal-chain-add button{grid-column:1/-1}.signal-chain-canvas{min-height:162px}.chain-slot{flex-basis:143px;width:143px}.chain-node{min-height:135px}.chain-endpoint{flex-basis:64px}.chain-link{flex-basis:20px}}
+@media(max-width:600px){.signal-chain-editor{padding:13px}.signal-chain-heading{display:block}.chain-live-badge{margin-top:10px}.signal-chain-add{grid-template-columns:1fr 1fr}.signal-chain-add button{grid-column:1/-1}.signal-chain-canvas{min-height:162px}.chain-slot{flex-basis:166px;width:166px}.chain-slot--amp{flex-basis:190px;width:190px}.chain-node{min-height:174px}.chain-endpoint{flex-basis:64px}.chain-link{flex-basis:20px}}
 
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
@@ -374,15 +383,27 @@ function getSignalChainNodes(){
  }
  return nodes;
 }
+function getChainKnobLabels(node){
+ if(node.kind==='amp')return ['Drive','Bass','Mid','Treble','Presence','Volume'];
+ if(node.kind==='cab')return ['Early Ref','Low Cut','Thump','Decay'];
+ const effect=HD500_DB.effects.find(e=>e[1]===node.label);
+ if(effect)return effect[2].split('|').slice(0,5);
+ return ['Level','Tone','Mix'];
+}
+function renderChainKnobs(node){
+ const labels=getChainKnobLabels(node);
+ const angles=[-52,-31,-9,14,36,55];
+ return '<div class="chain-node-knobs" aria-label="Tampilan knob visual, bukan kontrol parameter">'+labels.map((name,i)=>'<div class="chain-knob"><span class="chain-knob-dial" style="--knob-angle:'+angles[i%angles.length]+'deg"></span><small>'+esc(name)+'</small></div>').join('')+'</div>';
+}
 function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  const nodes=getSignalChainNodes();
  let html='<div class="chain-endpoint"><div class="chain-endpoint-icon">⌁</div><strong>INPUT</strong><small>Guitar</small></div>';
  if(!nodes.length)html+='<div class="chain-link"></div><div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
  else nodes.forEach((node,i)=>{
-  html+='<div class="chain-link"></div><div class="chain-slot"><article class="chain-node chain-node--'+esc(node.kind)+'">';
+  html+='<div class="chain-link"></div><div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
-  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small></div>';
+  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small>'+renderChainKnobs(node)+'</div>';
   html+='<div class="chain-node-actions"><button type="button" data-chain-up="'+i+'" title="Geser ke kiri" '+(i===0?'disabled':'')+'>←</button><button type="button" data-chain-down="'+i+'" title="Geser ke kanan" '+(i===nodes.length-1?'disabled':'')+'>→</button>';
   html+='</div></article></div>';
  });
