@@ -233,7 +233,7 @@
  <p class="muted" id="tempoSettingsHint">Preset: efek tersinkron memakai BPM dari preset ini. Trails On mempertahankan ekor Delay/Reverb saat efek dimatikan.</p>
 </section>
 <div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div>
-<label>Catatan<textarea id="notes" rows="2" placeholder="Gitar, pickup, tuning, output mode, dll."></textarea></label><div class="actions"><button id="savePreset">Simpan preset</button><button class="secondary" id="exportPreset">Export JSON</button></div></div><aside class="info-card"><p class="eyebrow">CATATAN PARAMETER</p><h3>Nilai sesuai layar POD</h3><p>Kolom parameter disimpan sebagai angka/teks yang kamu masukkan. Guide resmi menjelaskan nama kontrol dan fungsi, tetapi tidak memberikan satu rentang numerik universal untuk semua knob/model.</p><ul><li>Drive, Bass, Mid, Treble, Presence, Volume</li><li>Power amp: Master, Sag, Hum, Bias, Bias Excursion</li><li>Cab: Early Reflections, Cab, Mic</li></ul><p class="muted">Untuk beberapa amp, label knob berubah mengikuti desain amp (misalnya CUT atau TONE).</p></aside></div></section>
+<label>Catatan<textarea id="notes" rows="2" placeholder="Gitar, pickup, tuning, output mode, dll."></textarea></label><div class="actions"><button id="savePreset">Simpan preset</button><button class="secondary" id="exportPreset">Export JSON</button></div></div><aside class="info-card"><p class="eyebrow">REFERENSI POD HD500</p><h3>Tempo & efek</h3><p>Panel menampilkan nilai rekomendasi otomatis. Pengaturan tempo mengikuti konsep POD HD500: sinkronisasi tiap efek terpisah dari pilihan sistem Preset/Global.</p><ul><li>Delay Time: Off = ms, atau pilih pembagian not untuk mengikuti Tap Tempo.</li><li>Dynamic Delay: L Time dan R Time punya Tempo Sync masing-masing.</li><li>Stereo Delay: Sync Left dan Sync Right independen.</li><li>Trails: On mempertahankan ekor Delay/Reverb saat model dimatikan.</li></ul><p class="muted">Pilihan sistem Tempo Sync dan BPM Global disimpan di browser; BPM Preset, Trails, dan pembagian not per blok ikut tersimpan bersama preset.</p></aside></div></section>
 <section id="database" class="panel"><div class="section-head"><div><p class="eyebrow">03 / REFERENCE</p><h2>Database parameter asli</h2></div><span class="tag">MANUAL-BASED</span></div><div class="db-tools"><input id="dbSearch" placeholder="Cari model, parameter, kategori…"><select id="dbCategory"><option value="all">Semua kategori</option><option>Amp</option><option>Cab</option><option>Dynamics</option><option>Distortion</option><option>Modulation</option><option>Filter</option><option>Pitch</option><option>EQ</option><option>Preamp+EQ</option><option>Delay</option><option>Reverb</option><option>Wah</option><option>Volume/Pan</option><option>Global EQ</option></select></div><div id="dbResults" class="db-list"></div><p class="hint">Daftar model dan nama kontrol ditranskripsikan dari POD HD500 Advanced Guide v2.10. Rentang angka tidak ditebak; Model Pack Metal/Vintage/Bass bersifat opsional. Mic bass tersedia sebagai daftar khusus saat memakai cab Flip Top.</p></section>
 <section id="saved" class="panel"><div class="section-head"><div><p class="eyebrow">04 / YOUR LIBRARY</p><h2>Preset tersimpan</h2></div><button class="secondary" id="importPreset">Import JSON</button><input type="file" id="importFile" accept="application/json" hidden></div><div id="savedResults"></div></section><section id="devicefiles" class="panel"><div class="section-head"><div><p class="eyebrow">05 / DEVICE FILES</p><h2>Impor file POD HD500</h2></div><span class="tag">H5E · H5S · H5B</span></div><div class="form-card"><p>Unggah preset asli <b>.h5e</b>, Set List <b>.h5s</b>, atau Bundle <b>.h5b</b> dari POD HD500 Edit. Alat ini akan memeriksa jenis file, ukuran, signature, dan fragmen teks yang terbaca.</p><label>Pilih file POD<input type="file" id="podFile" accept=".h5e,.h5s,.h5b,.5xe,application/octet-stream"></label><div id="podFileReport" class="file-report"><p class="muted">Belum ada file dipilih.</p></div><p class="hint">Penting: format preset Line 6 bukan JSON terbuka. Versi ini belum mengubah byte .h5e menjadi parameter amp/efek, dan tidak membuat file .h5e palsu. Untuk mengembangkan pembaca penuh, perlu sampel file .h5e asli dari perangkatmu untuk menguji hasil decode.</p></div></section>
 <footer><div><b>TONE MATCHER HD500</b><p>Komunitas / utility tidak resmi · Tidak berafiliasi dengan Line 6.</p></div><p>Database ref: POD HD500 Advanced Guide · Flash 2.62</p></footer></main><script>
@@ -837,11 +837,35 @@ function getChainKnobLabels(node){
  const spec=getChainParameterSpecs(node);
  return spec.params.slice(0,node.kind==='amp'?6:5);
 }
+function getDelayKnobEffectiveMs(node,index,nodes,param,rawValue){
+ if(getChainParameterSpecs(node).category!=='Delay')return Number(rawValue);
+ if(node.label==='Stereo Delay'){
+  const left=getDelaySyncValue(node,index,nodes,'Sync Left');
+  const right=getDelaySyncValue(node,index,nodes,'Sync Right');
+  const leftMs=left==='Off'?Number(rawValue):getDelayDivisionMs(left);
+  const rightMs=right==='Off'?Number(rawValue):getDelayDivisionMs(right);
+  if(Number.isFinite(leftMs)&&Number.isFinite(rightMs))return (leftMs+rightMs)/2;
+  return Number(rawValue);
+ }
+ if(!/^(Time|L Time|R Time)$/i.test(param))return Number(rawValue);
+ const division=getDelaySyncValue(node,index,nodes,param);
+ return division==='Off'?Number(rawValue):getDelayDivisionMs(division);
+}
+function getDelayKnobReading(node,index,nodes,param,rawValue){
+ if(getChainParameterSpecs(node).category!=='Delay'||!(/^(Time|L Time|R Time)$/i.test(param)))return String(rawValue);
+ if(node.label==='Stereo Delay'){
+  return 'L '+getDelaySyncValue(node,index,nodes,'Sync Left')+' / R '+getDelaySyncValue(node,index,nodes,'Sync Right');
+ }
+ const division=getDelaySyncValue(node,index,nodes,param);
+ if(division==='Off')return String(rawValue)+'ms';
+ const ms=getDelayDivisionMs(division);
+ return division+(ms?' · '+Math.round(ms)+'ms':'');
+}
 function getChainKnobAngle(node,index,nodes,param){
  const spec=getChainParameterSpecs(node);
  const key=getChainParameterKey(node,index,nodes,param);
  const raw=chainParameterValues[key]??getAutoChainParameterValue(node,param,spec);
- const value=Number(String(raw).replace(',','.'));
+ const value=getDelayKnobEffectiveMs(node,index,nodes,param,raw);
  if(!Number.isFinite(value))return 0;
  const p=param.toLowerCase();
  let position;
@@ -866,7 +890,8 @@ function renderChainKnobs(node,index,nodes){
  const spec=getChainParameterSpecs(node);
  return '<div class="chain-node-knobs" aria-label="Knob visual mengikuti nilai pada panel parameter">'+labels.map(name=>{
   const key=getChainParameterKey(node,index,nodes,name);
-  const value=String(chainParameterValues[key]??getAutoChainParameterValue(node,name,spec));
+  const raw=String(chainParameterValues[key]??getAutoChainParameterValue(node,name,spec));
+  const value=getDelayKnobReading(node,index,nodes,name,raw);
   const angle=getChainKnobAngle(node,index,nodes,name);
   return '<div class="chain-knob" title="'+esc(name+': '+value)+'"><span class="chain-knob-dial" style="--knob-angle:'+angle+'deg"></span><small>'+esc(name)+'</small><small class="chain-knob-reading">'+esc(value)+'</small></div>';
  }).join('')+'</div>';
