@@ -39,6 +39,8 @@
 .signal-chain-summary{display:flex;justify-content:space-between;gap:12px;padding:9px 3px 0;color:#8797a7;font-size:10px}
 .signal-chain-summary strong{color:#c5f36b;font-weight:700}
 .chain-text-editor{margin-top:13px;border-top:1px solid #2e3c4b;padding-top:10px}
+/* Signal Chain hanya untuk mengatur urutan blok */
+.signal-chain-add,.chain-text-editor{display:none!important}
 .chain-text-editor summary{color:#9eacba;font-size:11px;cursor:pointer}
 .chain-text-editor textarea{margin-top:9px}.chain-text-editor .muted{margin:6px 0 0}
 @media(max-width:600px){.signal-chain-editor{padding:13px}.signal-chain-heading{display:block}.chain-live-badge{margin-top:10px}.signal-chain-add{grid-template-columns:1fr 1fr}.signal-chain-add button{grid-column:1/-1}.signal-chain-canvas{min-height:162px}.chain-slot{flex-basis:143px;width:143px}.chain-node{min-height:135px}.chain-endpoint{flex-basis:64px}.chain-link{flex-basis:20px}}
@@ -48,7 +50,7 @@
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
 <div id="onlineArtistResults" class="tone-grid" style="margin-top:18px"></div><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
 <section id="editor" class="panel"><div class="section-head"><div><p class="eyebrow">02 / BUILD</p><h2>Preset Builder</h2></div><span class="tag">LOCAL PRESET</span></div><div class="builder-grid"><div class="form-card"><label>Nama preset<input id="presetName" value="My HD500 Tone"></label><div class="field-grid"><label>Model Amp<select id="ampSelect"></select></label><label>Jenis blok<select id="ampType"><option value="Full Amp">Full Amp</option><option value="Preamp">Preamp</option></select></label></div><div class="field-grid"><label>Cabinet<select id="cabSelect"></select></label><label>Mic<select id="micSelect"></select></label></div><label>Output Mode<select id="outputMode"><option>Studio/Direct</option><option>Combo Front</option><option>Stack Front</option><option>Combo Power Amp</option><option>Stack Power Amp</option></select></label><div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div><div class="knob-grid" id="ampKnobs"></div><section class="signal-chain-editor" aria-label="Visual signal chain editor">
- <div class="signal-chain-heading"><div><p class="eyebrow">SIGNAL ROUTING</p><h3>Signal Chain</h3><p class="muted">Susun blok efek seperti multi-efek digital. Gunakan panah untuk mengubah urutan.</p></div><span class="chain-live-badge"><i></i> VISUAL BUILDER</span></div>
+ <div class="signal-chain-heading"><div><p class="eyebrow">SIGNAL ROUTING</p><h3>Signal Chain</h3><p class="muted">Blok tidak dapat diedit atau dihapus. Gunakan tombol panah untuk mengubah urutannya.</p></div><span class="chain-live-badge"><i></i> VISUAL BUILDER</span></div>
  <div class="signal-chain-add">
   <label>Kategori<select id="chainCategory"></select></label>
   <label>Model efek<select id="chainModel"></select></label>
@@ -382,17 +384,14 @@ function renderSignalChain(){
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small></div>';
   html+='<div class="chain-node-actions"><button type="button" data-chain-up="'+i+'" title="Geser ke kiri" '+(i===0?'disabled':'')+'>←</button><button type="button" data-chain-down="'+i+'" title="Geser ke kanan" '+(i===nodes.length-1?'disabled':'')+'>→</button>';
-  if(node.kind!=='amp'&&node.kind!=='cab')html+='<button type="button" class="chain-remove" data-chain-remove="'+i+'" title="Hapus blok">×</button>';
-  else html+='<button type="button" disabled title="Model diatur dari pilihan Amp/Cab di atas">•</button>';
   html+='</div></article></div>';
  });
  html+='<div class="chain-link"></div><div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
  canvas.innerHTML=html;
- const editable=nodes.filter(n=>n.kind!=='amp'&&n.kind!=='cab').length;
- $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>'+editable+' blok efek dapat diedit</span>';
+ $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Hanya bisa digeser</span>';
  canvas.querySelectorAll('[data-chain-up]').forEach(btn=>btn.onclick=()=>moveSignalChainBlock(Number(btn.dataset.chainUp),-1));
  canvas.querySelectorAll('[data-chain-down]').forEach(btn=>btn.onclick=()=>moveSignalChainBlock(Number(btn.dataset.chainDown),1));
- canvas.querySelectorAll('[data-chain-remove]').forEach(btn=>btn.onclick=()=>removeSignalChainBlock(Number(btn.dataset.chainRemove)));
+
 }
 function writeSignalChainNodes(nodes){
  $('#fxChain').value=nodes.map(n=>n.label).join(' → ');renderSignalChain();
