@@ -206,10 +206,32 @@
 @media(max-width:600px){.delay-tempo-grid{grid-template-columns:1fr 1fr}.tempo-settings .field-grid{grid-template-columns:1fr 1fr}}
 
 
-/* Put Delay timing controls directly beside the Signal Chain panels */
-.tempo-settings{margin:0 0 20px;padding:17px 18px;border:1px solid #536b7e;border-radius:15px;background:radial-gradient(ellipse at 2% 0%,#526e8422,transparent 45%),linear-gradient(145deg,#1b2a38,#111a24);box-shadow:0 10px 22px #0003,inset 0 1px 0 #ffffff0d}
-.tempo-settings h3{margin:0 0 5px;font-size:17px;letter-spacing:-.02em}
-.tempo-settings>.muted{margin:0 0 13px}
+
+
+/* Integrated Tempo / Trails controls in each Delay card */
+.delay-tempo-controls{margin-top:13px;padding:13px;border:1px solid #455d70;border-radius:11px;background:radial-gradient(ellipse at 0 0,#49698222,transparent 54%),linear-gradient(145deg,#1b2a38,#111a24)}
+.delay-tempo-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.delay-tempo-heading strong{font-size:12px;color:#f1f5f8;letter-spacing:.01em}
+.delay-tempo-heading span{font-size:8px;font-weight:900;letter-spacing:.14em;color:#7bb7dc}
+.delay-tempo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.delay-tempo-grid label{display:block;min-width:0;margin:0;color:#aebdca;font-size:10px}
+.delay-tempo-grid input,.delay-tempo-grid select{margin-top:5px;padding:9px 10px;font-size:11px}
+.delay-tempo-grid input:disabled{opacity:.4;cursor:not-allowed}
+.delay-sync-preview{display:block;margin-top:4px;color:#91a5b7;font-size:9px;line-height:1.4}
+.delay-tempo-note{margin:9px 0 0;color:#8194a6;font-size:9px;line-height:1.45}
+.tempo-tap-row{display:flex;align-items:center;gap:10px;margin-top:11px}
+.tempo-tap-row button{padding:8px 12px;font-size:10px;letter-spacing:.1em}
+.tempo-tap-row .muted{font-size:10px}
+.chain-node-knobs--delay{margin-top:8px;padding-top:8px;border-top:1px dashed #ffffff24}
+.chain-knob--compact .chain-knob-dial{width:24px;height:24px;margin-bottom:4px}
+.chain-knob--compact small{font-size:7px}
+.chain-knob--compact .chain-knob-reading{font-size:8px}
+.chain-node--delay .chain-knob--compact .chain-knob-dial{background:radial-gradient(circle at 30% 24%,#a9c9df 0,#52758e 27%,#253c4e 62%,#101820 80%)}
+.chain-node--delay .chain-knob--compact .chain-knob-reading{color:#83c6ef}
+@media(max-width:600px){
+ .delay-tempo-grid{grid-template-columns:1fr 1fr}
+ .tempo-tap-row{align-items:flex-start;flex-direction:column;gap:6px}
+}
 
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
@@ -227,20 +249,10 @@
  <details class="chain-text-editor"><summary>Edit teks signal chain secara manual</summary><textarea id="fxChain" rows="3" placeholder="Noise Gate → Screamer → Amp → Analog Chorus → Digital Delay → Plate"></textarea><p class="muted">Pisahkan setiap blok dengan tanda panah (→). Tampilan blok akan mengikuti teks ini.</p></details>
 </section>
 <section class="chain-parameter-panels" aria-label="Parameter untuk setiap blok">
- <div class="chain-parameter-heading"><div><p class="eyebrow">BLOCK CONTROLS</p><h3>Parameter Amp & Efek</h3><p class="muted">Panel muncul otomatis mengikuti amp, cabinet, dan efek yang ada di Signal Chain. Efek Delay menampilkan pilihan Tempo Sync langsung di kartunya.</p></div><span class="tag">PER BLOK</span></div>
+ <div class="chain-parameter-heading"><div><p class="eyebrow">BLOCK CONTROLS</p><h3>Parameter Amp & Efek</h3><p class="muted">Panel mengikuti setiap blok pada Signal Chain. Semua kontrol BPM, Tempo Sync, dan Trails tersedia langsung di kartu Delay.</p></div><span class="tag">PER BLOK</span></div>
  <div id="chainParameterList" class="chain-parameter-list"><p class="chain-param-empty">Panel parameter akan muncul mengikuti Signal Chain.</p></div>
 </section>
-<section class="advanced-block tempo-settings" aria-label="Tempo sync and trails settings">
- <h3>Tempo, Sync & Trails</h3><p class="muted">Pengaturan tempo global untuk preset ini. Pilihan Tempo Sync per efek tersedia langsung pada kartu masing-masing Delay.</p>
- <div class="field-grid">
-  <label>Tempo Preset (BPM)<input id="tempoBpm" type="number" inputmode="decimal" min="1" step="0.1" value="120"></label>
-  <label>System Tempo Sync<select id="tempoSyncMode"><option value="Preset">Preset</option><option value="Global">Global</option></select></label>
-  <label>Global Tempo (BPM)<input id="globalTempoBpm" type="number" inputmode="decimal" min="1" step="0.1" value="120"></label>
-  <label>Trails · per preset<select id="trails"><option value="On">On</option><option value="Off">Off</option></select></label>
- </div>
- <div class="tempo-tap-row"><button type="button" class="secondary" id="tapTempoBtn">● TAP TEMPO</button><span id="tempoTapStatus" class="muted">Ketuk beberapa kali untuk menghitung BPM.</span></div>
- <p class="muted" id="tempoSettingsHint">Preset: efek tersinkron memakai BPM dari preset ini. Trails On mempertahankan ekor Delay/Reverb saat efek dimatikan.</p>
-</section>
+
 <div class="builder-grid"><div class="form-card"><label>Nama preset<input id="presetName" value="My HD500 Tone"></label><div class="field-grid"><label>Model Amp<select id="ampSelect"></select></label><label>Jenis blok<select id="ampType"><option value="Full Amp">Full Amp</option><option value="Preamp">Preamp</option></select></label></div><div class="field-grid"><label>Cabinet<select id="cabSelect"></select></label><label>Mic<select id="micSelect"></select></label></div><label>Output Mode<select id="outputMode"><option>Studio/Direct</option><option>Combo Front</option><option>Stack Front</option><option>Combo Power Amp</option><option>Stack Power Amp</option></select></label>
 
 <div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div>
@@ -521,8 +533,9 @@ function applyTone(t){
  for(let i=0;i<(t.values||[]).length;i+=2)activeToneParameterValues[t.values[i]]=String(t.values[i+1]);
  $('#presetName').value=t.artist+' - '+t.song;
  chainDelaySettings={};
- $('#tempoBpm').value=120;
- $('#trails').value='On';
+ tempoPresetBpm=120;
+ trailsEnabled='On';
+ tempoTapStatus='Ketuk beberapa kali untuk menghitung BPM.';
  $('#ampSelect').value=t.amp;
  $('#fxChain').value=t.chain;
  $('#notes').value=t.notes;
@@ -530,11 +543,11 @@ function applyTone(t){
  openPresetBuilderTab();
 }
 function openPresetBuilderTab(){const tab=document.querySelector('.tab[data-tab="editor"]');if(!tab)throw new Error('Tab Preset Builder tidak ditemukan.');tab.click();}
-function currentPreset(){captureChainParameterValues();let params={...activeToneParameterValues};$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,tempoBpm:Number($('#tempoBpm').value)||120,trails:$('#trails').value||'On',chainDelaySettings:{...chainDelaySettings},mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chainParameters:{...chainParameterValues},chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
+function currentPreset(){captureChainParameterValues();let params={...activeToneParameterValues};$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,tempoBpm:tempoPresetBpm,trails:trailsEnabled,chainDelaySettings:{...chainDelaySettings},mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chainParameters:{...chainParameterValues},chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
 function getSaved(){try{return JSON.parse(localStorage.getItem('hd500-presets')||'[]')}catch{return []}}
 function savePreset(){let p=currentPreset(),all=getSaved();all=all.filter(x=>x.name!==p.name);all.unshift(p);localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset tersimpan di browser ini.');}
 function renderSaved(){let a=getSaved();$('#savedCount').textContent=a.length;$('#savedResults').innerHTML=a.length?a.map(p=>`<div class="saved-card"><div><b>${esc(p.name)}</b><p>${esc(p.amp)} · ${esc(p.cab)} · ${new Date(p.updated).toLocaleDateString('id-ID')}</p></div><div class="saved-actions"><button class="secondary" data-load="${p.id}">Buka</button><button class="secondary" data-del="${p.id}">Hapus</button></div></div>`).join(''):'<p class="muted">Belum ada preset tersimpan di browser ini.</p>';$$('[data-load]').forEach(b=>b.onclick=()=>loadPreset(a.find(x=>x.id===b.dataset.load)));$$('[data-del]').forEach(b=>b.onclick=()=>{localStorage.setItem('hd500-presets',JSON.stringify(getSaved().filter(x=>x.id!==b.dataset.del)));renderSaved()});}
-function loadPreset(p){if(!p)return;$$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};activeToneParameterValues={...(p.params||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';$('#tempoBpm').value=Number(p.tempoBpm)||120;$('#trails').value=p.trails||'On';chainDelaySettings={...(p.chainDelaySettings||{})};$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
+function loadPreset(p){if(!p)return;$$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};activeToneParameterValues={...(p.params||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';tempoPresetBpm=Number(p.tempoBpm)>0?Number(p.tempoBpm):120;trailsEnabled=p.trails||'On';tempoTapStatus='Ketuk beberapa kali untuk menghitung BPM.';chainDelaySettings={...(p.chainDelaySettings||{})};$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
 function exportCurrent(){let blob=new Blob([JSON.stringify(currentPreset(),null,2)],{type:'application/json'});download(blob,'pod-hd500-preset.json')}
 function importFile(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let p=JSON.parse(r.result);if(!p.name||!p.amp)throw Error();let all=getSaved();all.unshift({...p,id:String(Date.now()),updated:new Date().toISOString()});localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset berhasil diimpor.')}catch{alert('File JSON tidak dikenali sebagai preset Tone Matcher.')}};r.readAsText(f);e.target.value=''}
 function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
@@ -543,6 +556,9 @@ let chainParameterValues={};
 let activeToneParameterValues={};
 let chainDelaySettings={};
 let tempoSystemSettings={mode:'Preset',globalBpm:120};
+let tempoPresetBpm=120;
+let trailsEnabled='On';
+let tempoTapStatus='Ketuk beberapa kali untuk menghitung BPM.';
 let tempoTapMoments=[];
 function captureChainParameterValues(){
  $$('[data-chain-param-key]').forEach(input=>{
@@ -562,22 +578,18 @@ function readTempoSystemSettings(){
  }catch{tempoSystemSettings={mode:'Preset',globalBpm:120};}
 }
 function persistTempoSystemSettings(){
- tempoSystemSettings.mode=$('#tempoSyncMode').value==='Global'?'Global':'Preset';
- const bpm=Number($('#globalTempoBpm').value);
- tempoSystemSettings.globalBpm=Number.isFinite(bpm)&&bpm>0?bpm:120;
  try{localStorage.setItem('hd500-tempo-system-settings',JSON.stringify(tempoSystemSettings));}catch{}
  syncTempoSettingsUI();
- renderSignalChain();
 }
 function syncTempoSettingsUI(){
- const mode=$('#tempoSyncMode')?.value||tempoSystemSettings.mode;
- const globalField=$('#globalTempoBpm');
- if(globalField)globalField.disabled=mode!=='Global';
- const hint=$('#tempoSettingsHint');
- if(hint){
-  const bpm=mode==='Global'?tempoSystemSettings.globalBpm:(Number($('#tempoBpm')?.value)||120);
-  hint.textContent=(mode==='Global'?'Global: semua preset memakai tempo global '+bpm+' BPM.':'Preset: efek tersinkron memakai BPM preset ('+(Number($('#tempoBpm')?.value)||120)+' BPM).')+' Trails On mempertahankan ekor Delay/Reverb saat model dimatikan; tidak memberi spillover saat pindah preset.';
- }
+ $$('[data-tempo-preset]').forEach(input=>input.value=tempoPresetBpm);
+ $$('[data-tempo-mode]').forEach(select=>select.value=tempoSystemSettings.mode);
+ $$('[data-tempo-global]').forEach(input=>{
+  input.value=tempoSystemSettings.globalBpm;
+  input.disabled=tempoSystemSettings.mode!=='Global';
+ });
+ $$('[data-tempo-trails]').forEach(select=>select.value=trailsEnabled);
+ $$('[data-tempo-tap-status]').forEach(status=>status.textContent=tempoTapStatus);
 }
 function handleTempoTap(){
  const now=Date.now();
@@ -589,37 +601,31 @@ function handleTempoTap(){
  tempoTapMoments.push(now);
  if(tempoTapMoments.length>6)tempoTapMoments.shift();
  if(tempoTapMoments.length<2){
-  $('#tempoTapStatus').textContent='Ketuk lagi mengikuti ketukan lagu.';
+  tempoTapStatus='Ketuk lagi mengikuti ketukan lagu.';
+  syncTempoSettingsUI();
   return;
  }
  const intervals=[];
  for(let i=1;i<tempoTapMoments.length;i++)intervals.push(tempoTapMoments[i]-tempoTapMoments[i-1]);
  const average=intervals.reduce((sum,n)=>sum+n,0)/intervals.length;
  const bpm=Math.round((60000/average)*10)/10;
- if($('#tempoSyncMode').value==='Global'){
-  $('#globalTempoBpm').value=bpm;
+ if(tempoSystemSettings.mode==='Global'){
+  tempoSystemSettings.globalBpm=bpm;
   persistTempoSystemSettings();
  }else{
-  $('#tempoBpm').value=bpm;
+  tempoPresetBpm=bpm;
   syncTempoSettingsUI();
-  renderSignalChain();
  }
- $('#tempoTapStatus').textContent='Tap Tempo: '+bpm+' BPM · ketuk lagi untuk memperbarui.';
+ tempoTapStatus='Tap Tempo: '+bpm+' BPM · ketuk lagi untuk memperbarui.';
+ syncTempoSettingsUI();
+ renderSignalChain();
 }
 function setupTempoControls(){
  readTempoSystemSettings();
- $('#tempoSyncMode').value=tempoSystemSettings.mode;
- $('#globalTempoBpm').value=tempoSystemSettings.globalBpm;
- $('#tempoSyncMode').addEventListener('change',persistTempoSystemSettings);
- $('#globalTempoBpm').addEventListener('change',persistTempoSystemSettings);
- $('#tapTempoBtn').addEventListener('click',handleTempoTap);
- $('#tempoBpm').addEventListener('input',()=>{syncTempoSettingsUI();renderSignalChain();});
- $('#trails').addEventListener('change',syncTempoSettingsUI);
  syncTempoSettingsUI();
 }
 function getActiveTempoBpm(){
- const mode=$('#tempoSyncMode')?.value||tempoSystemSettings.mode;
- const value=mode==='Global'?Number($('#globalTempoBpm')?.value):Number($('#tempoBpm')?.value);
+ const value=tempoSystemSettings.mode==='Global'?Number(tempoSystemSettings.globalBpm):Number(tempoPresetBpm);
  return Number.isFinite(value)&&value>0?value:120;
 }
 function getDelayDivisionMs(division,bpm=getActiveTempoBpm()){
@@ -650,7 +656,17 @@ function getDelayTimePreview(node,index,nodes,timeParam,division){
 function renderDelaySyncControls(node,index,nodes,spec){
  if(spec.category!=='Delay')return '';
  const syncParams=getDelayTimeParams(node,spec);
- if(!syncParams.length)return '';
+ const sharedControls=
+  '<div class="delay-tempo-shared">'+
+   '<div class="delay-tempo-heading"><strong>Tempo & Trails</strong><span>PRESET / GLOBAL</span></div>'+
+   '<div class="delay-tempo-grid">'+
+    '<label>Tempo Preset (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-preset value="'+tempoPresetBpm+'"></label>'+
+    '<label>System Tempo Sync<select data-tempo-mode><option value="Preset"'+(tempoSystemSettings.mode==='Preset'?' selected':'')+'>Preset</option><option value="Global"'+(tempoSystemSettings.mode==='Global'?' selected':'')+'>Global</option></select></label>'+
+    '<label>Global Tempo (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-global value="'+tempoSystemSettings.globalBpm+'"'+(tempoSystemSettings.mode!=='Global'?' disabled':'')+'></label>'+
+    '<label>Trails<select data-tempo-trails><option value="On"'+(trailsEnabled==='On'?' selected':'')+'>On</option><option value="Off"'+(trailsEnabled==='Off'?' selected':'')+'>Off</option></select></label>'+
+   '</div>'+
+   '<div class="tempo-tap-row"><button type="button" class="secondary" data-tap-tempo>● TAP TEMPO</button><span class="muted" data-tempo-tap-status>'+esc(tempoTapStatus)+'</span></div>'+
+  '</div>';
  const fields=syncParams.map(param=>{
   const key=getDelaySyncKey(node,index,nodes,param);
   const selected=getDelaySyncValue(node,index,nodes,param);
@@ -659,14 +675,37 @@ function renderDelaySyncControls(node,index,nodes,spec){
   const preview=getDelayTimePreview(node,index,nodes,param,selected);
   return '<label>'+esc(label)+'<select data-delay-sync-key="'+esc(key)+'" data-delay-sync-node="'+esc(getChainBlockKey(node,index,nodes))+'">'+options+'</select><small class="delay-sync-preview" data-delay-sync-preview="'+esc(key)+'">'+esc(preview)+'</small></label>';
  }).join('');
- const note=node.label==='Stereo Delay'?'Stereo Delay memiliki Tempo Sync kiri dan kanan secara independen.':'Pilih Off untuk waktu manual (ms), atau nilai not agar waktu mengikuti Tap Tempo.';
- return '<div class="delay-tempo-controls"><div class="delay-tempo-heading"><strong>Tempo Sync</strong><span>DELAY</span></div><div class="delay-tempo-grid">'+fields+'</div><p class="delay-tempo-note">'+esc(note)+'</p></div>';
+ const syncControls=syncParams.length?'<div class="delay-tempo-sync"><div class="delay-tempo-heading"><strong>Tempo Sync per Efek</strong><span>'+esc(node.label)+'</span></div><div class="delay-tempo-grid">'+fields+'</div><p class="delay-tempo-note">'+(node.label==='Stereo Delay'?'Sync Left dan Sync Right bekerja independen.':'Pilih Off untuk Time manual (ms), atau pembagian not untuk mengikuti tempo aktif.')+'</p></div>':'';
+ return '<div class="delay-tempo-controls">'+sharedControls+syncControls+'</div>';
 }
 function bindDelaySyncControls(){
  $$('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
   chainDelaySettings[select.dataset.delaySyncKey]=select.value;
   renderSignalChain();
  }));
+ $$('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
+  const bpm=Number(input.value);
+  if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
+  syncTempoSettingsUI();
+  renderSignalChain();
+ }));
+ $$('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
+  tempoSystemSettings.mode=select.value==='Global'?'Global':'Preset';
+  persistTempoSystemSettings();
+  renderSignalChain();
+ }));
+ $$('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
+  const bpm=Number(input.value);
+  if(Number.isFinite(bpm)&&bpm>0)tempoSystemSettings.globalBpm=bpm;
+  persistTempoSystemSettings();
+  renderSignalChain();
+ }));
+ $$('[data-tempo-trails]').forEach(select=>select.addEventListener('change',()=>{
+  trailsEnabled=select.value==='Off'?'Off':'On';
+  syncTempoSettingsUI();
+  renderSignalChain();
+ }));
+ $$('[data-tap-tempo]').forEach(button=>button.addEventListener('click',handleTempoTap));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
  const spec=getChainParameterSpecs(node);
@@ -925,16 +964,45 @@ function getChainKnobAngle(node,index,nodes,param){
  }
  return Math.round(-135+(position*270));
 }
+function getDelayChainSyncReading(node,index,nodes){
+ const syncParams=getDelayTimeParams(node,getChainParameterSpecs(node));
+ if(node.label==='Stereo Delay'){
+  return 'L '+getDelaySyncValue(node,index,nodes,'Sync Left')+' / R '+getDelaySyncValue(node,index,nodes,'Sync Right');
+ }
+ if(!syncParams.length)return 'Off';
+ return getDelaySyncValue(node,index,nodes,syncParams[0]);
+}
+function getDelayChainSyncAngle(node,index,nodes){
+ const values=getDelayChainSyncReading(node,index,nodes).match(/Whole|1\/2|1\/4|1\/8|1\/16|1\/32/g)||[];
+ const map={Whole:-125,'1/2':-80,'1/4':-25,'1/8':25,'1/16':80,'1/32':125};
+ if(!values.length)return -135;
+ return values.reduce((sum,value)=>sum+map[value],0)/values.length;
+}
+function renderDelayChainKnobs(node,index,nodes){
+ const sync=getDelayChainSyncReading(node,index,nodes);
+ const bpm=getActiveTempoBpm();
+ const trails=trailsEnabled;
+ const bpmAngle=-135+Math.max(0,Math.min(1,(bpm-40)/200))*270;
+ const trailsAngle=trails==='On'?90:-90;
+ const controls=[
+  {name:'SYNC',value:sync,angle:getDelayChainSyncAngle(node,index,nodes)},
+  {name:'BPM',value:String(bpm),angle:bpmAngle},
+  {name:'TRAILS',value:trails.toUpperCase(),angle:trailsAngle}
+ ];
+ return '<div class="chain-node-knobs chain-node-knobs--delay">'+controls.map(control=>'<div class="chain-knob chain-knob--compact" title="'+esc(control.name+': '+control.value)+'"><span class="chain-knob-dial" style="--knob-angle:'+control.angle+'deg"></span><small>'+esc(control.name)+'</small><small class="chain-knob-reading">'+esc(control.value)+'</small></div>').join('')+'</div>';
+}
 function renderChainKnobs(node,index,nodes){
  const labels=getChainKnobLabels(node);
  const spec=getChainParameterSpecs(node);
- return '<div class="chain-node-knobs" aria-label="Knob visual mengikuti nilai pada panel parameter">'+labels.map(name=>{
+ const parameters='<div class="chain-node-knobs" aria-label="Knob visual mengikuti nilai pada panel parameter">'+labels.map(name=>{
   const key=getChainParameterKey(node,index,nodes,name);
   const raw=String(chainParameterValues[key]??getAutoChainParameterValue(node,name,spec));
   const value=getDelayKnobReading(node,index,nodes,name,raw);
   const angle=getChainKnobAngle(node,index,nodes,name);
   return '<div class="chain-knob" title="'+esc(name+': '+value)+'"><span class="chain-knob-dial" style="--knob-angle:'+angle+'deg"></span><small>'+esc(name)+'</small><small class="chain-knob-reading">'+esc(value)+'</small></div>';
  }).join('')+'</div>';
+ const delayControls=spec.category==='Delay'?renderDelayChainKnobs(node,index,nodes):'';
+ return parameters+delayControls;
 }
 function renderPatchCable(){
  return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 52 46" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-wire" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-highlight" d="M9 8 C 10 36 42 36 43 8"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
