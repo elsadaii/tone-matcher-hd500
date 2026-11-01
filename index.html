@@ -153,6 +153,32 @@
  .chain-node:hover{transform:none}
 }
 
+
+/* Instrument-grade patch cables between Signal Chain blocks */
+.chain-link{
+ position:relative;align-self:center;display:block;flex:0 0 48px;width:48px;height:48px;
+ margin-top:-23px;background:none;border:0;overflow:visible;
+ filter:drop-shadow(0 5px 5px #0008);
+}
+.chain-link:after{content:none}
+.patch-cable-art{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.patch-cable-shadow{fill:none;stroke:#080d13;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.patch-cable-wire{fill:none;stroke:#687b8b;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.patch-cable-highlight{fill:none;stroke:#d0dbe3;stroke-opacity:.55;stroke-width:1.5;stroke-linecap:round}
+.patch-jack{position:absolute;z-index:2;top:3px;width:12px;height:8px;border:1px solid #9aabb9;border-radius:3px;background:linear-gradient(180deg,#d5dfe6 0%,#667a8b 30%,#253746 65%,#111c27 100%);box-shadow:inset 0 1px 1px #fff9,0 2px 3px #0009}
+.patch-jack:before{position:absolute;top:1px;bottom:1px;width:2px;content:"";background:#edf4f8;opacity:.75}
+.patch-jack:after{position:absolute;top:2px;bottom:2px;width:2px;content:"";background:#1a2530;opacity:.9}
+.patch-jack--start{left:0}
+.patch-jack--start:before{right:2px}.patch-jack--start:after{right:-3px;width:3px;border-radius:0 2px 2px 0;background:#a9bac6}
+.patch-jack--end{right:0}
+.patch-jack--end:before{left:2px}.patch-jack--end:after{left:-3px;width:3px;border-radius:2px 0 0 2px;background:#a9bac6}
+@media(max-width:600px){
+ .chain-link{flex-basis:34px;width:34px;height:44px}
+ .patch-cable-shadow{stroke-width:8}
+ .patch-cable-wire{stroke-width:5}
+ .patch-jack{width:10px;height:7px}
+}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
@@ -706,20 +732,23 @@ function renderChainKnobs(node,index,nodes){
   return '<div class="chain-knob" title="'+esc(name+': '+value)+'"><span class="chain-knob-dial" style="--knob-angle:'+angle+'deg"></span><small>'+esc(name)+'</small><small class="chain-knob-reading">'+esc(value)+'</small></div>';
  }).join('')+'</div>';
 }
+function renderPatchCable(){
+ return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 52 46" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-wire" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-highlight" d="M9 8 C 10 36 42 36 43 8"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
+}
 function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
  const nodes=getSignalChainNodes();
  ensureChainParameterValues(nodes);
  let html='<div class="chain-endpoint"><div class="chain-endpoint-icon">⌁</div><strong>INPUT</strong><small>Guitar</small></div>';
- if(!nodes.length)html+='<div class="chain-link"></div><div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
+ if(!nodes.length)html+=renderPatchCable()+'<div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
  else nodes.forEach((node,i)=>{
-  html+='<div class="chain-link"></div><div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
+  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small>'+renderChainKnobs(node,i,nodes)+'</div>';
   html+='</article></div>';
  });
- html+='<div class="chain-link"></div><div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
+ html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
  canvas.innerHTML=html;
  $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Geser tampilan untuk melihat blok lainnya</span>';
  renderChainParameterPanels(nodes);
