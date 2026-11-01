@@ -110,16 +110,27 @@ async function searchTones(){
  renderTones(tones.filter(t=>(t.artist+' '+t.song+' '+t.genre).toLowerCase().includes(q)));
  const box=$('#onlineArtistResults');
  if(!raw){box.innerHTML='<p class="hint">Ketik nama artis atau band untuk mencari referensi tambahan dari internet.</p>';return;}
- box.innerHTML='<p class="muted">Mencari nama artis/band dari sumber online…</p>';
+ box.innerHTML='<p class="muted">Mencari referensi artis dan video YouTube…</p>';
  const jobs=[
   (async()=>{const u='https://musicbrainz.org/ws/2/artist/?fmt=json&limit=8&query='+encodeURIComponent(raw);const r=await fetch(u,{headers:{'Accept':'application/json'}});if(!r.ok)throw new Error('MusicBrainz HTTP '+r.status);const d=await r.json();return (d.artists||[]).map(a=>({source:'MusicBrainz',name:a.name,detail:[a.type,a.area?.name,a.disambiguation].filter(Boolean).join(' · '),url:'https://musicbrainz.org/artist/'+a.id}));})(),
   (async()=>{const u='https://www.wikidata.org/w/api.php?action=wbsearchentities&search='+encodeURIComponent(raw)+'&language=en&format=json&limit=8&origin=*';const r=await fetch(u);if(!r.ok)throw new Error('Wikidata HTTP '+r.status);const d=await r.json();return (d.search||[]).map(a=>({source:'Wikidata',name:a.label,detail:a.description||'Informasi entitas musik',url:a.concepturi||('https://www.wikidata.org/wiki/'+a.id)}));})()
  ];
- const settled=await Promise.allSettled(jobs),results=settled.filter(x=>x.status==='fulfilled').flatMap(x=>x.value),failed=settled.filter(x=>x.status==='rejected');
- if(!results.length){box.innerHTML='<p class="muted">Pencarian online belum berhasil. Coba lagi beberapa saat; hasil preset lokal tetap tersedia di atas.</p>';return;}
- window.onlineArtistMatches=results;box.innerHTML='<h3 style="grid-column:1/-1">Referensi artis/band dari internet</h3><p class="hint" style="grid-column:1/-1">Pilih “Buat rekomendasi tone” untuk mengisi Preset Builder. Setting adalah starting point buatan aplikasi, bukan preset resmi/terverifikasi.</p>'+results.map((a,i)=>'<article class="tone-card"><div class="meta">'+esc(a.source)+'</div><h3>'+esc(a.name||'Tanpa nama')+'</h3><p>'+esc(a.detail||'')+'</p><p><a href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">Lihat sumber ↗</a></p><button data-online-tone="'+i+'">Buat rekomendasi tone ↗</button></article>').join('')+(failed.length?'<p class="hint" style="grid-column:1/-1">Sebagian sumber online tidak merespons; hasil yang tersedia tetap ditampilkan.</p>':'');$$('[data-online-tone]').forEach(b=>b.onclick=()=>applyOnlineTone(Number(b.dataset.onlineTone)));
+ const youtubeJob=(async()=>{const u='https://tone-matcher-api.elsadaiprivat.workers.dev/search?q='+encodeURIComponent(raw)+'&source=youtube';const r=await fetch(u);if(!r.ok)throw new Error('YouTube Worker HTTP '+r.status);const d=await r.json();if(d.errors?.youtube)throw new Error(d.errors.youtube);return d.results?.youtube||[];})();
+ const [settled,youtubeResult]=await Promise.all([Promise.allSettled(jobs),Promise.allSettled([youtubeJob])]);
+ const results=settled.filter(x=>x.status==='fulfilled').flatMap(x=>x.value),failed=settled.filter(x=>x.status==='rejected');
+ const videos=youtubeResult[0].status==='fulfilled'?youtubeResult[0].value:[];
+ const youtubeFailed=youtubeResult[0].status==='rejected';
+ window.onlineArtistMatches=results;
+ const artistHtml=results.length?'<h3 style="grid-column:1/-1">Referensi artis/band dari internet</h3><p class="hint" style="grid-column:1/-1">Pilih “Buat rekomendasi tone” untuk mengisi Preset Builder. Setting adalah starting point buatan aplikasi, bukan preset resmi/terverifikasi.</p>'+results.map((a,i)=>'<article class="tone-card"><div class="meta">'+esc(a.source)+'</div><h3>'+esc(a.name||'Tanpa nama')+'</h3><p>'+esc(a.detail||'')+'</p><p><a href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">Lihat sumber ↗</a></p><button data-online-tone="'+i+'">Buat rekomendasi tone ↗</button></article>').join(''):'';
+ const videoHtml=videos.length?'<h3 style="grid-column:1/-1;margin-top:22px">Video YouTube untuk referensi</h3>'+videos.map(v=>'<article class="tone-card"><div class="meta">YOUTUBE · '+esc(v.detail||'VIDEO')+'</div>'+(v.image?'<a href="'+esc(v.url)+'" target="_blank" rel="noopener noreferrer"><img src="'+esc(v.image)+'" alt="" loading="lazy" style="width:100%;border-radius:8px;margin:6px 0"></a>':'')+'<h3>'+esc(v.name)+'</h3><p><a href="'+esc(v.url)+'" target="_blank" rel="noopener noreferrer">Tonton di YouTube ↗</a></p></article>').join(''):'';
+ const messages=[];
+ if(!results.length&&failed.length)messages.push('Pencarian artis tidak tersedia saat ini.');
+ if(youtubeFailed)messages.push('Pencarian YouTube tidak berhasil. Coba lagi beberapa saat.');
+ if(!results.length&&!videos.length)messages.push('Hasil preset lokal tetap tersedia di atas.');
+ if(failed.length&&results.length)messages.push('Sebagian sumber artis online tidak merespons.');
+ box.innerHTML=artistHtml+videoHtml+(messages.length?'<p class="hint" style="grid-column:1/-1">'+messages.map(esc).join(' ')+'</p>':'');
+ $$('[data-online-tone]').forEach(b=>b.onclick=()=>applyOnlineTone(Number(b.dataset.onlineTone)));
 }
-
 function makeOnlineTone(a){
  const name=(a.name||'Artist').trim(),low=name.toLowerCase();
  const metallica=low.includes('metallica');
