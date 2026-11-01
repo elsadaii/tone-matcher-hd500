@@ -117,8 +117,31 @@ async function searchTones(){
  ];
  const settled=await Promise.allSettled(jobs),results=settled.filter(x=>x.status==='fulfilled').flatMap(x=>x.value),failed=settled.filter(x=>x.status==='rejected');
  if(!results.length){box.innerHTML='<p class="muted">Pencarian online belum berhasil. Coba lagi beberapa saat; hasil preset lokal tetap tersedia di atas.</p>';return;}
- box.innerHTML='<h3 style="grid-column:1/-1">Referensi artis/band dari internet</h3><p class="hint" style="grid-column:1/-1">Ini hanya hasil identifikasi nama, bukan preset atau setting resmi POD HD500.</p>'+results.map(a=>'<article class="tone-card"><div class="meta">'+esc(a.source)+'</div><h3>'+esc(a.name||'Tanpa nama')+'</h3><p>'+esc(a.detail||'')+'</p><p><a href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">Lihat sumber ↗</a></p></article>').join('')+(failed.length?'<p class="hint" style="grid-column:1/-1">Sebagian sumber online tidak merespons; hasil yang tersedia tetap ditampilkan.</p>':'');
+ window.onlineArtistMatches=results;box.innerHTML='<h3 style="grid-column:1/-1">Referensi artis/band dari internet</h3><p class="hint" style="grid-column:1/-1">Pilih “Buat rekomendasi tone” untuk mengisi Preset Builder. Setting adalah starting point buatan aplikasi, bukan preset resmi/terverifikasi.</p>'+results.map((a,i)=>'<article class="tone-card"><div class="meta">'+esc(a.source)+'</div><h3>'+esc(a.name||'Tanpa nama')+'</h3><p>'+esc(a.detail||'')+'</p><p><a href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">Lihat sumber ↗</a></p><button data-online-tone="'+i+'">Buat rekomendasi tone ↗</button></article>').join('')+(failed.length?'<p class="hint" style="grid-column:1/-1">Sebagian sumber online tidak merespons; hasil yang tersedia tetap ditampilkan.</p>':'');$('[data-online-tone]').forEach(b=>b.onclick=()=>applyOnlineTone(Number(b.dataset.onlineTone)));
 }
+
+function makeOnlineTone(a){
+ const name=(a.name||'Artist').trim(),low=name.toLowerCase();
+ const metallica=low.includes('metallica');
+ const profile=metallica?{
+  artist:name,song:'Metallica · Metal Rhythm Starting Point',genre:'Metal · Rhythm',
+  amp:'Treadplate',values:['Drive','68','Bass','48','Mid','48','Treble','64','Presence','58','Volume','70'],
+  chain:'Noise Gate → Screamer (Drive rendah, Output tinggi) → Treadplate → 4x12 cab',
+  notes:'Perkiraan tone rhythm metal modern/thrash. Gunakan pickup bridge humbucker, palm mute rapat, dan turunkan Bass bila terdengar boomy.'
+ }:{
+  artist:name,song:name+' · General Tone Starting Point',genre:'General · Starting Point',
+  amp:'Brit J-800',values:['Drive','55','Bass','48','Mid','58','Treble','58','Presence','52','Volume','70'],
+  chain:'Noise Gate (bila perlu) → Overdrive ringan → Brit J-800 → 4x12 cab → Room Reverb tipis',
+  notes:'Preset generik berdasarkan karakter rock sebagai titik awal, bukan tone terverifikasi artis. Sesuaikan gain, EQ, pickup, dan output mode dengan lagu.'
+ };
+ return profile;
+}
+function applyOnlineTone(index){
+ const a=window.onlineArtistMatches?.[index];if(!a)return;
+ const t=makeOnlineTone(a);applyTone(t);
+ $('#notes').value=t.notes+' Referensi identitas: '+(a.source||'Online')+'. Nilai parameter adalah estimasi awal, bukan preset resmi.';
+}
+
 function renderTones(list){$('#toneResults').innerHTML=list.length?list.map(t=>`<article class="tone-card"><div class="meta">${t.genre}</div><h3>${t.artist}</h3><p>${t.song}</p><p><b>Amp:</b> ${t.amp}</p><p>${t.chain}</p><button data-tone="${tones.indexOf(t)}">Pakai tone ini ↗</button></article>`).join(''):'<p class="muted">Tidak ditemukan. Coba nama gitaris atau judul lagu lain.</p>';$$('[data-tone]').forEach(b=>b.onclick=()=>applyTone(tones[+b.dataset.tone]));}
 function applyTone(t){$('#presetName').value=t.artist+' - '+t.song;$('#ampSelect').value=t.amp;$('#fxChain').value=t.chain;$('#notes').value=t.notes;$$('[data-knob]').forEach(i=>i.value='');for(let i=0;i<t.values.length;i+=2){let el=$(`[data-knob="${t.values[i]}"]`);if(el)el.value=t.values[i+1]}$$('.tab').find(b=>b.dataset.tab==='editor').click();}
 function currentPreset(){let params={};$$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});let fxParams={};$$('[data-fx-param]').forEach(i=>{if(i.value.trim())fxParams[i.dataset.fxParam]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},fxCategory:$('#fxCategory').value,fxModel:$('#fxModel').value,fxParams,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
