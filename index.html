@@ -608,7 +608,9 @@ function syncTempoSettingsUI(){
  $$('[data-tempo-trails]').forEach(toggle=>{const enabled=trailsEnabled==='On';toggle.setAttribute('aria-checked',String(enabled));toggle.classList.toggle('is-on',enabled);const state=toggle.querySelector('[data-toggle-state]');if(state)state.textContent=enabled?'ON':'OFF';});
  $$('[data-tempo-tap-status]').forEach(status=>status.textContent=tempoTapStatus);
 }
-function handleTempoTap(){
+function handleTempoTap(event){
+ if(event){event.preventDefault();event.stopPropagation();}
+ const trailsStateBeforeTap=trailsEnabled;
  const now=Date.now();
  const previous=tempoTapMoments[tempoTapMoments.length-1];
  if(previous){
@@ -634,6 +636,7 @@ function handleTempoTap(){
   syncTempoSettingsUI();
  }
  tempoTapStatus='Tap Tempo: '+bpm+' BPM · ketuk lagi untuk memperbarui.';
+ trailsEnabled=trailsStateBeforeTap;
  syncTempoSettingsUI();
  renderSignalChain();
 }
@@ -725,7 +728,7 @@ function bindDelaySyncControls(){
   syncTempoSettingsUI();
   renderSignalChain();
  }));
- $$('[data-tap-tempo]').forEach(button=>button.addEventListener('click',handleTempoTap));
+ $('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
  const spec=getChainParameterSpecs(node);
