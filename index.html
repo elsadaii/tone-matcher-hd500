@@ -679,33 +679,33 @@ function renderDelaySyncControls(node,index,nodes,spec){
  return '<div class="delay-tempo-controls">'+sharedControls+syncControls+'</div>';
 }
 function bindDelaySyncControls(){
- $('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
+ $$('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
   chainDelaySettings[select.dataset.delaySyncKey]=select.value;
   renderSignalChain();
  }));
- $('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
+ $$('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
   syncTempoSettingsUI();
   renderSignalChain();
  }));
- $('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
+ $$('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
   tempoSystemSettings.mode=select.value==='Global'?'Global':'Preset';
   persistTempoSystemSettings();
   renderSignalChain();
  }));
- $('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
+ $$('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoSystemSettings.globalBpm=bpm;
   persistTempoSystemSettings();
   renderSignalChain();
  }));
- $('[data-tempo-trails]').forEach(select=>select.addEventListener('change',()=>{
+ $$('[data-tempo-trails]').forEach(select=>select.addEventListener('change',()=>{
   trailsEnabled=select.value==='Off'?'Off':'On';
   syncTempoSettingsUI();
   renderSignalChain();
  }));
- $('[data-tap-tempo]').forEach(button=>button.addEventListener('click',handleTempoTap));
+ $$('[data-tap-tempo]').forEach(button=>button.addEventListener('click',handleTempoTap));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
  const spec=getChainParameterSpecs(node);
