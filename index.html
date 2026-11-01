@@ -76,6 +76,83 @@
 .chain-text-editor textarea{margin-top:9px}.chain-text-editor .muted{margin:6px 0 0}
 @media(max-width:600px){.signal-chain-editor{padding:13px}.signal-chain-heading{display:block}.chain-live-badge{margin-top:10px}.signal-chain-add{grid-template-columns:1fr 1fr}.signal-chain-add button{grid-column:1/-1}.signal-chain-canvas{min-height:162px}.chain-slot{flex-basis:166px;width:166px}.chain-slot--amp{flex-basis:190px;width:190px}.chain-node{min-height:174px}.chain-endpoint{flex-basis:64px}.chain-link{flex-basis:20px}}
 
+
+/* Premium pedalboard styling for the Signal Chain */
+.signal-chain-editor{
+ position:relative;isolation:isolate;overflow:hidden;
+ border:1px solid #3b5266;border-radius:20px;
+ background:radial-gradient(ellipse at 8% 0%,#31465855 0,transparent 38%),radial-gradient(ellipse at 96% 100%,#9b623322 0,transparent 34%),linear-gradient(145deg,#172431 0%,#101821 70%);
+ box-shadow:0 18px 42px #0005,inset 0 1px 0 #ffffff10;
+}
+.signal-chain-editor:before{position:absolute;z-index:-1;inset:0;content:"";opacity:.22;background-image:linear-gradient(#8ba0b51a 1px,transparent 1px),linear-gradient(90deg,#8ba0b51a 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(135deg,#000,transparent 78%)}
+.signal-chain-heading{position:relative;align-items:center;margin:-2px -2px 16px;padding:2px 2px 14px;border-bottom:1px solid #ffffff12}
+.signal-chain-heading h3{font-size:24px;letter-spacing:-.045em;text-shadow:0 3px 18px #0008}
+.signal-chain-heading .muted{max-width:440px;line-height:1.5}
+.chain-live-badge{padding:8px 12px;border-color:#516b4c;background:linear-gradient(135deg,#253522aa,#17221d);box-shadow:0 0 22px #c5f36b12,inset 0 1px 0 #ffffff13}
+.chain-live-badge i{width:8px;height:8px;box-shadow:0 0 0 4px #c5f36b18,0 0 13px #c5f36bcc}
+.signal-chain-canvas{
+ position:relative;isolation:isolate;min-height:254px;padding:23px 19px 25px;
+ border:1px solid #34485b;border-radius:16px;
+ background:radial-gradient(ellipse at 50% 48%,#25374980 0,transparent 64%),linear-gradient(180deg,#0c141e 0%,#121c28 100%);
+ box-shadow:inset 0 2px 12px #0008,inset 0 1px 0 #ffffff08;
+ scroll-padding-inline:18px;
+}
+.signal-chain-canvas:before{position:absolute;z-index:-1;top:50%;left:0;right:0;height:1px;content:"";background:linear-gradient(90deg,transparent,#607b9455 12%,#607b9455 88%,transparent)}
+.chain-endpoint{flex-basis:84px;gap:10px;color:#a7b6c5;scroll-snap-align:center}
+.chain-endpoint-icon{width:50px;height:50px;border-radius:16px;border-color:#60768a;background:linear-gradient(145deg,#34495d,#172331);color:#e5edf4;font-size:21px;box-shadow:0 8px 20px #0008,inset 0 1px 0 #ffffff30,0 0 0 5px #9db4c20a}
+.chain-endpoint strong{font-size:9px;letter-spacing:.18em;color:#d6e1eb}
+.chain-endpoint small{font-size:9px;color:#7f91a3}
+.chain-link{flex-basis:34px;height:3px;margin-top:-31px;border-radius:8px;background:linear-gradient(90deg,#4e697f,#91a9bb,#4e697f);box-shadow:0 0 9px #79a1bf55}
+.chain-link:after{top:-4px;border-left-color:#b6c9d8;border-top-width:5px;border-bottom-width:5px;filter:drop-shadow(0 0 3px #8db5d2)}
+.chain-slot{flex-basis:190px;width:190px;scroll-snap-align:center}
+.chain-slot--amp{flex-basis:220px;width:220px}
+.chain-node{
+ min-height:208px;padding:14px 13px 11px;overflow:hidden;
+ border:1px solid #617387;border-top:4px solid var(--node-accent,#8da1b7);border-radius:15px;
+ background:linear-gradient(150deg,#2b3b4d 0%,#172330 82%);
+ box-shadow:0 13px 24px #0008,inset 0 1px 0 #ffffff16,inset 0 -10px 22px #0002;
+ transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.chain-node:before{position:absolute;top:12px;right:12px;width:7px;height:7px;border-radius:50%;content:"";background:var(--node-accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--node-accent) 16%,transparent),0 0 12px color-mix(in srgb,var(--node-accent) 75%,transparent)}
+.chain-node:after{position:absolute;inset:6px;border:1px solid #ffffff08;border-radius:10px;content:"";pointer-events:none}
+.chain-node:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--node-accent) 70%,#64788a);box-shadow:0 18px 30px #0009,inset 0 1px 0 #ffffff1c,0 0 22px color-mix(in srgb,var(--node-accent) 16%,transparent)}
+.chain-node--amp{background:linear-gradient(150deg,#634332 0%,#2b2424 82%);border-color:#9b765e}
+.chain-node--cab{background:linear-gradient(150deg,#3c4d5e 0%,#202b37 82%)}
+.chain-node-top{position:relative;z-index:1;align-items:center;margin-bottom:11px;padding-right:14px}
+.chain-node-type{padding:4px 7px;border:1px solid color-mix(in srgb,var(--node-accent) 44%,transparent);border-radius:5px;background:color-mix(in srgb,var(--node-accent) 11%,transparent);font-size:8px;letter-spacing:.16em}
+.chain-node-number{padding:3px 6px;border:1px solid #ffffff13;border-radius:5px;background:#0b121a77;color:#a8b8c7}
+.chain-node-name{position:relative;z-index:1;min-height:38px;font-size:14px;letter-spacing:-.02em;text-shadow:0 2px 10px #0008}
+.chain-node-sub{position:relative;z-index:1;margin-top:6px;color:#b9c6d2;font-size:9px}
+.chain-node-knobs{position:relative;z-index:1;gap:5px;margin-top:13px;padding:11px 0 1px;border-top:1px solid #ffffff20}
+.chain-knob-dial{width:30px;height:30px;margin-bottom:6px;border:1px solid #9eabb7;background:radial-gradient(circle at 30% 24%,#aab6c0 0,#596775 25%,#25313d 61%,#101820 78%);box-shadow:inset 0 1px 3px #ffffff77,0 4px 7px #0009,0 0 0 3px #0003}
+.chain-knob-dial:before{inset:3px;border-color:#ffffff1c}
+.chain-knob-dial:after{top:3px;width:2px;height:9px;background:#f5f8fb;box-shadow:0 0 5px #ffffffbb}
+.chain-knob small{font-size:7px;letter-spacing:.055em}
+.chain-knob .chain-knob-reading{margin-top:3px;color:var(--node-accent);font-size:9px;text-shadow:0 0 8px color-mix(in srgb,var(--node-accent) 38%,transparent)}
+.chain-node--amp .chain-knob-dial{width:31px;height:31px;border-color:#c29a7e;background:radial-gradient(circle at 30% 24%,#d4a789 0,#805a45 27%,#382b27 62%,#171719 80%);box-shadow:inset 0 1px 3px #fff7,0 4px 7px #0009,0 0 0 3px #0003}
+.chain-node--cab .chain-knob-dial{border-color:#b2c0cc}
+.signal-chain-summary{margin-top:12px;padding:10px 12px 0;border-top:1px solid #ffffff12;color:#9baaba}
+.signal-chain-summary strong{display:inline-grid;place-items:center;min-width:22px;height:22px;margin-right:4px;padding:0 6px;border:1px solid #627b55;border-radius:7px;background:#273624;color:var(--lime)}
+@media(max-width:760px){
+ .signal-chain-heading{align-items:flex-start}
+ .signal-chain-canvas{min-height:232px;padding:19px 13px 21px}
+ .chain-node{min-height:198px}
+}
+@media(max-width:600px){
+ .signal-chain-editor{border-radius:16px}
+ .signal-chain-heading h3{font-size:22px}
+ .chain-live-badge{margin-top:12px}
+ .signal-chain-canvas{border-radius:12px}
+ .chain-slot{flex-basis:180px;width:180px}
+ .chain-slot--amp{flex-basis:206px;width:206px}
+ .chain-endpoint{flex-basis:68px}
+ .chain-link{flex-basis:22px}
+}
+@media(prefers-reduced-motion:reduce){
+ .chain-node{transition:none}
+ .chain-node:hover{transform:none}
+}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
