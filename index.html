@@ -152,16 +152,16 @@ function detectYoutubeAmp(text){
 }
 function detectYoutubeEffects(text){
  const rules=[
-  [/noise gate|noise suppressor|\\bgate\\b/,'Noise Gate'],
+  [/noise gate|noise suppressor|\bgate\b/,'Noise Gate'],
   [/tube screamer|ts ?9|screamer/,'Screamer'],
   [/tube drive/,'Tube Drive'],
   [/compressor|compression/,'Red Comp'],
-  [/analog chorus|\\bchorus\\b/,'Analog Chorus'],
-  [/\\bphaser\\b/,'Script Phase'],
-  [/\\bflanger\\b/,'Analog Flanger'],
-  [/\\bdelay\\b|\\becho\\b/,'Digital Delay'],
-  [/plate reverb|\\breverb\\b/,'Plate'],
-  [/\\bwah\\b/,'Fassel']
+  [/analog chorus|\bchorus\b/,'Analog Chorus'],
+  [/\bphaser\b/,'Script Phase'],
+  [/\bflanger\b/,'Analog Flanger'],
+  [/\bdelay\b|\becho\b/,'Digital Delay'],
+  [/plate reverb|\breverb\b/,'Plate'],
+  [/\bwah\b/,'Fassel']
  ];
  const out=[];
  for(const [re,name] of rules)if(re.test(text)&&HD500_DB.effects.some(e=>e[1]===name)&&!out.includes(name))out.push(name);
@@ -186,13 +186,13 @@ function detectYoutubeMic(text){
 }
 function extractYoutubeAmpValues(text){
  const fields=[
-  ['Drive',/(?:drive|gain)\\s*(?:[:=]|\\bis\\b)\\s*(\\d{1,3}(?:\\.\\d+)?)\\s*(%|\\/\\s*(10|100))?/i],
-  ['Bass',/\\bbass\\s*(?:[:=]|\\bis\\b)\\s*(\\d{1,3}(?:\\.\\d+)?)\\s*(%|\\/\\s*(10|100))?/i],
-  ['Mid',/\\bmid(?:dle)?\\s*(?:[:=]|\\bis\\b)\\s*(\\d{1,3}(?:\\.\\d+)?)\\s*(%|\\/\\s*(10|100))?/i],
-  ['Treble',/\\btreble\\s*(?:[:=]|\\bis\\b)\\s*(\\d{1,3}(?:\\.\\d+)?)\\s*(%|\\/\\s*(10|100))?/i],
-  ['Presence',/\\bpresence\\s*(?:[:=]|\\bis\\b)\\s*(\\d{1,3}(?:\\.\\d+)?)\\s*(%|\\/\\s*(10|100))?/i],
-  ['Master',/\\bmaster\\s*(?:[:=]|\\bis\\b)\\s*(\\d{1,3}(?:\\.\\d+)?)\\s*(%|\\/\\s*(10|100))?/i],
-  ['Volume',/\\bvolume\\s*(?:[:=]|\\bis\\b)\\s*(\\d{1,3}(?:\\.\\d+)?)\\s*(%|\\/\\s*(10|100))?/i]
+  ['Drive',/(?:drive|gain)\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Bass',/\bbass\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Mid',/\bmid(?:dle)?\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Treble',/\btreble\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Presence',/\bpresence\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Master',/\bmaster\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i],
+  ['Volume',/\bvolume\s*(?:[:=]|\bis\b)\s*(\d{1,3}(?:\.\d+)?)\s*(%|\/\s*(10|100))?/i]
  ];
  const result={};
  for(const [key,re] of fields){
