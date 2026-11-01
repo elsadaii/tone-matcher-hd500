@@ -122,7 +122,7 @@ async function searchTones(){
   window.youtubeMatches=videos;
   if(!videos.length){box.innerHTML='<p class="hint">Belum ada video YouTube yang cocok. Coba nama lagu atau gitaris yang lebih spesifik.</p>';return;}
   box.innerHTML='<h3 style="grid-column:1/-1">Referensi YouTube untuk pencocokan preset</h3><p class="hint" style="grid-column:1/-1">YouTube dipakai sebagai sumber metadata (judul, channel, dan deskripsi). Pilih video untuk mencocokkan model amp, efek, cabinet, dan angka parameter yang tertulis, lalu mengisi Preset Builder. Aplikasi tidak memutar atau membuka video.</p>'+videos.map((v,i)=>'<article class="tone-card"><div class="meta">YOUTUBE · '+esc(v.detail||'VIDEO')+'</div>'+(v.image?'<img src="'+esc(v.image)+'" alt="" loading="lazy" style="width:100%;border-radius:8px;margin:6px 0">':'')+'<h3>'+esc(v.name||'Video YouTube')+'</h3><p>'+esc((v.description||'Deskripsi tidak tersedia.').slice(0,260))+'</p><button data-youtube-tone="'+i+'">Cocokkan & isi Preset Builder</button></article>').join('');
-  $('[data-youtube-tone]').forEach(b=>b.onclick=()=>{
+  $$('[data-youtube-tone]').forEach(b=>b.onclick=()=>{
    try{applyYouTubeTone(Number(b.dataset.youtubeTone));}
    catch(err){
     const msg='Preset belum berhasil diisi: '+(err?.message||'kesalahan tidak diketahui');
