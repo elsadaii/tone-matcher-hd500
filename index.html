@@ -336,7 +336,8 @@ function classifyChainBlock(label){
  if(norm==='amp'||HD500_DB.amps.some(a=>a[0]!=='Amp Disabled'&&norm.includes(a[0].toLowerCase()))){
   return {kind:'amp',category:'Amp',label:label==='Amp'?$('#ampSelect').value:label,sub:$('#ampType').value};
  }
- if(/\bcab\b|cabinet|4x12|4\|2/.test(low)){
+ const knownCab=HD500_DB.cabs.some(name=>name!=='No Cab'&&low.includes(name.toLowerCase()));
+ if(knownCab||/\bcab\b|cabinet|4x12/.test(low)){
   return {kind:'cab',category:'Cab',label:/\bcab\b|cabinet/i.test(label)&&$('#cabSelect').value!=='No Cab'?$('#cabSelect').value:label,sub:$('#micSelect').value};
  }
  const fx=HD500_DB.effects.find(e=>{
