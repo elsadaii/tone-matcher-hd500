@@ -442,7 +442,7 @@ function getAutoChainParameterValue(node,param,spec){
  const mix=isReverb?24:isDelay?23:isMod?22:category==='filter'?28:category==='wah'?100:18;
  if(/^(mix)$/.test(p))return String(mix);
  if(/^(output|level|volume|volume level)$/.test(p))return p==='volume level'?'70':'65';
- if(/^(drive|gain)$/.test(p))return String(isDist?Math.max(16,Math.min(38,Math.round((drive-35)*0.48))):isComp?30:48);
+ if(/^(drive|gain)$/.test(p))return String(p==='gain'&&isEq&&!model.includes('vintage pre')?0:isDist?Math.max(16,Math.min(38,Math.round((drive-35)*0.48))):isComp?30:48);
  if(p==='bass')return String(isDist?46:48);
  if(p==='mid'||p==='middle')return String(base.Mid);
  if(p==='treble'||p==='tone')return String(base.Treble);
