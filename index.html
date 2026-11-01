@@ -43,7 +43,8 @@
 .chain-param-card-head small{display:block;color:var(--muted);font-size:10px}
 .chain-param-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .chain-param-grid label{display:block;min-width:0;margin:0;color:#aeb9c6;font-size:10px}
-.chain-param-grid input{margin-top:5px;padding:9px 10px;font-size:12px}
+.chain-param-value{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px;padding:9px 10px;border:1px solid #35465a;border-radius:8px;background:#101923;color:#f1f4f8;font-size:13px;font-variant-numeric:tabular-nums}
+.chain-param-value small{color:var(--lime);font-size:8px;font-weight:900;letter-spacing:.1em}
 .chain-param-grid label small{display:block;margin-top:3px;color:#78899a;font-size:9px;line-height:1.25}
 .chain-param-empty{grid-column:1/-1;padding:16px;border:1px dashed #526274;border-radius:10px;color:var(--muted);font-size:12px;text-align:center}
 .chain-param-note{margin:10px 0 0;color:#8797a7;font-size:10px;line-height:1.45}
@@ -365,18 +366,29 @@ function applyYouTubeTone(index){
  renderSignalChain();
 }
 function renderTones(list){$('#toneResults').innerHTML=list.length?list.map(t=>`<article class="tone-card"><div class="meta">${t.genre}</div><h3>${t.artist}</h3><p>${t.song}</p><p><b>Amp:</b> ${t.amp}</p><p>${t.chain}</p><button data-tone="${tones.indexOf(t)}">Pakai tone ini ↗</button></article>`).join(''):'<p class="muted">Tidak ditemukan. Coba nama gitaris atau judul lagu lain.</p>';$$('[data-tone]').forEach(b=>b.onclick=()=>applyTone(tones[+b.dataset.tone]));}
-function applyTone(t){chainParameterValues={};$$('[data-chain-param-key]').forEach(i=>i.value='');$('#presetName').value=t.artist+' - '+t.song;$('#ampSelect').value=t.amp;$('#fxChain').value=t.chain;$('#notes').value=t.notes;$$('[data-knob]').forEach(i=>i.value='');for(let i=0;i<t.values.length;i+=2){let el=$(`[data-knob="${t.values[i]}"]`);if(el)el.value=t.values[i+1]}renderSignalChain();openPresetBuilderTab();}
+function applyTone(t){
+ chainParameterValues={};
+ activeToneParameterValues={};
+ for(let i=0;i<(t.values||[]).length;i+=2)activeToneParameterValues[t.values[i]]=String(t.values[i+1]);
+ $('#presetName').value=t.artist+' - '+t.song;
+ $('#ampSelect').value=t.amp;
+ $('#fxChain').value=t.chain;
+ $('#notes').value=t.notes;
+ renderSignalChain();
+ openPresetBuilderTab();
+}
 function openPresetBuilderTab(){const tab=document.querySelector('.tab[data-tab="editor"]');if(!tab)throw new Error('Tab Preset Builder tidak ditemukan.');tab.click();}
-function currentPreset(){captureChainParameterValues();let params={};$$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chainParameters:{...chainParameterValues},chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
+function currentPreset(){captureChainParameterValues();let params={...activeToneParameterValues};$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chainParameters:{...chainParameterValues},chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
 function getSaved(){try{return JSON.parse(localStorage.getItem('hd500-presets')||'[]')}catch{return []}}
 function savePreset(){let p=currentPreset(),all=getSaved();all=all.filter(x=>x.name!==p.name);all.unshift(p);localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset tersimpan di browser ini.');}
 function renderSaved(){let a=getSaved();$('#savedCount').textContent=a.length;$('#savedResults').innerHTML=a.length?a.map(p=>`<div class="saved-card"><div><b>${esc(p.name)}</b><p>${esc(p.amp)} · ${esc(p.cab)} · ${new Date(p.updated).toLocaleDateString('id-ID')}</p></div><div class="saved-actions"><button class="secondary" data-load="${p.id}">Buka</button><button class="secondary" data-del="${p.id}">Hapus</button></div></div>`).join(''):'<p class="muted">Belum ada preset tersimpan di browser ini.</p>';$$('[data-load]').forEach(b=>b.onclick=()=>loadPreset(a.find(x=>x.id===b.dataset.load)));$$('[data-del]').forEach(b=>b.onclick=()=>{localStorage.setItem('hd500-presets',JSON.stringify(getSaved().filter(x=>x.id!==b.dataset.del)));renderSaved()});}
-function loadPreset(p){if(!p)return;$$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
+function loadPreset(p){if(!p)return;$$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};activeToneParameterValues={...(p.params||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
 function exportCurrent(){let blob=new Blob([JSON.stringify(currentPreset(),null,2)],{type:'application/json'});download(blob,'pod-hd500-preset.json')}
 function importFile(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let p=JSON.parse(r.result);if(!p.name||!p.amp)throw Error();let all=getSaved();all.unshift({...p,id:String(Date.now()),updated:new Date().toISOString()});localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset berhasil diimpor.')}catch{alert('File JSON tidak dikenali sebagai preset Tone Matcher.')}};r.readAsText(f);e.target.value=''}
 function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
 
 let chainParameterValues={};
+let activeToneParameterValues={};
 function captureChainParameterValues(){
  $$('[data-chain-param-key]').forEach(input=>{
   const key=input.dataset.chainParamKey;
@@ -392,16 +404,83 @@ function getChainParameterSpecs(node){
  if(node.kind==='amp'){
   const params=['Drive','Bass','Mid','Treble','Presence','Volume'];
   if($('#ampType').value!=='Preamp')params.push('Master','Sag','Hum','Bias','Bias Excursion');
-  return {type:'amp',category:'Amplifier',description:$('#ampType').value+' · kontrol amp umum',params,note:'Nama kontrol dan fungsi beberapa amp dapat berbeda. Cocokkan label dengan layar POD HD500.'};
+  return {type:'amp',category:'Amplifier',description:$('#ampType').value+' · kontrol amp umum',params,note:'Nilai otomatis sebagai titik awal. Pemetaan kontrol amp dapat berbeda antar model.'};
  }
  if(node.kind==='cab'){
-  return {type:'cab',category:'Cabinet',description:$('#micSelect').value+' microphone',params:['Early Reflections','Low Cut','Resonance Level','Thump','Decay'],note:'Pilihan Cabinet dan Mic diatur pada bagian Amp/Cab di bawah.'};
+  return {type:'cab',category:'Cabinet',description:$('#cabSelect').value+' · '+$('#micSelect').value,params:['Early Reflections','Low Cut','Resonance Level','Thump','Decay'],note:'Nilai kabinet otomatis sebagai titik awal; sesuaikan dengan speaker dan output mode.'};
  }
  const effect=HD500_DB.effects.find(e=>e[1]===node.label);
  if(effect){
-  return {type:'effect',category:effect[0],description:'Parameter model sesuai database POD HD500',params:effect[2].split('|'),note:'Masukkan nilai sesuai layar POD. Unit/rentang ditampilkan hanya bila tercantum dalam referensi.'};
+  return {type:'effect',category:effect[0],description:'Rekomendasi otomatis untuk '+effect[1],params:effect[2].split('|'),note:'Semua angka terisi otomatis sebagai starting point berdasarkan jenis efek dan karakter amp, bukan preset resmi atau hasil pembacaan audio.'};
  }
- return {type:'effect',category:node.category||'Effect',description:'Custom block',params:['Level','Tone','Mix'],note:'Blok khusus; nama parameter adalah kontrol umum dan perlu diverifikasi pada perangkat.'};
+ return {type:'effect',category:node.category||'Effect',description:'Custom block · kontrol generik',params:['Level','Tone','Mix'],note:'Blok khusus menggunakan nilai awal otomatis generik.'};
+}
+function getAutoChainParameterValue(node,param,spec){
+ const ampName=$('#ampSelect').value||node.label;
+ const ampText=ampName.toLowerCase();
+ const highGain=/treadplate|angel|uber|doom|epic|fireball|j-800|solo 100 od/.test(ampText);
+ const clean=/blackface|class a|hiway|super o|gibtone|flip top/.test(ampText);
+ const profileDrive=Number(activeToneParameterValues.Drive);
+ const drive=Number.isFinite(profileDrive)&&profileDrive>0?profileDrive:(highGain?68:clean?28:48);
+ const base={Drive:drive,Bass:Number(activeToneParameterValues.Bass)||48,Mid:Number(activeToneParameterValues.Mid)||55,Treble:Number(activeToneParameterValues.Treble)||58,Presence:Number(activeToneParameterValues.Presence)||50,Volume:Number(activeToneParameterValues.Volume)||70};
+ if(spec.type==='amp'){
+  const ampDefaults={Drive:base.Drive,Bass:base.Bass,Mid:base.Mid,Treble:base.Treble,Presence:base.Presence,Volume:base.Volume,Master:65,Sag:highGain?42:52,Hum:0,Bias:50,'Bias Excursion':50};
+  return String(activeToneParameterValues[param]??ampDefaults[param]??50);
+ }
+ if(spec.type==='cab'){
+  const cabDefaults={'Early Reflections':15,'Low Cut':80,'Resonance Level':50,Thump:42,Decay:28};
+  return String(cabDefaults[param]??50);
+ }
+ const category=spec.category.toLowerCase(),model=node.label.toLowerCase(),p=param.toLowerCase();
+ const isEq=category.includes('eq')||model.includes('eq');
+ const isDelay=category==='delay'||model.includes('echo')||model.includes('delay');
+ const isReverb=category==='reverb'||/plate|room|hall|spring|chamber|cave|verb/.test(model);
+ const isMod=category==='modulation'||/chorus|flanger|phaser|tremolo|vibe|rotary/.test(model);
+ const isGate=/gate/.test(model);
+ const isComp=category==='dynamics'||/comp/.test(model);
+ const isDist=category==='distortion'||/drive|dist|fuzz|screamer/.test(model);
+ const mix=isReverb?24:isDelay?23:isMod?22:category==='filter'?28:category==='wah'?100:18;
+ if(/^(mix)$/.test(p))return String(mix);
+ if(/^(output|level|volume|volume level)$/.test(p))return p==='volume level'?'70':'65';
+ if(/^(drive|gain)$/.test(p))return String(isDist?Math.max(16,Math.min(38,Math.round((drive-35)*0.48))):isComp?30:48);
+ if(p==='bass')return String(isDist?46:48);
+ if(p==='mid'||p==='middle')return String(base.Mid);
+ if(p==='treble'||p==='tone')return String(base.Treble);
+ if(p==='presence')return String(base.Presence);
+ if(p==='comp'||p==='sustain'||p==='sensitivity'||p==='amount')return String(p==='amount'?36:42);
+ if(p.includes('threshold'))return String(isGate?38:45);
+ if(p==='hold')return '5';
+ if(p==='decay')return String(isGate?18:isReverb?(model.includes('hall')?58:model.includes('plate')?44:model.includes('spring')?32:38):25);
+ if(p==='predelay')return '24';
+ if(p==='time'||p==='l time'||p==='r time')return '380';
+ if(p.includes('fdbk')||p.includes('regen'))return '22';
+ if(p==='speed'||p==='modspd'||p==='swp spd'||p==='pan spd')return '1.2';
+ if(p==='depth'||p==='depth2'||p==='depth3'||p==='swp dep'||p==='width'||p==='horn dep')return '32';
+ if(p==='manual')return '50';
+ if(p==='position')return '50';
+ if(p==='pan'||p==='pan l-r balance'||p==='spread')return '50';
+ if(p==='offset')return '0';
+ if(p==='freq'||p==='low frequency'||p==='mid frequency'||p==='hi freq'||p==='low freq')return isEq?'1000':'900';
+ if(p.includes('high pass freq')||p==='hi pass filter')return '80';
+ if(p.includes('low pass freq')||p==='lo pass filter')return '8';
+ if(p.includes('cut'))return p==='high cut'?'10':'80';
+ if(p==='q'||p.endsWith(' q'))return '0.7';
+ if(p==='gain'||p==='low gain'||p==='hi gain'||p==='mid gain'||/^\d+(\.\d+)?khz$/.test(p)||/^\d+hz$/.test(p))return '0';
+ if(p==='lows'||p==='highs'||p==='low'||p==='low mid'||p==='hi mid'||p==='hi'||p==='shift')return '0';
+ if(p==='phase')return '0';
+ if(p==='pitch'||p==='shift')return '0';
+ if(p==='normal')return '65';
+ if(p==='octave'||p==='sub')return '35';
+ if(p==='volsens'||p==='vol sens')return '40';
+ if(p==='rise'||p==='swell')return '0';
+ if(p==='input'||p==='mic'||p==='mode'||p==='type'||p==='scale'||p==='wave'||p==='shape'||p==='auto'||p==='am/fm'||p==='lfo shp'||p==='even odd'||p==='condition'||p==='heads 1-2'||p==='heads 3-4'||p==='sw1'||p==='sw2'||p==='sw3'||p==='sw4'||/^step \d+$/.test(p))return '1';
+ if(p==='fdbk')return '22';
+ if(isEq)return '0';
+ if(isDelay)return '23';
+ if(isReverb)return '24';
+ if(isMod)return '32';
+ if(isComp)return '42';
+ return 50;
 }
 function renderChainParameterPanels(nodes){
  const host=$('#chainParameterList');if(!host)return;
@@ -412,17 +491,13 @@ function renderChainParameterPanels(nodes){
    const key=getChainParameterKey(node,index,nodes,param);
    const meta=HD500_DB.parameterMeta?.[param];
    const extra=meta?'<small>'+esc(meta.unit)+' · '+esc(meta.range)+'</small>':'';
-   const dataAttr=spec.type==='amp'?' data-knob="'+esc(param)+'"':'';
-   return '<label>'+esc(param)+'<input type="text" inputmode="decimal" placeholder="Isi sesuai layar POD" data-chain-param-key="'+esc(key)+'"'+dataAttr+' value="'+esc(chainParameterValues[key]||'')+'">'+extra+'</label>';
+   if(chainParameterValues[key]===undefined||chainParameterValues[key]==='')chainParameterValues[key]=getAutoChainParameterValue(node,param,spec);
+   const value=String(chainParameterValues[key]);
+   return '<label>'+esc(param)+'<div class="chain-param-value"><strong>'+esc(value)+'</strong><small>AUTO</small></div>'+extra+'</label>';
   }).join('');
   panels.push('<article class="chain-param-card chain-param-card--'+spec.type+'"><div class="chain-param-card-head"><div><span class="chain-param-category">'+esc(spec.category)+'</span><h4>'+esc(node.label)+'</h4><small>'+esc(spec.description)+'</small></div><span class="chain-node-number">'+String(index+1).padStart(2,'0')+'</span></div><div class="chain-param-grid">'+fields+'</div><p class="chain-param-note">'+esc(spec.note)+'</p></article>');
  });
  host.innerHTML=panels.length?panels.join(''):'<p class="chain-param-empty">Belum ada blok amp atau efek. Panel parameter akan muncul otomatis setelah Signal Chain terisi.</p>';
- host.querySelectorAll('[data-chain-param-key]').forEach(input=>input.addEventListener('input',()=>{
-  const key=input.dataset.chainParamKey;
-  if(input.value.trim())chainParameterValues[key]=input.value.trim();
-  else delete chainParameterValues[key];
- }));
 }
 function setupSignalChainScroll(){
  const canvas=$('#signalChainCanvas');if(!canvas||canvas.dataset.dragScrollReady)return;
@@ -449,7 +524,7 @@ function setupSignalChainEditor(){
  $('#chainCategory').onchange=renderChainModels;
  $('#addChainBlock').onclick=addSignalChainBlock;
  $('#fxChain').addEventListener('input',renderSignalChain);
- $('#ampSelect').addEventListener('change',renderSignalChain);
+ $('#ampSelect').addEventListener('change',()=>{activeToneParameterValues={};chainParameterValues={};renderSignalChain();});
  $('#ampType').addEventListener('change',renderSignalChain);
  $('#outputMode').addEventListener('change',renderSignalChain);
  renderChainModels();
