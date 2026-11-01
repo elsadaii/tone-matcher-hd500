@@ -57,6 +57,7 @@
 .chain-knob-dial:before{position:absolute;inset:3px;border:1px solid #ffffff12;border-radius:50%;content:""}
 .chain-knob-dial:after{position:absolute;top:3px;left:50%;width:2px;height:8px;border-radius:2px;background:#e6edf3;content:"";transform:translateX(-50%) rotate(var(--knob-angle,0deg));transform-origin:50% 10px;box-shadow:0 0 3px #fff8}
 .chain-knob small{display:block;overflow:hidden;color:#aebbc8;font-size:7px;font-weight:800;letter-spacing:.04em;line-height:1.1;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.chain-knob .chain-knob-reading{margin-top:2px;color:var(--lime);font-size:8px;font-weight:900;letter-spacing:0;text-transform:none}
 .chain-node--amp .chain-knob-dial{width:27px;height:27px;background:radial-gradient(circle at 34% 28%,#b98c6c 0,#79543e 24%,#342a26 60%,#17191d 78%)}
 .chain-node--cab .chain-knob-dial{background:radial-gradient(circle at 34% 28%,#aab6c2 0,#647382 24%,#303a44 60%,#171e26 78%)}
 .chain-node--amp .chain-node-knobs{margin-top:13px}
@@ -482,8 +483,20 @@ function getAutoChainParameterValue(node,param,spec){
  if(isComp)return '42';
  return 50;
 }
+function ensureChainParameterValues(nodes){
+ nodes.forEach((node,index)=>{
+  const spec=getChainParameterSpecs(node);
+  spec.params.forEach(param=>{
+   const key=getChainParameterKey(node,index,nodes,param);
+   if(chainParameterValues[key]===undefined||chainParameterValues[key]===''){
+    chainParameterValues[key]=getAutoChainParameterValue(node,param,spec);
+   }
+  });
+ });
+}
 function renderChainParameterPanels(nodes){
  const host=$('#chainParameterList');if(!host)return;
+ ensureChainParameterValues(nodes);
  const panels=[];
  nodes.forEach((node,index)=>{
   const spec=getChainParameterSpecs(node);
@@ -491,7 +504,6 @@ function renderChainParameterPanels(nodes){
    const key=getChainParameterKey(node,index,nodes,param);
    const meta=HD500_DB.parameterMeta?.[param];
    const extra=meta?'<small>'+esc(meta.unit)+' · '+esc(meta.range)+'</small>':'';
-   if(chainParameterValues[key]===undefined||chainParameterValues[key]==='')chainParameterValues[key]=getAutoChainParameterValue(node,param,spec);
    const value=String(chainParameterValues[key]);
    return '<label>'+esc(param)+'<div class="chain-param-value"><strong>'+esc(value)+'</strong><small>AUTO</small></div>'+extra+'</label>';
   }).join('');
@@ -580,27 +592,54 @@ function getSignalChainNodes(){
  return nodes;
 }
 function getChainKnobLabels(node){
- if(node.kind==='amp')return ['Drive','Bass','Mid','Treble','Presence','Volume'];
- if(node.kind==='cab')return ['Early Ref','Low Cut','Thump','Decay'];
- const effect=HD500_DB.effects.find(e=>e[1]===node.label);
- if(effect)return effect[2].split('|').slice(0,5);
- return ['Level','Tone','Mix'];
+ const spec=getChainParameterSpecs(node);
+ return spec.params.slice(0,node.kind==='amp'?6:5);
 }
-function renderChainKnobs(node){
+function getChainKnobAngle(node,index,nodes,param){
+ const spec=getChainParameterSpecs(node);
+ const key=getChainParameterKey(node,index,nodes,param);
+ const raw=chainParameterValues[key]??getAutoChainParameterValue(node,param,spec);
+ const value=Number(String(raw).replace(',','.'));
+ if(!Number.isFinite(value))return 0;
+ const p=param.toLowerCase();
+ let position;
+ if(/^(time|l time|r time|predelay)$/.test(p)){
+  position=Math.max(0,Math.min(1,value/2000));
+ }else if(/freq|cut/.test(p)){
+  const min=20,max=20000;
+  position=Math.max(0,Math.min(1,Math.log(Math.max(min,value)/min)/Math.log(max/min)));
+ }else if(/speed/.test(p)){
+  const min=.1,max=10;
+  position=Math.max(0,Math.min(1,Math.log(Math.max(min,value)/min)/Math.log(max/min)));
+ }else if(/(^q$| q$)/.test(p)){
+  const min=.1,max=10;
+  position=Math.max(0,Math.min(1,Math.log(Math.max(min,value)/min)/Math.log(max/min)));
+ }else{
+  position=Math.max(0,Math.min(1,value/100));
+ }
+ return Math.round(-135+(position*270));
+}
+function renderChainKnobs(node,index,nodes){
  const labels=getChainKnobLabels(node);
- const angles=[-52,-31,-9,14,36,55];
- return '<div class="chain-node-knobs" aria-label="Tampilan knob visual, bukan kontrol parameter">'+labels.map((name,i)=>'<div class="chain-knob"><span class="chain-knob-dial" style="--knob-angle:'+angles[i%angles.length]+'deg"></span><small>'+esc(name)+'</small></div>').join('')+'</div>';
+ const spec=getChainParameterSpecs(node);
+ return '<div class="chain-node-knobs" aria-label="Knob visual mengikuti nilai pada panel parameter">'+labels.map(name=>{
+  const key=getChainParameterKey(node,index,nodes,name);
+  const value=String(chainParameterValues[key]??getAutoChainParameterValue(node,name,spec));
+  const angle=getChainKnobAngle(node,index,nodes,name);
+  return '<div class="chain-knob" title="'+esc(name+': '+value)+'"><span class="chain-knob-dial" style="--knob-angle:'+angle+'deg"></span><small>'+esc(name)+'</small><small class="chain-knob-reading">'+esc(value)+'</small></div>';
+ }).join('')+'</div>';
 }
 function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
  const nodes=getSignalChainNodes();
+ ensureChainParameterValues(nodes);
  let html='<div class="chain-endpoint"><div class="chain-endpoint-icon">⌁</div><strong>INPUT</strong><small>Guitar</small></div>';
  if(!nodes.length)html+='<div class="chain-link"></div><div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
  else nodes.forEach((node,i)=>{
   html+='<div class="chain-link"></div><div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
-  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small>'+renderChainKnobs(node)+'</div>';
+  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small>'+renderChainKnobs(node,i,nodes)+'</div>';
   html+='</article></div>';
  });
  html+='<div class="chain-link"></div><div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
