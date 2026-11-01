@@ -78,7 +78,7 @@ async function searchYouTube(q, env) {
   url.searchParams.set("part", "snippet");
   url.searchParams.set("q", q);
   url.searchParams.set("type", "video");
-  url.searchParams.set("maxResults", "10");
+  url.searchParams.set("maxResults", "50");
   url.searchParams.set("key", env.YOUTUBE_API_KEY);
   const response = await fetch(url);
   if (!response.ok) throw new Error("YouTube search gagal (" + response.status + ").");
