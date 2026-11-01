@@ -741,14 +741,14 @@ function renderSignalChain(){
  const nodes=getSignalChainNodes();
  ensureChainParameterValues(nodes);
  let html='<div class="chain-endpoint"><div class="chain-endpoint-icon">⌁</div><strong>INPUT</strong><small>Guitar</small></div>';
- if(!nodes.length)html+='${renderPatchCable()}<div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
+ if(!nodes.length)html+=renderPatchCable()+'<div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
  else nodes.forEach((node,i)=>{
-  html+='${renderPatchCable()}<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
+  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small>'+renderChainKnobs(node,i,nodes)+'</div>';
   html+='</article></div>';
  });
- html+='${renderPatchCable()}<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
+ html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
  canvas.innerHTML=html;
  $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Geser tampilan untuk melihat blok lainnya</span>';
  renderChainParameterPanels(nodes);
