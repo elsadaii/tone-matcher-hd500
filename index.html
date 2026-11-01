@@ -578,22 +578,18 @@ function readTempoSystemSettings(){
  }catch{tempoSystemSettings={mode:'Preset',globalBpm:120};}
 }
 function persistTempoSystemSettings(){
- tempoSystemSettings.mode=$('#tempoSyncMode').value==='Global'?'Global':'Preset';
- const bpm=Number($('#globalTempoBpm').value);
- tempoSystemSettings.globalBpm=Number.isFinite(bpm)&&bpm>0?bpm:120;
  try{localStorage.setItem('hd500-tempo-system-settings',JSON.stringify(tempoSystemSettings));}catch{}
  syncTempoSettingsUI();
- renderSignalChain();
 }
 function syncTempoSettingsUI(){
- const mode=$('#tempoSyncMode')?.value||tempoSystemSettings.mode;
- const globalField=$('#globalTempoBpm');
- if(globalField)globalField.disabled=mode!=='Global';
- const hint=$('#tempoSettingsHint');
- if(hint){
-  const bpm=mode==='Global'?tempoSystemSettings.globalBpm:(Number($('#tempoBpm')?.value)||120);
-  hint.textContent=(mode==='Global'?'Global: semua preset memakai tempo global '+bpm+' BPM.':'Preset: efek tersinkron memakai BPM preset ('+(Number($('#tempoBpm')?.value)||120)+' BPM).')+' Trails On mempertahankan ekor Delay/Reverb saat model dimatikan; tidak memberi spillover saat pindah preset.';
- }
+ $$('[data-tempo-preset]').forEach(input=>input.value=tempoPresetBpm);
+ $$('[data-tempo-mode]').forEach(select=>select.value=tempoSystemSettings.mode);
+ $$('[data-tempo-global]').forEach(input=>{
+  input.value=tempoSystemSettings.globalBpm;
+  input.disabled=tempoSystemSettings.mode!=='Global';
+ });
+ $$('[data-tempo-trails]').forEach(select=>select.value=trailsEnabled);
+ $$('[data-tempo-tap-status]').forEach(status=>status.textContent=tempoTapStatus);
 }
 function handleTempoTap(){
  const now=Date.now();
@@ -605,37 +601,31 @@ function handleTempoTap(){
  tempoTapMoments.push(now);
  if(tempoTapMoments.length>6)tempoTapMoments.shift();
  if(tempoTapMoments.length<2){
-  $('#tempoTapStatus').textContent='Ketuk lagi mengikuti ketukan lagu.';
+  tempoTapStatus='Ketuk lagi mengikuti ketukan lagu.';
+  syncTempoSettingsUI();
   return;
  }
  const intervals=[];
  for(let i=1;i<tempoTapMoments.length;i++)intervals.push(tempoTapMoments[i]-tempoTapMoments[i-1]);
  const average=intervals.reduce((sum,n)=>sum+n,0)/intervals.length;
  const bpm=Math.round((60000/average)*10)/10;
- if($('#tempoSyncMode').value==='Global'){
-  $('#globalTempoBpm').value=bpm;
+ if(tempoSystemSettings.mode==='Global'){
+  tempoSystemSettings.globalBpm=bpm;
   persistTempoSystemSettings();
  }else{
-  $('#tempoBpm').value=bpm;
+  tempoPresetBpm=bpm;
   syncTempoSettingsUI();
-  renderSignalChain();
  }
- $('#tempoTapStatus').textContent='Tap Tempo: '+bpm+' BPM · ketuk lagi untuk memperbarui.';
+ tempoTapStatus='Tap Tempo: '+bpm+' BPM · ketuk lagi untuk memperbarui.';
+ syncTempoSettingsUI();
+ renderSignalChain();
 }
 function setupTempoControls(){
  readTempoSystemSettings();
- $('#tempoSyncMode').value=tempoSystemSettings.mode;
- $('#globalTempoBpm').value=tempoSystemSettings.globalBpm;
- $('#tempoSyncMode').addEventListener('change',persistTempoSystemSettings);
- $('#globalTempoBpm').addEventListener('change',persistTempoSystemSettings);
- $('#tapTempoBtn').addEventListener('click',handleTempoTap);
- $('#tempoBpm').addEventListener('input',()=>{syncTempoSettingsUI();renderSignalChain();});
- $('#trails').addEventListener('change',syncTempoSettingsUI);
  syncTempoSettingsUI();
 }
 function getActiveTempoBpm(){
- const mode=$('#tempoSyncMode')?.value||tempoSystemSettings.mode;
- const value=mode==='Global'?Number($('#globalTempoBpm')?.value):Number($('#tempoBpm')?.value);
+ const value=tempoSystemSettings.mode==='Global'?Number(tempoSystemSettings.globalBpm):Number(tempoPresetBpm);
  return Number.isFinite(value)&&value>0?value:120;
 }
 function getDelayDivisionMs(division,bpm=getActiveTempoBpm()){
@@ -666,7 +656,17 @@ function getDelayTimePreview(node,index,nodes,timeParam,division){
 function renderDelaySyncControls(node,index,nodes,spec){
  if(spec.category!=='Delay')return '';
  const syncParams=getDelayTimeParams(node,spec);
- if(!syncParams.length)return '';
+ const sharedControls=
+  '<div class="delay-tempo-shared">'+
+   '<div class="delay-tempo-heading"><strong>Tempo & Trails</strong><span>PRESET / GLOBAL</span></div>'+
+   '<div class="delay-tempo-grid">'+
+    '<label>Tempo Preset (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-preset value="'+tempoPresetBpm+'"></label>'+
+    '<label>System Tempo Sync<select data-tempo-mode><option value="Preset"'+(tempoSystemSettings.mode==='Preset'?' selected':'')+'>Preset</option><option value="Global"'+(tempoSystemSettings.mode==='Global'?' selected':'')+'>Global</option></select></label>'+
+    '<label>Global Tempo (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-global value="'+tempoSystemSettings.globalBpm+'"'+(tempoSystemSettings.mode!=='Global'?' disabled':'')+'></label>'+
+    '<label>Trails<select data-tempo-trails><option value="On"'+(trailsEnabled==='On'?' selected':'')+'>On</option><option value="Off"'+(trailsEnabled==='Off'?' selected':'')+'>Off</option></select></label>'+
+   '</div>'+
+   '<div class="tempo-tap-row"><button type="button" class="secondary" data-tap-tempo>● TAP TEMPO</button><span class="muted" data-tempo-tap-status>'+esc(tempoTapStatus)+'</span></div>'+
+  '</div>';
  const fields=syncParams.map(param=>{
   const key=getDelaySyncKey(node,index,nodes,param);
   const selected=getDelaySyncValue(node,index,nodes,param);
@@ -675,14 +675,37 @@ function renderDelaySyncControls(node,index,nodes,spec){
   const preview=getDelayTimePreview(node,index,nodes,param,selected);
   return '<label>'+esc(label)+'<select data-delay-sync-key="'+esc(key)+'" data-delay-sync-node="'+esc(getChainBlockKey(node,index,nodes))+'">'+options+'</select><small class="delay-sync-preview" data-delay-sync-preview="'+esc(key)+'">'+esc(preview)+'</small></label>';
  }).join('');
- const note=node.label==='Stereo Delay'?'Stereo Delay memiliki Tempo Sync kiri dan kanan secara independen.':'Pilih Off untuk waktu manual (ms), atau nilai not agar waktu mengikuti Tap Tempo.';
- return '<div class="delay-tempo-controls"><div class="delay-tempo-heading"><strong>Tempo Sync</strong><span>DELAY</span></div><div class="delay-tempo-grid">'+fields+'</div><p class="delay-tempo-note">'+esc(note)+'</p></div>';
+ const syncControls=syncParams.length?'<div class="delay-tempo-sync"><div class="delay-tempo-heading"><strong>Tempo Sync per Efek</strong><span>'+esc(node.label)+'</span></div><div class="delay-tempo-grid">'+fields+'</div><p class="delay-tempo-note">'+(node.label==='Stereo Delay'?'Sync Left dan Sync Right bekerja independen.':'Pilih Off untuk Time manual (ms), atau pembagian not untuk mengikuti tempo aktif.')+'</p></div>':'';
+ return '<div class="delay-tempo-controls">'+sharedControls+syncControls+'</div>';
 }
 function bindDelaySyncControls(){
- $$('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
+ $('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
   chainDelaySettings[select.dataset.delaySyncKey]=select.value;
   renderSignalChain();
  }));
+ $('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
+  const bpm=Number(input.value);
+  if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
+  syncTempoSettingsUI();
+  renderSignalChain();
+ }));
+ $('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
+  tempoSystemSettings.mode=select.value==='Global'?'Global':'Preset';
+  persistTempoSystemSettings();
+  renderSignalChain();
+ }));
+ $('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
+  const bpm=Number(input.value);
+  if(Number.isFinite(bpm)&&bpm>0)tempoSystemSettings.globalBpm=bpm;
+  persistTempoSystemSettings();
+  renderSignalChain();
+ }));
+ $('[data-tempo-trails]').forEach(select=>select.addEventListener('change',()=>{
+  trailsEnabled=select.value==='Off'?'Off':'On';
+  syncTempoSettingsUI();
+  renderSignalChain();
+ }));
+ $('[data-tap-tempo]').forEach(button=>button.addEventListener('click',handleTempoTap));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
  const spec=getChainParameterSpecs(node);
