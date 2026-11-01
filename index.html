@@ -656,7 +656,7 @@ function renderDelaySyncControls(node,index,nodes,spec){
  return '<div class="delay-tempo-controls"><div class="delay-tempo-heading"><strong>Tempo Sync</strong><span>DELAY</span></div><div class="delay-tempo-grid">'+fields+'</div><p class="delay-tempo-note">'+esc(note)+'</p></div>';
 }
 function bindDelaySyncControls(){
- $('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
+ $$('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
   chainDelaySettings[select.dataset.delaySyncKey]=select.value;
   renderSignalChain();
  }));
