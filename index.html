@@ -4,11 +4,60 @@
 .fx-builder{margin-top:22px;padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025)}.fx-builder h3{margin:0 0 14px}.knob-grid small{display:block;color:var(--muted);font-size:10px;font-weight:400;line-height:1.35;margin:3px 0 5px}
 .advanced-block{margin:18px 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:#121a24}.advanced-block h3{margin:0 0 12px;font-size:15px}.file-report{margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#111923;overflow-wrap:anywhere}.file-report h3{margin:0 0 8px}.file-report pre{white-space:pre-wrap;word-break:break-all;color:#c5f36b;font-size:11px}.file-report .ok{color:var(--lime)}.file-report .warn{color:var(--orange)}
 
+
+/* Modern multi-effects signal chain */
+.signal-chain-editor{margin:20px 0 24px;padding:18px;border:1px solid #354455;border-radius:16px;background:linear-gradient(155deg,#182330 0%,#111923 75%);box-shadow:inset 0 1px 0 #ffffff08}
+.signal-chain-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.signal-chain-heading h3{font-size:21px;letter-spacing:-.03em;margin:2px 0 4px}
+.signal-chain-heading .eyebrow{margin:0}.signal-chain-heading .muted{margin:0}
+.chain-live-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid #405348;border-radius:20px;color:#c5f36b;font-size:9px;font-weight:800;letter-spacing:.13em;white-space:nowrap}
+.chain-live-badge i{width:7px;height:7px;border-radius:50%;background:#c5f36b;box-shadow:0 0 9px #c5f36b99}
+.signal-chain-add{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(160px,1.2fr) auto;gap:9px;align-items:end;margin-bottom:12px;padding:12px;border:1px solid #2e3c4b;border-radius:11px;background:#101821}
+.signal-chain-add label{font-size:10px;color:#aeb9c6;margin:0}
+.signal-chain-add select{margin-top:5px;padding:9px 10px;font-size:12px}
+.signal-chain-add button{padding:10px 13px;font-size:12px;white-space:nowrap}
+.signal-chain-canvas{display:flex;align-items:stretch;gap:0;min-height:174px;overflow-x:auto;overflow-y:hidden;padding:15px 5px 17px;scrollbar-color:#536477 #182330;scrollbar-width:thin}
+.chain-endpoint{flex:0 0 76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#8493a3;text-align:center}
+.chain-endpoint-icon{display:grid;place-items:center;width:42px;height:42px;border:1px solid #526274;border-radius:12px;background:#263444;color:#d5e0ea;font-size:18px;box-shadow:0 5px 14px #0004}
+.chain-endpoint strong{font-size:9px;letter-spacing:.13em}.chain-endpoint small{font-size:9px;color:#6f7e8e}
+.chain-link{position:relative;align-self:center;flex:0 0 26px;height:2px;margin-top:-25px;background:linear-gradient(90deg,#536577,#9aa9b9)}
+.chain-link:after{position:absolute;right:-1px;top:-4px;content:"";border-left:7px solid #9aa9b9;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.chain-slot{flex:0 0 154px;width:154px;display:flex;align-items:stretch}
+.chain-node{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:100%;min-height:140px;padding:11px 10px 9px;border:1px solid #4a5a6b;border-top:3px solid var(--node-accent,#8da1b7);border-radius:11px;background:linear-gradient(155deg,#263444,#1a2531);box-shadow:0 8px 18px #0005,inset 0 1px 0 #ffffff0b}
+.chain-node--dynamics{--node-accent:#e0b45b}.chain-node--distortion{--node-accent:#ef795e}.chain-node--modulation{--node-accent:#5dc6bc}.chain-node--filter{--node-accent:#af8ae8}.chain-node--pitch{--node-accent:#80a6ec}.chain-node--eq,.chain-node--preamp-eq{--node-accent:#d0a1dc}.chain-node--delay{--node-accent:#69a9ec}.chain-node--reverb{--node-accent:#5cbf91}.chain-node--wah{--node-accent:#d9ad62}.chain-node--amp{--node-accent:#f08c55;background:linear-gradient(155deg,#493329,#28252a)}.chain-node--cab{--node-accent:#9aa9b8;background:linear-gradient(155deg,#34404b,#202a35)}.chain-node--other{--node-accent:#9babbc}
+.chain-node-top{display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:9px}
+.chain-node-type{color:var(--node-accent);font-size:8px;font-weight:900;letter-spacing:.15em;text-transform:uppercase}
+.chain-node-number{color:#788797;font-size:9px;font-family:ui-monospace,monospace}
+.chain-node-name{display:block;min-height:35px;color:#f1f5f8;font-size:13px;font-weight:850;line-height:1.2;overflow-wrap:anywhere}
+.chain-node-sub{display:block;margin-top:5px;color:#9eacba;font-size:9px;line-height:1.25}
+.chain-node-actions{display:flex;gap:5px;justify-content:flex-end;margin-top:10px;padding-top:8px;border-top:1px solid #ffffff12}
+.chain-node-actions button{min-width:25px;padding:4px 7px;border:1px solid #526274;border-radius:5px;background:#111a24;color:#d7e1e9;font-size:11px;line-height:1.1}
+.chain-node-actions button:hover{border-color:#c5f36b;color:#c5f36b}
+.chain-node-actions button:disabled{opacity:.25;cursor:not-allowed}
+.chain-node-actions .chain-remove{margin-left:auto;color:#f09b8c}
+.chain-empty{align-self:center;min-width:235px;padding:20px;border:1px dashed #526274;border-radius:10px;color:#9eacba;font-size:12px;text-align:center}
+.signal-chain-summary{display:flex;justify-content:space-between;gap:12px;padding:9px 3px 0;color:#8797a7;font-size:10px}
+.signal-chain-summary strong{color:#c5f36b;font-weight:700}
+.chain-text-editor{margin-top:13px;border-top:1px solid #2e3c4b;padding-top:10px}
+.chain-text-editor summary{color:#9eacba;font-size:11px;cursor:pointer}
+.chain-text-editor textarea{margin-top:9px}.chain-text-editor .muted{margin:6px 0 0}
+@media(max-width:600px){.signal-chain-editor{padding:13px}.signal-chain-heading{display:block}.chain-live-badge{margin-top:10px}.signal-chain-add{grid-template-columns:1fr 1fr}.signal-chain-add button{grid-column:1/-1}.signal-chain-canvas{min-height:162px}.chain-slot{flex-basis:143px;width:143px}.chain-node{min-height:135px}.chain-endpoint{flex-basis:64px}.chain-link{flex-basis:20px}}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
 <div id="onlineArtistResults" class="tone-grid" style="margin-top:18px"></div><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
-<section id="editor" class="panel"><div class="section-head"><div><p class="eyebrow">02 / BUILD</p><h2>Preset Builder</h2></div><span class="tag">LOCAL PRESET</span></div><div class="builder-grid"><div class="form-card"><label>Nama preset<input id="presetName" value="My HD500 Tone"></label><div class="field-grid"><label>Model Amp<select id="ampSelect"></select></label><label>Jenis blok<select id="ampType"><option value="Full Amp">Full Amp</option><option value="Preamp">Preamp</option></select></label></div><div class="field-grid"><label>Cabinet<select id="cabSelect"></select></label><label>Mic<select id="micSelect"></select></label></div><label>Output Mode<select id="outputMode"><option>Studio/Direct</option><option>Combo Front</option><option>Stack Front</option><option>Combo Power Amp</option><option>Stack Power Amp</option></select></label><div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div><div class="knob-grid" id="ampKnobs"></div><label>Urutan efek / signal chain<textarea id="fxChain" rows="3" placeholder="Noise Gate → Screamer → Amp → Analog Chorus → Digital Delay → Plate"></textarea></label>
+<section id="editor" class="panel"><div class="section-head"><div><p class="eyebrow">02 / BUILD</p><h2>Preset Builder</h2></div><span class="tag">LOCAL PRESET</span></div><div class="builder-grid"><div class="form-card"><label>Nama preset<input id="presetName" value="My HD500 Tone"></label><div class="field-grid"><label>Model Amp<select id="ampSelect"></select></label><label>Jenis blok<select id="ampType"><option value="Full Amp">Full Amp</option><option value="Preamp">Preamp</option></select></label></div><div class="field-grid"><label>Cabinet<select id="cabSelect"></select></label><label>Mic<select id="micSelect"></select></label></div><label>Output Mode<select id="outputMode"><option>Studio/Direct</option><option>Combo Front</option><option>Stack Front</option><option>Combo Power Amp</option><option>Stack Power Amp</option></select></label><div class="advanced-block"><h3>Input & Mixer</h3><div class="field-grid"><label>Input 1<select id="input1"><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option>Same</option><option> guitar+Variax </option></select></label><label>Input 2<select id="input2"><option>Same</option><option>Guitar</option><option>Variax</option><option>Mic</option><option>Aux</option><option> guitar+Variax </option></select></label><label>Guitar In-Z<select id="inputZ"><option>Auto</option><option>1M</option><option>230k</option><option>136k</option><option>90k</option><option>68k</option><option>32k</option></select></label><label>Pan A<input id="panA" placeholder="Center / 0"></label><label>Level A<input id="levelA" placeholder="dB / value"></label><label>Pan B<input id="panB" placeholder="Center / 0"></label><label>Level B<input id="levelB" placeholder="dB / value"></label></div><p class="muted">Mixer A/B, Input routing, dan Guitar In-Z disimpan sebagai catatan setting. Masukkan nilai persis dari perangkat; nilai belum diisi otomatis.</p></div><div class="knob-grid" id="ampKnobs"></div><section class="signal-chain-editor" aria-label="Visual signal chain editor">
+ <div class="signal-chain-heading"><div><p class="eyebrow">SIGNAL ROUTING</p><h3>Signal Chain</h3><p class="muted">Susun blok efek seperti multi-efek digital. Gunakan panah untuk mengubah urutan.</p></div><span class="chain-live-badge"><i></i> VISUAL BUILDER</span></div>
+ <div class="signal-chain-add">
+  <label>Kategori<select id="chainCategory"></select></label>
+  <label>Model efek<select id="chainModel"></select></label>
+  <button id="addChainBlock" type="button">＋ Tambah blok</button>
+ </div>
+ <div id="signalChainCanvas" class="signal-chain-canvas" aria-live="polite"></div>
+ <div id="signalChainSummary" class="signal-chain-summary"></div>
+ <details class="chain-text-editor"><summary>Edit teks signal chain secara manual</summary><textarea id="fxChain" rows="3" placeholder="Noise Gate → Screamer → Amp → Analog Chorus → Digital Delay → Plate"></textarea><p class="muted">Pisahkan setiap blok dengan tanda panah (→). Tampilan blok akan mengikuti teks ini.</p></details>
+</section>
 <div class="fx-builder"><h3>Editor parameter satu efek</h3><div class="field-grid"><label>Kategori<select id="fxCategory"><option>Dynamics</option><option>Distortion</option><option>Modulation</option><option>Filter</option><option>Pitch</option><option>EQ</option><option>Preamp+EQ</option><option>Delay</option><option>Reverb</option><option>Wah</option><option>Volume/Pan</option></select></label><label>Model efek<select id="fxModel"></select></label></div><div id="fxParamFields" class="knob-grid"></div><p class="muted">Parameter ditampilkan sesuai model yang dipilih. Isi nilai persis seperti yang terlihat pada layar POD HD500; satuan/rentang hanya dicantumkan bila didukung manual.</p></div><label>Catatan<textarea id="notes" rows="2" placeholder="Gitar, pickup, tuning, output mode, dll."></textarea></label><div class="actions"><button id="savePreset">Simpan preset</button><button class="secondary" id="exportPreset">Export JSON</button></div></div><aside class="info-card"><p class="eyebrow">CATATAN PARAMETER</p><h3>Nilai sesuai layar POD</h3><p>Kolom parameter disimpan sebagai angka/teks yang kamu masukkan. Guide resmi menjelaskan nama kontrol dan fungsi, tetapi tidak memberikan satu rentang numerik universal untuk semua knob/model.</p><ul><li>Drive, Bass, Mid, Treble, Presence, Volume</li><li>Power amp: Master, Sag, Hum, Bias, Bias Excursion</li><li>Cab: Early Reflections, Cab, Mic</li></ul><p class="muted">Untuk beberapa amp, label knob berubah mengikuti desain amp (misalnya CUT atau TONE).</p></aside></div></section>
 <section id="database" class="panel"><div class="section-head"><div><p class="eyebrow">03 / REFERENCE</p><h2>Database parameter asli</h2></div><span class="tag">MANUAL-BASED</span></div><div class="db-tools"><input id="dbSearch" placeholder="Cari model, parameter, kategori…"><select id="dbCategory"><option value="all">Semua kategori</option><option>Amp</option><option>Cab</option><option>Dynamics</option><option>Distortion</option><option>Modulation</option><option>Filter</option><option>Pitch</option><option>EQ</option><option>Preamp+EQ</option><option>Delay</option><option>Reverb</option><option>Wah</option><option>Volume/Pan</option><option>Global EQ</option></select></div><div id="dbResults" class="db-list"></div><p class="hint">Daftar model dan nama kontrol ditranskripsikan dari POD HD500 Advanced Guide v2.10. Rentang angka tidak ditebak; Model Pack Metal/Vintage/Bass bersifat opsional. Mic bass tersedia sebagai daftar khusus saat memakai cab Flip Top.</p></section>
 <section id="saved" class="panel"><div class="section-head"><div><p class="eyebrow">04 / YOUR LIBRARY</p><h2>Preset tersimpan</h2></div><button class="secondary" id="importPreset">Import JSON</button><input type="file" id="importFile" accept="application/json" hidden></div><div id="savedResults"></div></section><section id="devicefiles" class="panel"><div class="section-head"><div><p class="eyebrow">05 / DEVICE FILES</p><h2>Impor file POD HD500</h2></div><span class="tag">H5E · H5S · H5B</span></div><div class="form-card"><p>Unggah preset asli <b>.h5e</b>, Set List <b>.h5s</b>, atau Bundle <b>.h5b</b> dari POD HD500 Edit. Alat ini akan memeriksa jenis file, ukuran, signature, dan fragmen teks yang terbaca.</p><label>Pilih file POD<input type="file" id="podFile" accept=".h5e,.h5s,.h5b,.5xe,application/octet-stream"></label><div id="podFileReport" class="file-report"><p class="muted">Belum ada file dipilih.</p></div><p class="hint">Penting: format preset Line 6 bukan JSON terbuka. Versi ini belum mengubah byte .h5e menjadi parameter amp/efek, dan tidak membuat file .h5e palsu. Untuk mengembangkan pembaca penuh, perlu sampel file .h5e asli dari perangkatmu untuk menguji hasil decode.</p></div></section>
@@ -98,9 +147,10 @@ const tones=[
  {artist:'Iron Maiden',song:'The Trooper',genre:'NWOBHM · Lead',amp:'Brit J-800',values:['Drive','65','Bass','49','Mid','64','Treble','65','Presence','58','Volume','70'],chain:'Noise Gate → Screamer → Brit J-800 → 4x12 cab → Delay (lead)',notes:'Bridge humbucker; adjust mids for band mix.'}
 ];
 function init(){
- $('#ampSelect').innerHTML=HD500_DB.amps.map(a=>`<option>${a[0]}</option>`).join('');$('#cabSelect').innerHTML=HD500_DB.cabs.map(x=>`<option>${x}</option>`).join('');$('#micSelect').innerHTML=HD500_DB.mics.map(x=>`<option>${x}</option>`).join('');$('#cabSelect').addEventListener('change',syncMicChoices);syncMicChoices();
+ $('#ampSelect').innerHTML=HD500_DB.amps.map(a=>`<option>${a[0]}</option>`).join('');$('#cabSelect').innerHTML=HD500_DB.cabs.map(x=>`<option>${x}</option>`).join('');$('#micSelect').innerHTML=HD500_DB.mics.map(x=>`<option>${x}</option>`).join('');$('#cabSelect').addEventListener('change',()=>{syncMicChoices();renderSignalChain();});syncMicChoices();
  $('#ampKnobs').innerHTML=['Drive','Bass','Mid','Treble','Presence','Volume','Master','Sag','Hum','Bias','Bias Excursion','Early Reflections','Low Cut','Resonance Level','Thump','Decay'].map(k=>`<label>${k}<input data-knob="${k}" placeholder="—" inputmode="decimal"></label>`).join('');
  setupFxBuilder();
+ setupSignalChainEditor();renderSignalChain();
  renderTones(tones);renderDb();renderSaved();
  $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
  $('#searchBtn').onclick=searchTones;$('#toneSearch').addEventListener('keydown',e=>{if(e.key==='Enter')searchTones()});$('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#fxCategory').onchange=renderFxModels;$('#fxModel').onchange=renderFxFields;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
@@ -248,17 +298,120 @@ function applyYouTubeTone(index){
  $('#cabSelect').value=cab;
  syncMicChoices();
  if(detectedMic&&[...$('#micSelect').options].some(o=>o.value===detectedMic))$('#micSelect').value=detectedMic;
+ renderSignalChain();
 }
 function renderTones(list){$('#toneResults').innerHTML=list.length?list.map(t=>`<article class="tone-card"><div class="meta">${t.genre}</div><h3>${t.artist}</h3><p>${t.song}</p><p><b>Amp:</b> ${t.amp}</p><p>${t.chain}</p><button data-tone="${tones.indexOf(t)}">Pakai tone ini ↗</button></article>`).join(''):'<p class="muted">Tidak ditemukan. Coba nama gitaris atau judul lagu lain.</p>';$$('[data-tone]').forEach(b=>b.onclick=()=>applyTone(tones[+b.dataset.tone]));}
-function applyTone(t){$('#presetName').value=t.artist+' - '+t.song;$('#ampSelect').value=t.amp;$('#fxChain').value=t.chain;$('#notes').value=t.notes;$$('[data-knob]').forEach(i=>i.value='');for(let i=0;i<t.values.length;i+=2){let el=$(`[data-knob="${t.values[i]}"]`);if(el)el.value=t.values[i+1]}$$('.tab').find(b=>b.dataset.tab==='editor').click();}
+function applyTone(t){$('#presetName').value=t.artist+' - '+t.song;$('#ampSelect').value=t.amp;$('#fxChain').value=t.chain;$('#notes').value=t.notes;$$('[data-knob]').forEach(i=>i.value='');for(let i=0;i<t.values.length;i+=2){let el=$(`[data-knob="${t.values[i]}"]`);if(el)el.value=t.values[i+1]}renderSignalChain();$('.tab').find(b=>b.dataset.tab==='editor').click();}
 function currentPreset(){let params={};$$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});let fxParams={};$$('[data-fx-param]').forEach(i=>{if(i.value.trim())fxParams[i.dataset.fxParam]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},fxCategory:$('#fxCategory').value,fxModel:$('#fxModel').value,fxParams,id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
 function getSaved(){try{return JSON.parse(localStorage.getItem('hd500-presets')||'[]')}catch{return []}}
 function savePreset(){let p=currentPreset(),all=getSaved();all=all.filter(x=>x.name!==p.name);all.unshift(p);localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset tersimpan di browser ini.');}
 function renderSaved(){let a=getSaved();$('#savedCount').textContent=a.length;$('#savedResults').innerHTML=a.length?a.map(p=>`<div class="saved-card"><div><b>${esc(p.name)}</b><p>${esc(p.amp)} · ${esc(p.cab)} · ${new Date(p.updated).toLocaleDateString('id-ID')}</p></div><div class="saved-actions"><button class="secondary" data-load="${p.id}">Buka</button><button class="secondary" data-del="${p.id}">Hapus</button></div></div>`).join(''):'<p class="muted">Belum ada preset tersimpan di browser ini.</p>';$$('[data-load]').forEach(b=>b.onclick=()=>loadPreset(a.find(x=>x.id===b.dataset.load)));$$('[data-del]').forEach(b=>b.onclick=()=>{localStorage.setItem('hd500-presets',JSON.stringify(getSaved().filter(x=>x.id!==b.dataset.del)));renderSaved()});}
-function loadPreset(p){if(!p)return;$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';if(p.fxCategory)$('#fxCategory').value=p.fxCategory;renderFxModels();if(p.fxModel)$('#fxModel').value=p.fxModel;renderFxFields();$$('[data-fx-param]').forEach(i=>i.value=p.fxParams?.[i.dataset.fxParam]||'');$$('[data-knob]').forEach(i=>i.value=p.params?.[i.dataset.knob]||'');$$('.tab').find(b=>b.dataset.tab==='editor').click();}
+function loadPreset(p){if(!p)return;$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';if(p.fxCategory)$('#fxCategory').value=p.fxCategory;renderFxModels();if(p.fxModel)$('#fxModel').value=p.fxModel;renderFxFields();$$('[data-fx-param]').forEach(i=>i.value=p.fxParams?.[i.dataset.fxParam]||'');$('[data-knob]').forEach(i=>i.value=p.params?.[i.dataset.knob]||'');renderSignalChain();$('.tab').find(b=>b.dataset.tab==='editor').click();}
 function exportCurrent(){let blob=new Blob([JSON.stringify(currentPreset(),null,2)],{type:'application/json'});download(blob,'pod-hd500-preset.json')}
 function importFile(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let p=JSON.parse(r.result);if(!p.name||!p.amp)throw Error();let all=getSaved();all.unshift({...p,id:String(Date.now()),updated:new Date().toISOString()});localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset berhasil diimpor.')}catch{alert('File JSON tidak dikenali sebagai preset Tone Matcher.')}};r.readAsText(f);e.target.value=''}
 function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+
+function setupSignalChainEditor(){
+ const categories=[...new Set(HD500_DB.effects.map(x=>x[0]))];
+ $('#chainCategory').innerHTML=categories.map(x=>'<option>'+esc(x)+'</option>').join('');
+ $('#chainCategory').onchange=renderChainModels;
+ $('#addChainBlock').onclick=addSignalChainBlock;
+ $('#fxChain').addEventListener('input',renderSignalChain);
+ $('#ampSelect').addEventListener('change',renderSignalChain);
+ $('#ampType').addEventListener('change',renderSignalChain);
+ $('#outputMode').addEventListener('change',renderSignalChain);
+ renderChainModels();
+}
+function renderChainModels(){
+ const cat=$('#chainCategory').value;
+ const models=HD500_DB.effects.filter(x=>x[0]===cat);
+ $('#chainModel').innerHTML=models.map(x=>'<option value="'+esc(x[1])+'">'+esc(x[1])+'</option>').join('');
+}
+function splitChainText(text){
+ return String(text||'').split(/\s*(?:→|->|➜|›)\s*/).map(x=>x.trim()).filter(Boolean);
+}
+function classifyChainBlock(label){
+ const low=label.toLowerCase();
+ const norm=low.replace(/\([^)]*\)/g,'').trim();
+ if(norm==='amp'||HD500_DB.amps.some(a=>a[0]!=='Amp Disabled'&&norm.includes(a[0].toLowerCase()))){
+  return {kind:'amp',category:'Amp',label:label==='Amp'?$('#ampSelect').value:label,sub:$('#ampType').value};
+ }
+ const knownCab=HD500_DB.cabs.some(name=>name!=='No Cab'&&low.includes(name.toLowerCase()));
+ if(knownCab||/\bcab\b|cabinet|4x12/.test(low)){
+  return {kind:'cab',category:'Cab',label:/\bcab\b|cabinet/i.test(label)&&$('#cabSelect').value!=='No Cab'?$('#cabSelect').value:label,sub:$('#micSelect').value};
+ }
+ const fx=HD500_DB.effects.find(e=>{
+  const model=e[1].toLowerCase();
+  return norm===model||norm.startsWith(model+' ')||norm.startsWith(model+'(')||norm.includes(model);
+ });
+ if(fx){
+  const slug=fx[0].toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  return {kind:slug,category:fx[0],label:fx[1],sub:'POD HD500 effect'};
+ }
+ let category='Other';
+ if(/compress|gate|limiter/.test(low))category='Dynamics';
+ else if(/drive|dist|fuzz|overdrive|screamer/.test(low))category='Distortion';
+ else if(/chorus|flanger|phase|vibe|tremolo|rotary/.test(low))category='Modulation';
+ else if(/delay|echo/.test(low))category='Delay';
+ else if(/reverb|room|hall|plate|spring/.test(low))category='Reverb';
+ return {kind:'other',category:category,label:label,sub:'Custom signal block'};
+}
+function getSignalChainNodes(){
+ const nodes=splitChainText($('#fxChain').value).map(classifyChainBlock);
+ const selectedAmp=$('#ampSelect').value,selectedCab=$('#cabSelect').value;
+ if(selectedAmp&&selectedAmp!=='Amp Disabled'&&!nodes.some(n=>n.kind==='amp')){
+  const ampNode={kind:'amp',category:'Amp',label:selectedAmp,sub:$('#ampType').value,synthetic:true};
+  const insertAt=nodes.findIndex(n=>['modulation','delay','reverb'].includes(n.kind));
+  nodes.splice(insertAt<0?nodes.length:insertAt,0,ampNode);
+ }
+ if(selectedCab&&selectedCab!=='No Cab'&&!nodes.some(n=>n.kind==='cab')){
+  const cabNode={kind:'cab',category:'Cab',label:selectedCab,sub:$('#micSelect').value,synthetic:true};
+  const ampAt=nodes.findIndex(n=>n.kind==='amp');
+  nodes.splice(ampAt<0?nodes.length:ampAt+1,0,cabNode);
+ }
+ return nodes;
+}
+function renderSignalChain(){
+ const canvas=$('#signalChainCanvas');if(!canvas)return;
+ const nodes=getSignalChainNodes();
+ let html='<div class="chain-endpoint"><div class="chain-endpoint-icon">⌁</div><strong>INPUT</strong><small>Guitar</small></div>';
+ if(!nodes.length)html+='<div class="chain-link"></div><div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
+ else nodes.forEach((node,i)=>{
+  html+='<div class="chain-link"></div><div class="chain-slot"><article class="chain-node chain-node--'+esc(node.kind)+'">';
+  html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
+  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong><small class="chain-node-sub">'+esc(node.sub||'')+'</small></div>';
+  html+='<div class="chain-node-actions"><button type="button" data-chain-up="'+i+'" title="Geser ke kiri" '+(i===0?'disabled':'')+'>←</button><button type="button" data-chain-down="'+i+'" title="Geser ke kanan" '+(i===nodes.length-1?'disabled':'')+'>→</button>';
+  if(node.kind!=='amp'&&node.kind!=='cab')html+='<button type="button" class="chain-remove" data-chain-remove="'+i+'" title="Hapus blok">×</button>';
+  else html+='<button type="button" disabled title="Model diatur dari pilihan Amp/Cab di atas">•</button>';
+  html+='</div></article></div>';
+ });
+ html+='<div class="chain-link"></div><div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
+ canvas.innerHTML=html;
+ const editable=nodes.filter(n=>n.kind!=='amp'&&n.kind!=='cab').length;
+ $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>'+editable+' blok efek dapat diedit</span>';
+ canvas.querySelectorAll('[data-chain-up]').forEach(btn=>btn.onclick=()=>moveSignalChainBlock(Number(btn.dataset.chainUp),-1));
+ canvas.querySelectorAll('[data-chain-down]').forEach(btn=>btn.onclick=()=>moveSignalChainBlock(Number(btn.dataset.chainDown),1));
+ canvas.querySelectorAll('[data-chain-remove]').forEach(btn=>btn.onclick=()=>removeSignalChainBlock(Number(btn.dataset.chainRemove)));
+}
+function writeSignalChainNodes(nodes){
+ $('#fxChain').value=nodes.map(n=>n.label).join(' → ');renderSignalChain();
+}
+function addSignalChainBlock(){
+ const cat=$('#chainCategory').value,model=$('#chainModel').value;
+ const fx=HD500_DB.effects.find(e=>e[0]===cat&&e[1]===model);if(!fx)return;
+ const nodes=getSignalChainNodes(),node=classifyChainBlock(model);
+ const ampAt=nodes.findIndex(n=>n.kind==='amp');
+ nodes.splice(ampAt<0?nodes.length:ampAt,0,node);writeSignalChainNodes(nodes);
+}
+function moveSignalChainBlock(index,step){
+ const nodes=getSignalChainNodes(),target=index+step;if(target<0||target>=nodes.length)return;
+ const item=nodes[index];nodes[index]=nodes[target];nodes[target]=item;writeSignalChainNodes(nodes);
+}
+function removeSignalChainBlock(index){
+ const nodes=getSignalChainNodes();if(!nodes[index]||nodes[index].kind==='amp'||nodes[index].kind==='cab')return;
+ nodes.splice(index,1);writeSignalChainNodes(nodes);
+}
+
 function renderDb(){let q=$('#dbSearch').value.toLowerCase(),cat=$('#dbCategory').value;let rows=[];HD500_DB.amps.forEach(a=>rows.push({cat:'Amp',name:a[0],desc:a[1],params:HD500_DB.ampParams}));HD500_DB.cabs.forEach(c=>rows.push({cat:'Cab',name:c,desc:'Cabinet model bawaan yang tercantum dalam Advanced Guide.',params:['Cab selection','Mic selection','Early Reflections','Low Cut','Resonance Level','Thump','Decay']}));HD500_DB.effects.forEach(e=>rows.push({cat:e[0],name:e[1],desc:'Parameter model sesuai tabel referensi POD HD500 Advanced Guide.',params:e[2].split('|')}));let filtered=rows.filter(r=>(cat==='all'||r.cat===cat)&&(r.name+' '+r.desc+' '+r.params.join(' ')).toLowerCase().includes(q));$('#dbResults').innerHTML=filtered.map(r=>`<article class="db-item"><div><div class="category">${r.cat.toUpperCase()}</div><h3>${esc(r.name)}</h3><p>${esc(r.desc)}</p></div><div><div class="params">${r.params.map(p=>{let m=HD500_DB.parameterMeta?.[p];return `<span title="${m?esc(m.note+' '+m.range):'Manual tidak menetapkan satu rentang universal untuk parameter ini'}">${esc(p)}${m?` · ${esc(m.unit)}`:''}</span>`}).join('')}</div></div></article>`).join('')||'<p class="muted">Tidak ada model cocok.</p>';}
 function syncMicChoices(){let bass=$('#cabSelect').value==='1|5 Flip Top',list=bass?(HD500_DB.bassMics||HD500_DB.mics):HD500_DB.mics,old=$('#micSelect').value;$('#micSelect').innerHTML=list.map(x=>`<option>${esc(x)}</option>`).join('');if(list.includes(old))$('#micSelect').value=old;}
 function setupFxBuilder(){renderFxModels();}
