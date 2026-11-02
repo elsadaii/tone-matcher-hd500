@@ -407,6 +407,18 @@ footer{padding:18px 0 28px}
 }
 
 
+.yt-link-card{margin:16px 0;padding:16px 18px;border:1px solid #465b70;border-radius:13px;background:linear-gradient(120deg,#1b2a37,#141e29)}
+.yt-link-copy strong{font-size:15px;color:var(--lime)}
+.yt-link-copy p{margin:4px 0 6px;color:var(--muted);font-size:12px}
+.yt-link-status{display:block;color:#91a2b3;font-size:11px;line-height:1.45}
+.yt-link-entry{display:flex;gap:9px;margin-top:12px}
+.yt-link-entry input{min-width:0;flex:1}
+.yt-link-entry button{white-space:nowrap}
+.yt-link-result{display:flex;align-items:center;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid #ffffff18}
+.yt-link-result img{width:112px;aspect-ratio:16/9;object-fit:cover;border-radius:7px}
+.yt-link-result strong{display:block;font-size:13px}
+.yt-link-result small{display:block;margin-top:4px;color:var(--muted);font-size:11px}
+@media(max-width:600px){.yt-link-entry{flex-direction:column}.yt-link-entry button{width:100%}.yt-link-result img{width:88px}}
 .audio-analysis-card{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px 0;padding:16px 18px;border:1px solid #465b70;border-radius:13px;background:linear-gradient(120deg,#1b2a37,#141e29)}
 .audio-analysis-card strong{font-size:15px;color:var(--lime)}
 .audio-analysis-card p{margin:4px 0 6px;color:var(--muted);font-size:12px}
@@ -415,7 +427,7 @@ footer{padding:18px 0 28px}
 @media(max-width:600px){.audio-analysis-card{align-items:stretch;flex-direction:column;gap:12px}.audio-analysis-card button{width:100%}}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
-<section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div class="audio-analysis-card"><div><strong>Analisis audio langsung dari YouTube</strong><p>Buka YouTube di tab lain dan putar lagu. Tekan tombol, lalu pilih tab YouTube serta aktifkan berbagi audio tab pada jendela browser.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Audio dianalisis langsung di browser selama sekitar 20 detik. Tidak ada file yang diunggah.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Tangkap Audio YouTube</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Selesai &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div>
+<section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div class="yt-link-card"><div class="yt-link-copy"><strong>Tempel link YouTube</strong><p>Masukkan link video musik. Tone Matcher akan membaca judul dan nama channel, lalu membuat estimasi preset tanpa memutar video.</p><span id="ytLinkStatus" class="yt-link-status">Tidak perlu upload, ekstensi, atau membuka pemutar.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Analisis Tone</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>Analisis audio langsung dari YouTube</strong><p>Buka YouTube di tab lain dan putar lagu. Tekan tombol, lalu pilih tab YouTube serta aktifkan berbagi audio tab pada jendela browser.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Audio dianalisis langsung di browser selama sekitar 20 detik. Tidak ada file yang diunggah.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Tangkap Audio YouTube</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Selesai &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div>
 <div id="onlineArtistResults" class="tone-grid" style="margin-top:18px"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
 <section id="editor" class="panel"><div class="section-head"><div><p class="eyebrow">02 / BUILD</p><h2>Preset Builder</h2></div><span class="tag">LOCAL PRESET</span></div><section class="signal-chain-editor" aria-label="Visual signal chain editor">
  <div class="signal-chain-heading"><div><p class="eyebrow">SIGNAL ROUTING</p><h3>Signal Chain</h3><p class="muted">Geser area ini ke kiri atau kanan untuk melihat seluruh blok. Urutan blok tetap.</p></div><span class="chain-live-badge"><i></i> VISUAL BUILDER</span></div>
@@ -535,6 +547,7 @@ function init(){
  $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
  $('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
  $('#analyzeAudioBtn').onclick=startYoutubeAudioCapture;$('#stopAudioCaptureBtn').onclick=finishYoutubeAudioCapture;
+ $('#analyzeYoutubeLinkBtn').onclick=analyzeYoutubeLink;$('#ytVideoLink').addEventListener('keydown',event=>{if(event.key==='Enter')analyzeYoutubeLink();});
 }
 async function searchTones(){
  const raw=$('#toneSearch').value.trim(),q=raw.toLowerCase();
@@ -924,6 +937,76 @@ function detectYoutubeToneProfile(text,query){
  // Bila metadata video tidak cukup spesifik, gunakan profil netral dan beri catatan keterbatasan.
  return profiles.rock;
 }
+function extractYoutubeVideoId(input){
+ let url;
+ try{url=new URL(String(input||'').trim());}catch{return '';}
+ const host=url.hostname.toLowerCase().replace(/^www\./,'');
+ if(!['youtube.com','m.youtube.com','music.youtube.com','youtu.be','youtube-nocookie.com'].includes(host))return '';
+ let id='';
+ if(host==='youtu.be')id=url.pathname.split('/').filter(Boolean)[0]||'';
+ else if(url.pathname==='/watch')id=url.searchParams.get('v')||'';
+ else{
+  const parts=url.pathname.split('/').filter(Boolean);
+  if(['shorts','embed','live','v'].includes(parts[0]))id=parts[1]||'';
+ }
+ return /^[A-Za-z0-9_-]{11}$/.test(id)?id:'';
+}
+async function analyzeYoutubeLink(){
+ const input=$('#ytVideoLink').value.trim(),status=$('#ytLinkStatus'),result=$('#ytLinkResult'),button=$('#analyzeYoutubeLinkBtn');
+ result.hidden=true;
+ if(!input){status.textContent='Tempel link video YouTube terlebih dahulu.';return;}
+ const videoId=extractYoutubeVideoId(input);
+ if(!videoId){status.textContent='Link belum dikenali. Gunakan link video YouTube biasa, youtu.be, Shorts, atau Live.';return;}
+ button.disabled=true;button.textContent='Membaca metadata…';
+ status.textContent='Mengambil judul video dan nama channel dari YouTube…';
+ try{
+  const canonical='https://www.youtube.com/watch?v='+videoId;
+  const endpoint='https://www.youtube.com/oembed?format=json&url='+encodeURIComponent(canonical);
+  const response=await fetch(endpoint,{credentials:'omit'});
+  if(!response.ok)throw new Error(response.status===401||response.status===403?'Video tidak dapat dibaca. Pastikan video bersifat publik dan dapat di-embed.':'YouTube tidak mengembalikan metadata (HTTP '+response.status+').');
+  const metadata=await response.json();
+  if(!metadata.title)throw new Error('Judul video tidak tersedia.');
+  const title=String(metadata.title).trim();
+  const channel=String(metadata.author_name||'Channel YouTube').trim();
+  const sourceText=[title,channel].join(' ');
+  const profile=detectYoutubeToneProfile(sourceText,channel);
+  const detectedAmp=detectYoutubeAmp(sourceText);
+  const amp=detectedAmp||profile.amp;
+  const effects=detectYoutubeEffects(sourceText);
+  const selectedEffects=effects.length?effects:profile.effects.slice();
+  const cab=detectYoutubeCab(sourceText)||profile.cab;
+  const mic=detectYoutubeMic(sourceText);
+  const extracted=extractYoutubeAmpValues(sourceText);
+  const valuesMap={};
+  for(let i=0;i<profile.values.length;i+=2)valuesMap[profile.values[i]]=profile.values[i+1];
+  Object.assign(valuesMap,extracted);
+  const values=Object.entries(valuesMap).flat();
+  const notes=[
+   'Sumber: link YouTube yang diberikan. Judul: '+title+'. Channel: '+channel+'.',
+   'Estimasi tone otomatis berdasarkan kata kunci pada judul dan nama channel, dengan profil karakter '+profile.label+'. Endpoint metadata publik YouTube tidak menyediakan audio atau deskripsi lengkap video.',
+   detectedAmp?'Nama model amp ditemukan di metadata: '+detectedAmp+'.':'Model amp tidak disebut secara eksplisit; '+amp+' dipilih sebagai starting point profil.',
+   effects.length?'Efek yang disebut pada metadata: '+effects.join(', ')+'.':'Efek menggunakan susunan awal profil: '+selectedEffects.join(', ')+'.',
+   'Cabinet awal: '+cab+'. '+(mic?'Mikrofon yang disebut: '+mic+'.':'Mikrofon tidak disebut; pilihan mic bawaan tidak diubah.'),
+   Object.keys(extracted).length?'Nilai parameter yang tertera secara eksplisit ikut digunakan.':'Angka knob memakai nilai rekomendasi profil dan bukan angka hasil pembacaan audio.',
+   'Ini bukan analisis audio dan bukan preset resmi artis. Untuk pencocokan suara yang sesungguhnya diperlukan akses ke audio lagu.'
+  ].join(' ');
+  applyTone({artist:channel,song:title,genre:'YouTube Metadata · '+profile.label,amp,values,chain:selectedEffects.concat([amp,cab]).join(' → '),notes});
+  $('#cabSelect').value=cab;
+  syncMicChoices();
+  if(mic&&[...$('#micSelect').options].some(option=>option.value===mic))$('#micSelect').value=mic;
+  renderSignalChain();
+  const thumbnail=String(metadata.thumbnail_url||'');
+  const safeThumbnail=/^https:\/\/i\.ytimg\.com\//.test(thumbnail)?thumbnail:'';
+  result.innerHTML=(safeThumbnail?'<img src="'+esc(safeThumbnail)+'" alt="">':'')+'<div><strong>'+esc(title)+'</strong><small>'+esc(channel)+' · Estimasi '+esc(profile.label)+'</small></div>';
+  result.hidden=false;
+  status.textContent='Preset estimasi sudah dibuat dan dibuka di Preset Builder. Hasil hanya berdasarkan metadata, bukan suara video.';
+ }catch(error){
+  status.textContent=error?.message||'Gagal membaca metadata link YouTube.';
+ }finally{
+  button.disabled=false;button.textContent='Analisis Tone';
+ }
+}
+
 function applyYouTubeTone(index){
  const v=window.youtubeMatches?.[index];if(!v)return;
  const query=$('#toneSearch').value.trim()||v.name||'YouTube Tone';
