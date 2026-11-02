@@ -729,7 +729,7 @@ function bindDelaySyncControls(){
   syncTempoSettingsUI();
   renderSignalChain();
  }));
- $('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
+ $$('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
  const spec=getChainParameterSpecs(node);
