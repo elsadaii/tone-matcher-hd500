@@ -744,7 +744,6 @@ function bindDelaySyncControls(){
   renderSignalChain();
  };
  document.querySelectorAll('[data-tempo-trails]').forEach(toggle=>toggle.addEventListener('click',toggleTrails));
- document.querySelectorAll('[data-chain-trails-toggle]').forEach(toggle=>toggle.addEventListener('click',toggleTrails));
  document.querySelectorAll('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
@@ -1066,6 +1065,19 @@ function renderChainKnobs(node,index,nodes){
 function renderPatchCable(){
  return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 52 46" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-wire" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-highlight" d="M9 8 C 10 36 42 36 43 8"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
 }
+function setupChainTrailsToggle(){
+ const canvas=$('#signalChainCanvas');if(!canvas||canvas.dataset.trailsToggleReady)return;
+ canvas.dataset.trailsToggleReady='1';
+ canvas.addEventListener('click',event=>{
+  const toggle=event.target.closest('[data-chain-trails-toggle]');
+  if(!toggle||!canvas.contains(toggle))return;
+  event.preventDefault();
+  event.stopPropagation();
+  trailsEnabled=trailsEnabled==='On'?'Off':'On';
+  syncTempoSettingsUI();
+  renderSignalChain();
+ });
+}
 function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
@@ -1082,6 +1094,7 @@ function renderSignalChain(){
  });
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
  canvas.innerHTML=html;
+ setupChainTrailsToggle();
  $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Geser tampilan untuk melihat blok lainnya</span>';
  renderChainParameterPanels(nodes);
 
