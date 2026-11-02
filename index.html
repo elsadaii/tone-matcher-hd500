@@ -690,7 +690,8 @@ function getDelaySyncValue(node,index,nodes,param){
 }
 function getDelayTimeParams(node,spec){
  if(node.label==='Stereo Delay')return ['Sync Left','Sync Right'];
- return spec.params.filter(p=>/^(Time|L Time|R Time)$/i.test(p));
+ const params=spec.params.filter(p=>/^(Time|L Time|R Time)$/i.test(p));
+ return params.length?params:(spec.category==='Delay'?['Time']:[]);
 }
 function getDelayTimePreview(node,index,nodes,timeParam,division){
  if(division==='Off')return 'Waktu manual dalam ms.';
