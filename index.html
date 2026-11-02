@@ -427,7 +427,7 @@ footer{padding:18px 0 28px}
 @media(max-width:600px){.audio-analysis-card{align-items:stretch;flex-direction:column;gap:12px}.audio-analysis-card button{width:100%}}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
-<section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div class="yt-link-card"><div class="yt-link-copy"><strong>Tempel link YouTube</strong><p>Masukkan link video musik. Tone Matcher akan membaca judul dan nama channel, lalu membuat estimasi preset tanpa memutar video.</p><span id="ytLinkStatus" class="yt-link-status">Tidak perlu upload, ekstensi, atau membuka pemutar.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Analisis Tone</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>Analisis audio langsung dari YouTube</strong><p>Buka YouTube di tab lain dan putar lagu. Tekan tombol, lalu pilih tab YouTube serta aktifkan berbagi audio tab pada jendela browser.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Audio dianalisis langsung di browser selama sekitar 20 detik. Tidak ada file yang diunggah.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Tangkap Audio YouTube</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Selesai &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div>
+<section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Browser tetap meminta izin berbagi tab. Analisis AI memerlukan OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div>
 <div id="onlineArtistResults" class="tone-grid" style="margin-top:18px"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
 <section id="editor" class="panel"><div class="section-head"><div><p class="eyebrow">02 / BUILD</p><h2>Preset Builder</h2></div><span class="tag">LOCAL PRESET</span></div><section class="signal-chain-editor" aria-label="Visual signal chain editor">
  <div class="signal-chain-heading"><div><p class="eyebrow">SIGNAL ROUTING</p><h3>Signal Chain</h3><p class="muted">Geser area ini ke kiri atau kanan untuk melihat seluruh blok. Urutan blok tetap.</p></div><span class="chain-live-badge"><i></i> VISUAL BUILDER</span></div>
@@ -684,6 +684,9 @@ let youtubeLiveBands={low:0,mid:0,high:0,total:0,weighted:0,frames:0};
 let youtubeLiveTick=0;
 let youtubeLiveFinishing=false;
 let youtubeLiveTimeData=null;
+let youtubeLiveRecorder=null;
+let youtubeLiveRecorderChunks=[];
+let youtubeLinkMetadata=null;
 
 function collectYoutubeLiveFrame(){
  if(!youtubeLiveAnalyser||!youtubeLiveTimeData)return;
@@ -713,17 +716,21 @@ function collectYoutubeLiveFrame(){
  const elapsed=(Date.now()-youtubeLiveStartedAt)/1000;
  const status=$("#audioAnalysisStatus");
  if(status)status.textContent="Audio YouTube tertangkap · "+Math.min(20,Math.floor(elapsed))+"/20 detik · dengarkan bagian gitar yang ingin dicocokkan.";
- if(elapsed>=20)finishYoutubeAudioCapture();
+ if(elapsed>=15)finishYoutubeAudioCapture();
 }
 async function startYoutubeAudioCapture(){
  const button=$("#analyzeAudioBtn"),stopButton=$("#stopAudioCaptureBtn"),status=$("#audioAnalysisStatus");
  if(youtubeLiveStream||youtubeLiveFinishing)return;
  if(!navigator.mediaDevices?.getDisplayMedia){
-  status.textContent="Browser ini tidak mendukung tangkapan tab. Coba Chrome atau Edge desktop melalui alamat HTTPS aplikasi.";
+  status.textContent="Browser ini tidak mendukung tangkapan tab. Gunakan Chrome atau Edge desktop melalui HTTPS.";
+  return;
+ }
+ if(!window.MediaRecorder){
+  status.textContent="Browser ini belum mendukung perekaman audio stream. Coba Chrome atau Edge desktop.";
   return;
  }
  button.disabled=true;button.textContent="Pilih tab YouTube…";
- status.textContent="Pilih tab YouTube pada jendela berbagi browser, lalu aktifkan opsi berbagi audio tab.";
+ status.textContent="Pilih tab YouTube pada jendela berbagi browser dan aktifkan opsi berbagi audio tab.";
  try{
   const stream=await navigator.mediaDevices.getDisplayMedia({
    video:{displaySurface:"browser"},
@@ -735,14 +742,14 @@ async function startYoutubeAudioCapture(){
   const audioTracks=stream.getAudioTracks();
   if(!audioTracks.length){
    stream.getTracks().forEach(track=>track.stop());
-   throw new Error("Browser tidak memberikan audio dari tab yang dipilih. Firefox saat ini tidak menyediakan tangkapan audio tab bawaan lewat fitur ini. Gunakan Chrome atau Edge desktop, lalu centang berbagi audio tab.");
+   throw new Error("Audio tab tidak ikut dibagikan. Pilih tab YouTube dan aktifkan berbagi audio tab.");
   }
-  youtubeLiveStream=stream;
   const AudioContextClass=window.AudioContext||window.webkitAudioContext;
   if(!AudioContextClass)throw new Error("Web Audio API tidak tersedia di browser ini.");
+  youtubeLiveStream=stream;
   youtubeLiveContext=new AudioContextClass();
   await youtubeLiveContext.resume();
-  const source=youtubeLiveContext.createMediaStreamSource(stream);
+  const source=youtubeLiveContext.createMediaStreamSource(new MediaStream(audioTracks));
   youtubeLiveAnalyser=youtubeLiveContext.createAnalyser();
   youtubeLiveAnalyser.fftSize=4096;
   youtubeLiveAnalyser.smoothingTimeConstant=.35;
@@ -751,57 +758,176 @@ async function startYoutubeAudioCapture(){
   youtubeLiveRms=[];
   youtubeLiveBands={low:0,mid:0,high:0,total:0,weighted:0,frames:0};
   youtubeLiveTick=0;youtubeLiveStartedAt=Date.now();youtubeLiveFinishing=false;
-  button.textContent="Sedang menangkap audio…";
+
+  const mimeTypes=["audio/webm;codecs=opus","audio/webm","audio/ogg;codecs=opus"];
+  const mimeType=mimeTypes.find(type=>MediaRecorder.isTypeSupported(type));
+  const audioOnlyStream=new MediaStream(audioTracks);
+  youtubeLiveRecorder=new MediaRecorder(audioOnlyStream,mimeType?{mimeType}:undefined);
+  youtubeLiveRecorderChunks=[];
+  youtubeLiveRecorder.addEventListener("dataavailable",event=>{
+   if(event.data&&event.data.size)youtubeLiveRecorderChunks.push(event.data);
+  });
+  youtubeLiveRecorder.start(1000);
+
+  button.textContent="Sedang menganalisis…";
   button.disabled=true;
   stopButton.hidden=false;
-  status.textContent="Audio tab tertangkap. Putar bagian lagu yang ingin dicocokkan selama 20 detik.";
+  status.textContent="Audio tab tertangkap. Putar bagian lagu yang ingin dicocokkan selama 15 detik.";
   stream.getTracks().forEach(track=>track.addEventListener("ended",()=>finishYoutubeAudioCapture(),{once:true}));
   youtubeLiveTimer=setInterval(collectYoutubeLiveFrame,100);
  }catch(error){
+  if(youtubeLiveRecorder&&youtubeLiveRecorder.state!=="inactive"){try{youtubeLiveRecorder.stop();}catch{}}
+  youtubeLiveRecorder=null;youtubeLiveRecorderChunks=[];
   if(youtubeLiveStream)youtubeLiveStream.getTracks().forEach(track=>track.stop());
   youtubeLiveStream=null;
   const failedContext=youtubeLiveContext;
   youtubeLiveContext=null;youtubeLiveAnalyser=null;youtubeLiveTimeData=null;
   if(failedContext){try{await failedContext.close();}catch{}}
-  button.disabled=false;button.textContent="Tangkap Audio YouTube";
+  button.disabled=false;button.textContent="Mulai Analisis AI";
   stopButton.hidden=true;
   status.textContent=error?.name==="NotAllowedError"?"Izin berbagi tab dibatalkan. Tekan tombol dan izinkan berbagi tab YouTube.":(error?.message||"Audio tab tidak bisa ditangkap.");
  }
 }
+function audioBufferToWavBlob(audioBuffer,maxSeconds=12,targetRate=24000){
+ const sourceRate=audioBuffer.sampleRate,channels=Array.from({length:audioBuffer.numberOfChannels},(_,i)=>audioBuffer.getChannelData(i));
+ const sampleCount=Math.min(Math.floor(maxSeconds*targetRate),Math.floor(audioBuffer.duration*targetRate));
+ if(sampleCount<targetRate*5)throw new Error("Cuplikan audio hasil rekaman terlalu singkat untuk AI.");
+ const dataBytes=sampleCount*2,buffer=new ArrayBuffer(44+dataBytes),view=new DataView(buffer);
+ const writeText=(offset,text)=>{for(let i=0;i<text.length;i++)view.setUint8(offset+i,text.charCodeAt(i));};
+ writeText(0,"RIFF");view.setUint32(4,36+dataBytes,true);writeText(8,"WAVE");writeText(12,"fmt ");
+ view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);
+ view.setUint32(24,targetRate,true);view.setUint32(28,targetRate*2,true);
+ view.setUint16(32,2,true);view.setUint16(34,16,true);writeText(36,"data");view.setUint32(40,dataBytes,true);
+ let offset=44;
+ for(let i=0;i<sampleCount;i++){
+  const position=i*sourceRate/targetRate,base=Math.floor(position),fraction=position-base;
+  let sample=0;
+  for(const channel of channels){
+   const a=channel[Math.min(base,channel.length-1)]||0,b=channel[Math.min(base+1,channel.length-1)]||0;
+   sample+=(a+(b-a)*fraction)/channels.length;
+  }
+  sample=Math.max(-1,Math.min(1,sample));
+  view.setInt16(offset,sample<0?sample*32768:sample*32767,true);offset+=2;
+ }
+ return new Blob([buffer],{type:"audio/wav"});
+}
+function arrayBufferToBase64(buffer){
+ const bytes=new Uint8Array(buffer),parts=[];
+ for(let i=0;i<bytes.length;i+=0x8000)parts.push(String.fromCharCode(...bytes.subarray(i,Math.min(i+0x8000,bytes.length))));
+ return btoa(parts.join(""));
+}
+async function recordedBlobToWav(blob){
+ if(!blob||blob.size<1000)throw new Error("Rekaman audio dari tab kosong.");
+ const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+ const decodeContext=new AudioContextClass();
+ try{
+  const decoded=await decodeContext.decodeAudioData(await blob.arrayBuffer());
+  return audioBufferToWavBlob(decoded,12,24000);
+ }finally{try{await decodeContext.close();}catch{}}
+}
+async function requestAiToneAnalysis(wavBlob,measured){
+ const encoded=arrayBufferToBase64(await wavBlob.arrayBuffer());
+ const response=await fetch("https://tone-matcher-api.elsadaiprivat.workers.dev/analyze-tone",{
+  method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   audio:encoded,format:"wav",
+   video:youtubeLinkMetadata?{title:youtubeLinkMetadata.title,channel:youtubeLinkMetadata.channel}:null,
+   metrics:{low:measured.low,mid:measured.mid,high:measured.high,centroid:measured.centroid,dynamicsDb:measured.dynamicsDb,bpm:measured.bpm}
+  })
+ });
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok)throw new Error(data.error||("Layanan AI belum siap (HTTP "+response.status+")."));
+ if(!data.analysis||typeof data.analysis!=="object")throw new Error("Respons AI tidak berisi analisis tone yang valid.");
+ return data.analysis;
+}
+function buildPresetFromAiAnalysis(ai,measured){
+ const gain=["clean","edge","crunch","high_gain"].includes(ai.gain)?ai.gain:"crunch";
+ const role=["clean","rhythm","lead","ambient","unknown"].includes(ai.role)?ai.role:"unknown";
+ const ampMap={clean:"Blackface Double Normal",edge:"Class A-30 TB",crunch:"Brit J-45 Bright",high_gain:"Treadplate"};
+ const cabMap={clean:"2|2 Blackface Double",edge:"1|2 Blue Bell",crunch:"4|2 Greenback 25",high_gain:"4|2 Tread V-30"};
+ let amp=ampMap[gain],cab=cabMap[gain];
+ if(role==="lead"&&gain==="high_gain")amp="Angel F-Ball";
+ if(role==="lead"&&gain==="crunch")amp="Solo 100 OD";
+ const effectMap={compressor:"Tube Comp",overdrive:"Screamer",noise_gate:"Noise Gate",chorus:"Analog Chorus",phaser:"Script Phase",delay:"Digital Delay",reverb:"Plate",wah:"Fassel"};
+ const effects=[...new Set((Array.isArray(ai.effects)?ai.effects:[]).map(key=>effectMap[String(key).toLowerCase()]).filter(Boolean))];
+ if(!effects.length)effects.push(gain==="high_gain"?"Noise Gate":"Tube Comp");
+ if(!effects.includes("Plate")&&!effects.includes("Room")&&["lead","ambient"].includes(role))effects.push("Plate");
+ const clamp=(value,fallback)=>Math.max(0,Math.min(100,Number.isFinite(Number(value))?Number(value):fallback));
+ const drive={clean:24,edge:38,crunch:54,high_gain:74}[gain];
+ const values=["Drive",String(drive),"Bass",String(Math.round(clamp(ai.low_weight,measured.low*100))),"Mid",String(Math.round(clamp(ai.mid_focus,measured.mid*100))),"Treble",String(Math.round(clamp(ai.brightness,measured.high*100))),"Presence",String(Math.round(clamp(ai.presence,measured.high*100))),"Volume","70"];
+ const label=String(ai.tone_label||"Audio Tone Estimate").slice(0,80);
+ const confidence=["low","medium","high"].includes(ai.confidence)?ai.confidence:"medium";
+ return {
+  label,role,gain,amp,cab,effects,values,confidence,
+  notes:[
+   "Analisis dilakukan oleh model audio AI terhadap cuplikan YouTube yang ditangkap langsung dari tab browser.",
+   "Karakter terdeteksi: "+label+". Peran gitar: "+role+". Gain: "+gain+". Tingkat keyakinan model: "+confidence+".",
+   "Catatan AI: "+String(ai.notes||"Tidak ada catatan tambahan.").slice(0,900),
+   "Pengukuran lokal: low "+Math.round(measured.low*100)+"%, mid "+Math.round(measured.mid*100)+"%, high "+Math.round(measured.high*100)+"%, dinamika "+measured.dynamicsDb.toFixed(1)+" dB.",
+   measured.bpm?"Perkiraan BPM lokal: "+measured.bpm+".":"BPM tidak terdeteksi dengan cukup yakin.",
+   "Penting: suara yang dianalisis adalah mix lagu, bukan stem gitar terisolasi. Rekomendasi amp/cab dan parameter adalah starting point POD HD500, bukan identifikasi gear asli."
+  ].join(" ")
+ };
+}
+
 async function finishYoutubeAudioCapture(){
  if(!youtubeLiveStream||youtubeLiveFinishing)return;
  youtubeLiveFinishing=true;
  if(youtubeLiveTimer){clearInterval(youtubeLiveTimer);youtubeLiveTimer=null;}
  const status=$("#audioAnalysisStatus"),button=$("#analyzeAudioBtn"),stopButton=$("#stopAudioCaptureBtn");
  const duration=(Date.now()-youtubeLiveStartedAt)/1000;
- const stream=youtubeLiveStream,context=youtubeLiveContext;
+ const stream=youtubeLiveStream,context=youtubeLiveContext,sampleRate=context?.sampleRate||48000;
  const rms=youtubeLiveRms.slice(),bands={...youtubeLiveBands};
+ let recordedBlob=null;
+ try{
+  const recorder=youtubeLiveRecorder;
+  if(recorder){
+   recordedBlob=await new Promise((resolve,reject)=>{
+    const done=()=>resolve(new Blob(youtubeLiveRecorderChunks,{type:recorder.mimeType||"audio/webm"}));
+    recorder.addEventListener("stop",done,{once:true});
+    recorder.addEventListener("error",()=>reject(new Error("Perekaman audio tab gagal.")),{once:true});
+    if(recorder.state==="recording")recorder.stop();else done();
+   });
+  }
+ }catch(error){
+  status.textContent=error?.message||"Perekaman audio gagal.";
+ }
+ youtubeLiveRecorder=null;youtubeLiveRecorderChunks=[];
  youtubeLiveStream=null;youtubeLiveContext=null;youtubeLiveAnalyser=null;youtubeLiveTimeData=null;
  stream.getTracks().forEach(track=>track.stop());
  try{if(context)await context.close();}catch{}
  try{
   if(duration<8||rms.length<40)throw new Error("Audio terlalu singkat. Tangkap setidaknya 8–10 detik lagu yang sedang diputar.");
-  if(bands.total<=0||!bands.frames)throw new Error("Tidak ada suara yang terbaca. Pastikan YouTube tidak mute, volume aktif, dan audio tab dibagikan.");
+  if(bands.total<=0||!bands.frames)throw new Error("Tidak ada suara yang terbaca. Pastikan YouTube tidak mute dan audio tab dibagikan.");
+  if(!recordedBlob||recordedBlob.size<1000)throw new Error("Audio tidak berhasil direkam. Coba ulangi dan pastikan izin berbagi audio tab aktif.");
   const sortedDb=rms.map(v=>20*Math.log10(Math.max(v,1e-6))).sort((a,b)=>a-b);
   const percentile=p=>sortedDb[Math.min(sortedDb.length-1,Math.floor((sortedDb.length-1)*p))]||0;
-  const bpm=estimateAudioBpm(rms,context?.sampleRate||48000,(context?.sampleRate||48000)*.1);
+  const bpm=estimateAudioBpm(rms,sampleRate,sampleRate*.1);
   const measured={
    low:bands.low/bands.total,mid:bands.mid/bands.total,high:bands.high/bands.total,
    centroid:bands.weighted/bands.total,
    dynamicsDb:Math.max(0,percentile(.9)-percentile(.1)),
    bpm:bpm?.bpm||null,bpmConfidence:bpm?.confidence||0,analyzedSeconds:duration
   };
-  const profile=chooseAudioToneProfile(measured);
-  const notes=[
-   "Preset dibuat dari tangkapan audio tab YouTube secara langsung di browser; tidak ada file yang diunggah.",
-   "Analisis memakai audio campuran dari tab selama sekitar "+Math.round(duration)+" detik. Ini bukan pemisahan stem gitar; drum, bass, vokal, dan mastering tetap memengaruhi hasil.",
-   "Karakter frekuensi terukur — Low "+Math.round(measured.low*100)+"%, Mid "+Math.round(measured.mid*100)+"%, High "+Math.round(measured.high*100)+"%; spectral centroid sekitar "+Math.round(measured.centroid)+" Hz.",
-   "Rentang dinamika perkiraan "+measured.dynamicsDb.toFixed(1)+" dB. Profil awal yang dipilih: "+profile.label+".",
-   measured.bpm?"Perkiraan BPM "+measured.bpm+".":"Tempo tidak terbaca dengan cukup yakin; BPM awal 120.",
-   "Amp, cabinet, dan efek adalah rekomendasi starting point berdasarkan karakter keseluruhan audio, bukan identifikasi gear gitar yang pasti digunakan."
-  ].join(" ");
-  applyTone({artist:"YouTube Live",song:"Audio Match · "+profile.label,genre:"Live Audio Analysis · "+profile.label,amp:profile.amp,values:profile.values,chain:profile.effects.concat([profile.amp,profile.cab]).join(" → "),notes});
-  $("#cabSelect").value=profile.cab;
+  const localProfile=chooseAudioToneProfile(measured);
+  let selected={label:localProfile.label,role:"unknown",gain:"crunch",amp:localProfile.amp,cab:localProfile.cab,effects:localProfile.effects,values:localProfile.values,confidence:"low",notes:"AI belum tersedia; preset ini dibuat dari pengukuran audio lokal."};
+  let aiReady=false;
+  status.textContent="Mengubah cuplikan audio menjadi WAV…";
+  try{
+   const wavBlob=await recordedBlobToWav(recordedBlob);
+   status.textContent="Mengirim cuplikan audio 12 detik ke model AI untuk analisis…";
+   const ai=await requestAiToneAnalysis(wavBlob,measured);
+   selected=buildPresetFromAiAnalysis(ai,measured);
+   aiReady=true;
+  }catch(aiError){
+   selected.notes+=" Layanan AI belum aktif atau gagal: "+String(aiError?.message||"tidak diketahui").slice(0,300);
+  }
+  const title=youtubeLinkMetadata?.title||"Audio Match · "+selected.label;
+  const channel=youtubeLinkMetadata?.channel||"YouTube Audio";
+  const chain=selected.effects.concat([selected.amp,selected.cab]).join(" → ");
+  const notes=["Sumber: "+title+" — "+channel+".",selected.notes].join(" ");
+  applyTone({artist:channel,song:title,genre:(aiReady?"AI Audio Analysis · ":"Local Audio Analysis · ")+selected.label,amp:selected.amp,values:selected.values,chain,notes});
+  $("#cabSelect").value=selected.cab;
   syncMicChoices();
   tempoPresetBpm=measured.bpm||120;
   chainDelaySettings={};
@@ -816,16 +942,17 @@ async function finishYoutubeAudioCapture(){
   }
   syncTempoSettingsUI();
   renderSignalChain();
-  status.textContent="Selesai: "+profile.label+(measured.bpm?" · perkiraan "+measured.bpm+" BPM":" · BPM belum terdeteksi")+". Preset sudah dibuka di Preset Builder.";
+  status.textContent=aiReady
+   ?"AI selesai menganalisis audio asli. Preset telah dibuat dan dibuka di Preset Builder."
+   :"Analisis audio lokal selesai dan preset awal dibuat. AI belum aktif: deploy Cloudflare Worker terbaru dan tambahkan Secret OPENAI_API_KEY untuk mengaktifkan analisis AI.";
  }catch(error){
   status.textContent=error?.message||"Audio tidak dapat dianalisis.";
  }finally{
   youtubeLiveFinishing=false;
-  button.disabled=false;button.textContent="Tangkap Audio YouTube";
+  button.disabled=false;button.textContent="Mulai Analisis AI";
   stopButton.hidden=true;
  }
 }
-
 function normalizeToneText(s){
  return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 }
@@ -954,11 +1081,12 @@ function extractYoutubeVideoId(input){
 async function analyzeYoutubeLink(){
  const input=$('#ytVideoLink').value.trim(),status=$('#ytLinkStatus'),result=$('#ytLinkResult'),button=$('#analyzeYoutubeLinkBtn');
  result.hidden=true;
+ youtubeLinkMetadata=null;
  if(!input){status.textContent='Tempel link video YouTube terlebih dahulu.';return;}
  const videoId=extractYoutubeVideoId(input);
- if(!videoId){status.textContent='Link belum dikenali. Gunakan link video YouTube biasa, youtu.be, Shorts, atau Live.';return;}
- button.disabled=true;button.textContent='Membaca metadata…';
- status.textContent='Mengambil judul video dan nama channel dari YouTube…';
+ if(!videoId){status.textContent='Link belum dikenali. Gunakan link YouTube biasa, youtu.be, Shorts, atau Live.';return;}
+ button.disabled=true;button.textContent='Membaca video…';
+ status.textContent='Membaca judul dan nama channel. Ini belum menganalisis suara lagu…';
  try{
   const canonical='https://www.youtube.com/watch?v='+videoId;
   const endpoint='https://www.youtube.com/oembed?format=json&url='+encodeURIComponent(canonical);
@@ -966,47 +1094,23 @@ async function analyzeYoutubeLink(){
   if(!response.ok)throw new Error(response.status===401||response.status===403?'Video tidak dapat dibaca. Pastikan video bersifat publik dan dapat di-embed.':'YouTube tidak mengembalikan metadata (HTTP '+response.status+').');
   const metadata=await response.json();
   if(!metadata.title)throw new Error('Judul video tidak tersedia.');
-  const title=String(metadata.title).trim();
-  const channel=String(metadata.author_name||'Channel YouTube').trim();
-  const sourceText=[title,channel].join(' ');
-  const profile=detectYoutubeToneProfile(sourceText,channel);
-  const detectedAmp=detectYoutubeAmp(sourceText);
-  const amp=detectedAmp||profile.amp;
-  const effects=detectYoutubeEffects(sourceText);
-  const selectedEffects=effects.length?effects:profile.effects.slice();
-  const cab=detectYoutubeCab(sourceText)||profile.cab;
-  const mic=detectYoutubeMic(sourceText);
-  const extracted=extractYoutubeAmpValues(sourceText);
-  const valuesMap={};
-  for(let i=0;i<profile.values.length;i+=2)valuesMap[profile.values[i]]=profile.values[i+1];
-  Object.assign(valuesMap,extracted);
-  const values=Object.entries(valuesMap).flat();
-  const notes=[
-   'Sumber: link YouTube yang diberikan. Judul: '+title+'. Channel: '+channel+'.',
-   'Estimasi tone otomatis berdasarkan kata kunci pada judul dan nama channel, dengan profil karakter '+profile.label+'. Endpoint metadata publik YouTube tidak menyediakan audio atau deskripsi lengkap video.',
-   detectedAmp?'Nama model amp ditemukan di metadata: '+detectedAmp+'.':'Model amp tidak disebut secara eksplisit; '+amp+' dipilih sebagai starting point profil.',
-   effects.length?'Efek yang disebut pada metadata: '+effects.join(', ')+'.':'Efek menggunakan susunan awal profil: '+selectedEffects.join(', ')+'.',
-   'Cabinet awal: '+cab+'. '+(mic?'Mikrofon yang disebut: '+mic+'.':'Mikrofon tidak disebut; pilihan mic bawaan tidak diubah.'),
-   Object.keys(extracted).length?'Nilai parameter yang tertera secara eksplisit ikut digunakan.':'Angka knob memakai nilai rekomendasi profil dan bukan angka hasil pembacaan audio.',
-   'Ini bukan analisis audio dan bukan preset resmi artis. Untuk pencocokan suara yang sesungguhnya diperlukan akses ke audio lagu.'
-  ].join(' ');
-  applyTone({artist:channel,song:title,genre:'YouTube Metadata · '+profile.label,amp,values,chain:selectedEffects.concat([amp,cab]).join(' → '),notes});
-  $('#cabSelect').value=cab;
-  syncMicChoices();
-  if(mic&&[...$('#micSelect').options].some(option=>option.value===mic))$('#micSelect').value=mic;
-  renderSignalChain();
-  const thumbnail=String(metadata.thumbnail_url||'');
-  const safeThumbnail=/^https:\/\/i\.ytimg\.com\//.test(thumbnail)?thumbnail:'';
-  result.innerHTML=(safeThumbnail?'<img src="'+esc(safeThumbnail)+'" alt="">':'')+'<div><strong>'+esc(title)+'</strong><small>'+esc(channel)+' · Estimasi '+esc(profile.label)+'</small></div>';
+  youtubeLinkMetadata={
+   videoId,
+   title:String(metadata.title).trim(),
+   channel:String(metadata.author_name||'Channel YouTube').trim(),
+   thumbnail:String(metadata.thumbnail_url||''),
+   url:canonical
+  };
+  const thumbnail=/^https:\/\/i\.ytimg\.com\//.test(youtubeLinkMetadata.thumbnail)?youtubeLinkMetadata.thumbnail:'';
+  result.innerHTML=(thumbnail?'<img src="'+esc(thumbnail)+'" alt="">':'')+'<div><strong>'+esc(youtubeLinkMetadata.title)+'</strong><small>'+esc(youtubeLinkMetadata.channel)+'</small><small>Video dikenali. Putar video ini di tab YouTube, lalu mulai analisis audio.</small></div>';
   result.hidden=false;
-  status.textContent='Preset estimasi sudah dibuat dan dibuka di Preset Builder. Hasil hanya berdasarkan metadata, bukan suara video.';
+  status.textContent='Video dikenali. Metadata hanya memberi konteks; preset belum dibuat sampai audio dianalisis.';
  }catch(error){
-  status.textContent=error?.message||'Gagal membaca metadata link YouTube.';
+  status.textContent=(error?.message||'Gagal membaca metadata.')+' Kamu tetap dapat menganalisis audio tab tanpa mengenali link.';
  }finally{
-  button.disabled=false;button.textContent='Analisis Tone';
+  button.disabled=false;button.textContent='Kenali Video';
  }
 }
-
 function applyYouTubeTone(index){
  const v=window.youtubeMatches?.[index];if(!v)return;
  const query=$('#toneSearch').value.trim()||v.name||'YouTube Tone';
