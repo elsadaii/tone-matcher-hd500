@@ -37,3 +37,17 @@ The only allowed browser origin is currently `https://elsadaii.github.io`.
 - Spotify and YouTube results identify reference artists, songs, albums, and videos. Tone values remain application-generated starting points.
 - Do not commit API keys or paste them into the public GitHub repository.
 - Cloudflare Workers Free currently has a daily request quota; check Cloudflare's current limits before high-volume use.
+
+
+## 4. Enable real YouTube tab audio analysis
+
+The Tone Matcher page can capture a short audio-only recording from a YouTube browser tab after the user explicitly chooses the tab and shares its audio. It converts a short excerpt to mono WAV in the browser and sends that excerpt to this Worker. The Worker forwards it to OpenAI's gpt-audio-1.5 model and returns a structured tone description. The model request uses store=false; normal API data-handling terms still apply.
+
+1. In Cloudflare Dashboard, open the Worker that serves tone-matcher-api.elsadaiprivat.workers.dev.
+2. Replace its source with the updated cloudflare-worker/index.js from this repository and deploy.
+3. Under Worker Settings → Variables and Secrets, add OPENAI_API_KEY as a Secret. Never add the key to index.html or commit it.
+4. Deploy the Worker again and reload the Tone Matcher site.
+
+The endpoint is POST /analyze-tone. If the secret is missing or the updated Worker has not been deployed, the page still creates a clearly labelled local-analysis fallback preset; it does not label the fallback as AI.
+
+The browser captures approximately 15 seconds, converts at most 12 seconds to 24 kHz mono WAV, and limits the request size. The Worker includes a lightweight per-IP request guard; configure a Cloudflare Rate Limiting rule for /analyze-tone as an additional cost safeguard. OpenAI API usage is billed separately from ChatGPT subscriptions. The model may still be uncertain when guitar is buried in the full mix; this does not isolate guitar stems.
