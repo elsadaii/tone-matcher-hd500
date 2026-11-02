@@ -616,6 +616,17 @@ function syncTempoTrailsUI(){
  document.querySelectorAll('[data-tempo-trails], [data-chain-trails-toggle]').forEach(toggle=>{
   toggle.setAttribute('aria-checked',String(enabled));
   toggle.classList.toggle('is-on',enabled);
+  const track=toggle.querySelector('.ui-toggle-track, .chain-toggle-track');
+  const knob=track?.querySelector('i');
+  if(track){
+   track.style.background=enabled?'#315a42':'#34414e';
+   track.style.borderColor=enabled?'#79c995':'#586a7a';
+  }
+  if(knob){
+   const chainToggle=toggle.hasAttribute('data-chain-trails-toggle');
+   knob.style.transform=enabled?'translateX('+(chainToggle?'13px':'15px')+')':'translateX(0)';
+   knob.style.background=enabled?'#c5f36b':'#c5d0da';
+  }
   const state=toggle.querySelector('[data-toggle-state]');
   if(state)state.textContent=enabled?'ON':'OFF';
  });
