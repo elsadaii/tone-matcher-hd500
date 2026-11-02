@@ -406,9 +406,16 @@ footer{padding:18px 0 28px}
  .chain-link{flex:0 0 34px!important;width:34px!important;height:44px!important}
 }
 
+
+.audio-analysis-card{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px 0;padding:16px 18px;border:1px solid #465b70;border-radius:13px;background:linear-gradient(120deg,#1b2a37,#141e29)}
+.audio-analysis-card strong{font-size:15px;color:var(--lime)}
+.audio-analysis-card p{margin:4px 0 6px;color:var(--muted);font-size:12px}
+.audio-analysis-status{display:block;color:#91a2b3;font-size:11px;line-height:1.4}
+.audio-analysis-card button{white-space:nowrap}
+@media(max-width:600px){.audio-analysis-card{align-items:stretch;flex-direction:column;gap:12px}.audio-analysis-card button{width:100%}}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
-<section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
+<section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div class="audio-analysis-card"><div><strong>Analisis audio langsung</strong><p>Pilih file lagu dari perangkat untuk analisis frekuensi, dinamika, dan perkiraan BPM. File tetap di perangkatmu.</p><span id="audioAnalysisStatus" class="audio-analysis-status">MP3, WAV, M4A, atau format audio yang didukung browser.</span></div><div><input id="audioToneFile" type="file" accept="audio/*" hidden><button id="analyzeAudioBtn" type="button" class="secondary">Pilih lagu &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div>
 <div id="onlineArtistResults" class="tone-grid" style="margin-top:18px"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
 <section id="editor" class="panel"><div class="section-head"><div><p class="eyebrow">02 / BUILD</p><h2>Preset Builder</h2></div><span class="tag">LOCAL PRESET</span></div><section class="signal-chain-editor" aria-label="Visual signal chain editor">
  <div class="signal-chain-heading"><div><p class="eyebrow">SIGNAL ROUTING</p><h3>Signal Chain</h3><p class="muted">Geser area ini ke kiri atau kanan untuk melihat seluruh blok. Urutan blok tetap.</p></div><span class="chain-live-badge"><i></i> VISUAL BUILDER</span></div>
@@ -527,6 +534,7 @@ function init(){
  renderTones(tones);renderDb();renderSaved();
  $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
  $('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
+ $('#analyzeAudioBtn').onclick=()=>$('#audioToneFile').click();$('#audioToneFile').onchange=analyzeAudioTone;
 }
 async function searchTones(){
  const raw=$('#toneSearch').value.trim(),q=raw.toLowerCase();
@@ -557,6 +565,156 @@ async function searchTones(){
   box.innerHTML='<p class="hint">Pencarian data YouTube gagal: '+esc(err.message||'gangguan jaringan')+'. Tone lokal tetap tersedia di atas.</p>';
  }
 }
+
+function audioFftTransform(real,imag){
+ const n=real.length;
+ for(let i=1,j=0;i<n;i++){
+  let bit=n>>1;
+  for(;j&bit;bit>>=1)j^=bit;
+  j^=bit;
+  if(i<j){let t=real[i];real[i]=real[j];real[j]=t;t=imag[i];imag[i]=imag[j];imag[j]=t;}
+ }
+ for(let size=2;size<=n;size<<=1){
+  const angle=-2*Math.PI/size,stepR=Math.cos(angle),stepI=Math.sin(angle),half=size>>1;
+  for(let start=0;start<n;start+=size){
+   let wr=1,wi=0;
+   for(let j=0;j<half;j++){
+    const even=start+j,odd=even+half;
+    const tr=wr*real[odd]-wi*imag[odd],ti=wr*imag[odd]+wi*real[odd];
+    real[odd]=real[even]-tr;imag[odd]=imag[even]-ti;
+    real[even]+=tr;imag[even]+=ti;
+    const nextR=wr*stepR-wi*stepI;wi=wr*stepI+wi*stepR;wr=nextR;
+   }
+  }
+ }
+}
+function estimateAudioBpm(envelope,sampleRate,hopSize){
+ if(envelope.length<80)return null;
+ const flux=new Float64Array(envelope.length);
+ let mean=0;
+ for(let i=1;i<envelope.length;i++){flux[i]=Math.max(0,envelope[i]-envelope[i-1]);mean+=flux[i];}
+ mean/=Math.max(1,envelope.length-1);
+ const framesPerSecond=sampleRate/hopSize;
+ const minLag=Math.max(2,Math.floor(framesPerSecond*60/180));
+ const maxLag=Math.min(envelope.length-2,Math.ceil(framesPerSecond*60/65));
+ let bestLag=0,bestScore=0;
+ for(let lag=minLag;lag<=maxLag;lag++){
+  let cross=0,left=0,right=0;
+  for(let i=lag;i<flux.length;i++){
+   const a=flux[i]-mean,b=flux[i-lag]-mean;
+   cross+=a*b;left+=a*a;right+=b*b;
+  }
+  const score=cross/Math.sqrt(Math.max(1e-12,left*right));
+  if(score>bestScore){bestScore=score;bestLag=lag;}
+ }
+ if(!bestLag||bestScore<.08)return null;
+ let bpm=60*framesPerSecond/bestLag;
+ while(bpm<80)bpm*=2;
+ while(bpm>160)bpm/=2;
+ return {bpm:Math.round(bpm),confidence:bestScore};
+}
+function measureAudioTone(buffer){
+ const sampleRate=buffer.sampleRate,channels=buffer.numberOfChannels;
+ const maxSamples=Math.min(buffer.length,Math.floor(sampleRate*75));
+ const channelData=Array.from({length:channels},(_,i)=>buffer.getChannelData(i));
+ const monoAt=index=>{let sum=0;for(let c=0;c<channels;c++)sum+=channelData[c][index]||0;return sum/channels;};
+ const rmsWindow=1024,rmsHop=512,rmsValues=[];
+ for(let start=0;start+rmsWindow<maxSamples;start+=rmsHop){
+  let sum=0;
+  for(let i=0;i<rmsWindow;i++){const s=monoAt(start+i);sum+=s*s;}
+  rmsValues.push(Math.sqrt(sum/rmsWindow));
+ }
+ const sortedDb=rmsValues.map(v=>20*Math.log10(Math.max(v,1e-6))).sort((a,b)=>a-b);
+ const percentile=(arr,p)=>arr[Math.min(arr.length-1,Math.floor((arr.length-1)*p))]||0;
+ const dynamicsDb=sortedDb.length?Math.max(0,percentile(sortedDb,.9)-percentile(sortedDb,.1)):0;
+ const fftSize=4096,fftHop=8192;
+ const real=new Float64Array(fftSize),imag=new Float64Array(fftSize);
+ let low=0,mid=0,high=0,total=0,weighted=0,frames=0;
+ for(let start=0;start+fftSize<maxSamples;start+=fftHop){
+  for(let i=0;i<fftSize;i++){
+   const hann=.5-.5*Math.cos(2*Math.PI*i/(fftSize-1));
+   real[i]=monoAt(start+i)*hann;imag[i]=0;
+  }
+  audioFftTransform(real,imag);
+  for(let k=1;k<fftSize/2;k++){
+   const hz=k*sampleRate/fftSize,power=real[k]*real[k]+imag[k]*imag[k];
+   if(hz>=60&&hz<250)low+=power;
+   else if(hz>=250&&hz<2500)mid+=power;
+   else if(hz>=2500&&hz<10000)high+=power;
+   if(hz>=60&&hz<10000){total+=power;weighted+=hz*power;}
+  }
+  frames++;
+ }
+ if(!frames||total<=0)throw new Error("Audio terlalu hening atau tidak dapat dianalisis.");
+ const bpm=estimateAudioBpm(rmsValues,sampleRate,rmsHop);
+ return {
+  low:low/total,mid:mid/total,high:high/total,
+  centroid:weighted/total,dynamicsDb,bpm:bpm?.bpm||null,
+  bpmConfidence:bpm?.confidence||0,
+  analyzedSeconds:Math.min(buffer.duration,75)
+ };
+}
+function chooseAudioToneProfile(m){
+ if(m.low>.34&&m.high>.2&&m.dynamicsDb<8.5)return {label:"High Gain / Padat",amp:"Treadplate",cab:"4|2 Tread V-30",effects:["Noise Gate","Screamer","Digital Delay","Plate"],values:["Drive","72","Bass","47","Mid","48","Treble","65","Presence","60","Volume","70"]};
+ if(m.low>.37&&m.high<.2)return {label:"Warm / Clean",amp:"Blackface Double Normal",cab:"2|2 Blackface Double",effects:["Tube Comp","Analog Chorus","Room"],values:["Drive","22","Bass","55","Mid","53","Treble","48","Presence","40","Volume","74"]};
+ if(m.high>.29&&m.dynamicsDb>=8)return {label:"Bright / Crunch",amp:"Plexi Lead 100 Bright",cab:"4|2 Greenback 25",effects:["Tube Drive","Tape Echo","Room"],values:["Drive","48","Bass","48","Mid","61","Treble","63","Presence","56","Volume","72"]};
+ if(m.mid>.53&&m.dynamicsDb>=7)return {label:"Mid Focus / Lead",amp:"Solo 100 OD",cab:"4|2 Uber",effects:["Tube Drive","Digital Delay","Plate"],values:["Drive","60","Bass","47","Mid","64","Treble","57","Presence","52","Volume","72"]};
+ return {label:"Balanced Rock",amp:"Brit J-45 Bright",cab:"4|2 Greenback 25",effects:["Tube Drive","Analog Echo","Plate"],values:["Drive","46","Bass","50","Mid","59","Treble","57","Presence","51","Volume","70"]};
+}
+async function analyzeAudioTone(event){
+ const file=event.target.files?.[0];if(!file)return;
+ const status=$("#audioAnalysisStatus"),button=$("#analyzeAudioBtn");
+ let audioContext=null;
+ button.disabled=true;button.textContent="Menganalisis…";
+ status.textContent="Membaca file audio di browser…";
+ try{
+  if(file.size>40*1024*1024)throw new Error("Ukuran file maksimal 40 MB agar analisis tetap ringan.");
+  if(file.type&&!file.type.startsWith("audio/")&&!/\.(mp3|wav|m4a|aac|ogg|flac|aiff?)$/i.test(file.name))throw new Error("Pilih file audio seperti MP3, WAV, atau M4A.");
+  const AudioContextClass=window.AudioContext||window.webkitAudioContext;
+  if(!AudioContextClass)throw new Error("Browser ini belum mendukung Web Audio API. Coba Chrome, Edge, atau Firefox versi terbaru.");
+  audioContext=new AudioContextClass();
+  const buffer=await audioContext.decodeAudioData(await file.arrayBuffer());
+  if(buffer.duration<10)throw new Error("Pilih lagu atau cuplikan audio yang berdurasi minimal 10 detik.");
+  status.textContent="Menganalisis karakter frekuensi, dinamika, dan tempo…";
+  const measured=measureAudioTone(buffer);
+  const profile=chooseAudioToneProfile(measured);
+  const title=file.name.replace(/\.[^.]+$/,"")||"Audio Reference";
+  const bpmText=measured.bpm?"Perkiraan BPM: "+measured.bpm+".":"Tempo tidak terbaca dengan cukup yakin; BPM awal 120.";
+  const notes=[
+   "Preset dibuat dari analisis audio lokal: "+file.name+".",
+   "Analisis menggunakan cuplikan "+Math.round(measured.analyzedSeconds)+" detik pertama dari audio campuran. Ini bukan pemisahan stem gitar; instrumen lain, vokal, mastering, dan drum ikut memengaruhi hasil.",
+   "Karakter frekuensi terukur — Low "+Math.round(measured.low*100)+"%, Mid "+Math.round(measured.mid*100)+"%, High "+Math.round(measured.high*100)+"%; spectral centroid sekitar "+Math.round(measured.centroid)+" Hz.",
+   "Rentang dinamika perkiraan "+measured.dynamicsDb.toFixed(1)+" dB. Profil awal yang dipilih: "+profile.label+".",
+   bpmText,
+   "Model amp, cabinet, dan efek adalah rekomendasi starting point berdasarkan karakter keseluruhan audio, bukan identifikasi gear asli atau efek yang pasti digunakan pada rekaman."
+  ].join(" ");
+  const tone={artist:"Analisis Audio",song:title,genre:"Audio Analysis · "+profile.label,amp:profile.amp,values:profile.values,chain:profile.effects.concat([profile.amp,profile.cab]).join(" → "),notes};
+  applyTone(tone);
+  $("#cabSelect").value=profile.cab;
+  syncMicChoices();
+  tempoPresetBpm=measured.bpm||120;
+  chainDelaySettings={};
+  if(measured.bpm){
+   const nodes=getSignalChainNodes();
+   nodes.forEach((node,index)=>{
+    const spec=getChainParameterSpecs(node);
+    if(spec.category==="Delay")getDelayTimeParams(node,spec).forEach(param=>{
+     chainDelaySettings[getDelaySyncKey(node,index,nodes,param)]="1/4";
+    });
+   });
+  }
+  syncTempoSettingsUI();
+  renderSignalChain();
+  status.textContent="Selesai: "+profile.label+(measured.bpm?" · perkiraan "+measured.bpm+" BPM":" · BPM belum terdeteksi")+". Preset sudah dibuka di Preset Builder.";
+ }catch(error){
+  status.textContent="Analisis gagal: "+(error?.message||"format audio tidak dapat dibaca.");
+ }finally{
+  if(audioContext){try{await audioContext.close();}catch{}}
+  button.disabled=false;button.textContent="Pilih lagu & buat preset";
+  event.target.value="";
+ }
+}
+
 function normalizeToneText(s){
  return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 }
