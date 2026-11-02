@@ -362,11 +362,15 @@ const tones=[
  {artist:'Iron Maiden',song:'The Trooper',genre:'NWOBHM · Lead',amp:'Brit J-800',values:['Drive','65','Bass','49','Mid','64','Treble','65','Presence','58','Volume','70'],chain:'Noise Gate → Screamer → Brit J-800 → 4x12 cab → Delay (lead)',notes:'Bridge humbucker; adjust mids for band mix.'}
 ];
 function init(){
+ // Aktifkan pencarian terlebih dahulu agar tetap berfungsi jika inisialisasi Builder gagal.
+ const searchButton=$('#searchBtn'),searchInput=$('#toneSearch');
+ if(searchButton)searchButton.addEventListener('click',searchTones);
+ if(searchInput)searchInput.addEventListener('keydown',event=>{if(event.key==='Enter')searchTones();});
  $('#ampSelect').innerHTML=HD500_DB.amps.map(a=>`<option>${a[0]}</option>`).join('');$('#cabSelect').innerHTML=HD500_DB.cabs.map(x=>`<option>${x}</option>`).join('');$('#micSelect').innerHTML=HD500_DB.mics.map(x=>`<option>${x}</option>`).join('');$('#cabSelect').addEventListener('change',()=>{syncMicChoices();renderSignalChain();});syncMicChoices();
  setupSignalChainEditor();setupTempoControls();renderSignalChain();
  renderTones(tones);renderDb();renderSaved();
  $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
- $('#searchBtn').onclick=searchTones;$('#toneSearch').addEventListener('keydown',e=>{if(e.key==='Enter')searchTones()});$('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
+ $('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
 }
 async function searchTones(){
  const raw=$('#toneSearch').value.trim(),q=raw.toLowerCase();
