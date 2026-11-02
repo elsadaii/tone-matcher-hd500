@@ -1089,19 +1089,15 @@ function setupChainTrailsToggle(){
  });
 }
 function setupChainSyncToggle(){
- const canvas=$('#signalChainCanvas');if(!canvas||canvas.dataset.syncToggleReady)return;
- canvas.dataset.syncToggleReady='1';
- canvas.addEventListener('click',event=>{
-  const target=event.target;
-  const toggle=target&&target.closest?target.closest('[data-chain-delay-toggle-sync]'):null;
-  if(!toggle||!canvas.contains(toggle))return;
-  event.preventDefault();
-  event.stopPropagation();
-  event.stopImmediatePropagation();
-  toggleDelaySyncForBlock(toggle.getAttribute('data-chain-delay-toggle-sync'));
- },true);
-}
-function renderSignalChain(){
+ const canvas=$('#signalChainCanvas');if(!canvas)return;
+ canvas.querySelectorAll('[data-chain-delay-toggle-sync]').forEach(toggle=>{
+  toggle.addEventListener('click',event=>{
+   event.preventDefault();
+   event.stopPropagation();
+   toggleDelaySyncForBlock(toggle.getAttribute('data-chain-delay-toggle-sync'));
+  });
+ });
+}function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
  const nodes=getSignalChainNodes();
