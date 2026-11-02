@@ -598,23 +598,34 @@ function readTempoSystemSettings(){
   tempoSystemSettings={mode:saved.mode==='Global'?'Global':'Preset',globalBpm:Number(saved.globalBpm)>0?Number(saved.globalBpm):120};
  }catch{tempoSystemSettings={mode:'Preset',globalBpm:120};}
 }
-function persistTempoSystemSettings(){
+function persistTempoSystemSettings(syncUI=true){
  try{localStorage.setItem('hd500-tempo-system-settings',JSON.stringify(tempoSystemSettings));}catch{}
- syncTempoSettingsUI();
+ if(syncUI)syncTempoSettingsUI();
 }
-function syncTempoSettingsUI(){
- $$('[data-tempo-preset]').forEach(input=>input.value=tempoPresetBpm);
- $$('[data-tempo-mode]').forEach(select=>select.value=tempoSystemSettings.mode);
- $$('[data-tempo-global]').forEach(input=>{
+function syncTempoValuesUI(){
+ document.querySelectorAll('[data-tempo-preset]').forEach(input=>input.value=tempoPresetBpm);
+ document.querySelectorAll('[data-tempo-mode]').forEach(select=>select.value=tempoSystemSettings.mode);
+ document.querySelectorAll('[data-tempo-global]').forEach(input=>{
   input.value=tempoSystemSettings.globalBpm;
   input.disabled=tempoSystemSettings.mode!=='Global';
  });
- $$('[data-tempo-trails]').forEach(toggle=>{const enabled=trailsEnabled==='On';toggle.setAttribute('aria-checked',String(enabled));toggle.classList.toggle('is-on',enabled);const state=toggle.querySelector('[data-toggle-state]');if(state)state.textContent=enabled?'ON':'OFF';});
- $$('[data-tempo-tap-status]').forEach(status=>status.textContent=tempoTapStatus);
+ document.querySelectorAll('[data-tempo-tap-status]').forEach(status=>status.textContent=tempoTapStatus);
+}
+function syncTempoTrailsUI(){
+ const enabled=trailsEnabled==='On';
+ document.querySelectorAll('[data-tempo-trails], [data-chain-trails-toggle]').forEach(toggle=>{
+  toggle.setAttribute('aria-checked',String(enabled));
+  toggle.classList.toggle('is-on',enabled);
+  const state=toggle.querySelector('[data-toggle-state]');
+  if(state)state.textContent=enabled?'ON':'OFF';
+ });
+}
+function syncTempoSettingsUI(){
+ syncTempoValuesUI();
+ syncTempoTrailsUI();
 }
 function handleTempoTap(event){
  if(event){event.preventDefault();event.stopPropagation();}
- const trailsStateBeforeTap=trailsEnabled;
  const now=Date.now();
  const previous=tempoTapMoments[tempoTapMoments.length-1];
  if(previous){
@@ -625,7 +636,7 @@ function handleTempoTap(event){
  if(tempoTapMoments.length>6)tempoTapMoments.shift();
  if(tempoTapMoments.length<2){
   tempoTapStatus='Ketuk lagi mengikuti ketukan lagu.';
-  syncTempoSettingsUI();
+  syncTempoValuesUI();
   return;
  }
  const intervals=[];
@@ -634,14 +645,12 @@ function handleTempoTap(event){
  const bpm=Math.round((60000/average)*10)/10;
  if(tempoSystemSettings.mode==='Global'){
   tempoSystemSettings.globalBpm=bpm;
-  persistTempoSystemSettings();
+  persistTempoSystemSettings(false);
  }else{
   tempoPresetBpm=bpm;
-  syncTempoSettingsUI();
  }
  tempoTapStatus='Tap Tempo: '+bpm+' BPM · ketuk lagi untuk memperbarui.';
- trailsEnabled=trailsStateBeforeTap;
- syncTempoSettingsUI();
+ syncTempoValuesUI();
  renderSignalChain();
 }
 function setupTempoControls(){
@@ -711,29 +720,32 @@ function bindDelaySyncControls(){
   renderSignalChain();
  }));
  $$('[data-chain-delay-toggle-sync]').forEach(button=>button.addEventListener('click',()=>toggleDelaySyncForBlock(button.dataset.chainDelayToggleSync)));
- $$('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
+ document.querySelectorAll('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
   syncTempoSettingsUI();
   renderSignalChain();
  }));
- $$('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
+ document.querySelectorAll('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
   tempoSystemSettings.mode=select.value==='Global'?'Global':'Preset';
   persistTempoSystemSettings();
   renderSignalChain();
  }));
- $$('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
+ document.querySelectorAll('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoSystemSettings.globalBpm=bpm;
   persistTempoSystemSettings();
   renderSignalChain();
  }));
- $$('[data-tempo-trails]').forEach(toggle=>toggle.addEventListener('click',()=>{
+ const toggleTrails=event=>{
+  if(event){event.preventDefault();event.stopPropagation();}
   trailsEnabled=trailsEnabled==='On'?'Off':'On';
   syncTempoSettingsUI();
   renderSignalChain();
- }));
- $$('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
+ };
+ document.querySelectorAll('[data-tempo-trails]').forEach(toggle=>toggle.addEventListener('click',toggleTrails));
+ document.querySelectorAll('[data-chain-trails-toggle]').forEach(toggle=>toggle.addEventListener('click',toggleTrails));
+ document.querySelectorAll('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
  const spec=getChainParameterSpecs(node);
@@ -1035,7 +1047,7 @@ function renderDelayChainKnobs(node,index,nodes){
  const bpmAngle=-135+Math.max(0,Math.min(1,(bpm-40)/200))*270;
  const syncToggle='<button type="button" class="chain-toggle '+(syncEnabled?'is-on':'')+'" role="switch" aria-checked="'+String(syncEnabled)+'" data-chain-delay-toggle-sync="'+esc(getChainBlockKey(node,index,nodes))+'" title="Aktif/nonaktifkan Tempo Sync untuk efek ini"><span class="chain-toggle-track"><i></i></span><small>SYNC</small><small class="chain-toggle-state">'+(syncEnabled?'ON':'OFF')+'</small></button>';
  const bpmKnob='<div class="chain-knob chain-knob--compact" title="BPM: '+esc(String(bpm))+'"><span class="chain-knob-dial" style="--knob-angle:'+bpmAngle+'deg"></span><small>BPM</small><small class="chain-knob-reading">'+esc(String(bpm))+'</small></div>';
- const trailsToggle='<button type="button" class="chain-toggle '+(trailsEnabledNow?'is-on':'')+'" role="switch" aria-checked="'+String(trailsEnabledNow)+'" data-tempo-trails title="Aktif/nonaktifkan Delay Trails"><span class="chain-toggle-track"><i></i></span><small>TRAILS</small><small class="chain-toggle-state" data-toggle-state>'+(trailsEnabledNow?'ON':'OFF')+'</small></button>';
+ const trailsToggle='<button type="button" class="chain-toggle '+(trailsEnabledNow?'is-on':'')+'" role="switch" aria-checked="'+String(trailsEnabledNow)+'" data-chain-trails-toggle title="Aktif/nonaktifkan Delay Trails"><span class="chain-toggle-track"><i></i></span><small>TRAILS</small><small class="chain-toggle-state" data-toggle-state>'+(trailsEnabledNow?'ON':'OFF')+'</small></button>';
  return '<div class="chain-node-knobs chain-node-knobs--delay">'+syncToggle+bpmKnob+trailsToggle+'</div>';
 }
 function renderChainKnobs(node,index,nodes){
