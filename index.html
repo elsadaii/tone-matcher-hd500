@@ -250,6 +250,112 @@
 .chain-toggle small{display:block;color:#aebbc8;font-size:7px;font-weight:800;letter-spacing:.06em;white-space:nowrap}
 .chain-toggle .chain-toggle-state{color:#8b9aa8;font-size:8px}
 @media(max-width:600px){.delay-toggle-field{grid-column:1/-1}}
+
+/* Compact layout: reduce overall panel footprint while preserving readability */
+body{font-size:14px;line-height:1.45}
+header{height:60px}
+.mark{width:34px;height:34px;font-size:15px}
+main{max-width:1240px;padding:0 18px}
+.hero{min-height:260px}
+.hero-art{height:225px}
+nav{gap:5px;padding:15px 0}
+.tab{padding:8px 11px;font-size:11px}
+.panel{padding:24px 0 34px}
+.section-head{margin-bottom:16px}
+.section-head h2{font-size:26px}
+.tag{padding:5px 8px}
+button{padding:9px 13px}
+input,select,textarea{padding:9px 10px;border-radius:7px}
+.tone-grid{gap:10px;margin-top:14px}
+.tone-card,.form-card,.info-card,.db-item,.saved-card{padding:13px;border-radius:10px}
+.tone-card h3,.db-item h3{font-size:15px}
+.tone-card p,.db-item p{font-size:12px}
+.tone-card button{margin-top:8px}
+.builder-grid{gap:12px}
+.form-card label{margin-bottom:10px}
+.field-grid{gap:9px}
+.knob-grid{gap:8px}
+.info-card h3{font-size:18px;margin:5px 0}
+.info-card p,.info-card li{font-size:12px}
+.actions{gap:7px}
+.db-tools{gap:8px;margin-bottom:12px}
+.db-list{gap:7px}
+.db-item{gap:12px}
+.params{gap:4px;margin-top:6px}
+.params span{padding:3px 6px;font-size:10px}
+.saved-card{gap:10px;margin-bottom:8px}
+.saved-actions{gap:5px}
+.fx-builder{margin-top:16px;padding:13px;border-radius:13px}
+.fx-builder h3{margin-bottom:10px}
+.advanced-block{margin:13px 0;padding:12px;border-radius:10px}
+.advanced-block h3{margin-bottom:8px}
+.file-report{margin-top:12px;padding:11px}
+.file-report h3{margin-bottom:5px}
+.signal-chain-editor{margin:14px 0 18px;padding:13px;border-radius:13px}
+.signal-chain-heading{gap:11px;margin-bottom:10px}
+.signal-chain-heading h3{font-size:18px}
+.signal-chain-add{gap:7px;margin-bottom:9px;padding:9px}
+.signal-chain-canvas{min-height:190px;padding:11px 4px 13px}
+.chain-slot{flex-basis:158px;width:158px}
+.chain-slot--amp{flex-basis:180px;width:180px}
+.chain-node{min-height:166px;padding:9px 8px 7px;border-radius:9px}
+.chain-node-top{margin-bottom:7px}
+.chain-node-name{min-height:29px;font-size:12px}
+.chain-node-sub{margin-top:3px}
+.chain-node-knobs{gap:2px;margin-top:8px;padding:7px 1px 0}
+.chain-knob-dial{width:23px;height:23px;margin-bottom:4px}
+.chain-knob small{font-size:6.5px}
+.chain-knob .chain-knob-reading{font-size:7.5px}
+.chain-node-knobs--delay{margin-top:6px;padding-top:6px}
+.chain-knob--compact .chain-knob-dial{width:21px;height:21px}
+.chain-toggle{gap:3px;padding:1px 2px!important;font-size:7px}
+.chain-toggle-track{width:27px;height:16px}
+.chain-toggle-track i{width:10px;height:10px}
+.chain-toggle.is-on .chain-toggle-track i{transform:translateX(11px)}
+.chain-parameter-panels{margin:14px 0 17px;padding:13px;border-radius:13px}
+.chain-parameter-heading{gap:9px;margin-bottom:10px}
+.chain-parameter-heading h3{font-size:18px}
+.chain-parameter-list{gap:9px}
+.chain-param-card{padding:11px;border-radius:10px}
+.chain-param-card-head{gap:8px;margin-bottom:9px}
+.chain-param-card-head h4{font-size:14px}
+.chain-param-grid{gap:7px}
+.chain-param-value{gap:6px;margin-top:4px;padding:7px 8px;font-size:12px}
+.chain-param-note{margin-top:7px}
+.delay-tempo-controls{margin-top:9px;padding:10px;border-radius:9px}
+.delay-tempo-grid{gap:7px}
+.delay-tempo-grid select{padding:7px 8px}
+.delay-tempo-note{margin-top:7px}
+.tempo-tap-row{gap:8px;margin-top:8px}
+footer{padding:18px 0 28px}
+
+@media(max-width:760px){
+ main{padding:0 14px}
+ .panel{padding:20px 0 28px}
+ .hero-art{height:195px}
+ .section-head{margin-bottom:13px}
+ .section-head h2{font-size:23px}
+ .builder-grid{gap:10px}
+ .chain-parameter-list{grid-template-columns:1fr}
+ .chain-slot{flex-basis:150px;width:150px}
+ .chain-slot--amp{flex-basis:170px;width:170px}
+}
+@media(max-width:600px){
+ header{height:56px;padding-left:14px;padding-right:14px}
+ .mark{width:31px;height:31px}
+ .panel{padding:17px 0 24px}
+ .tone-grid{gap:8px}
+ .tone-card,.form-card,.info-card,.db-item,.saved-card{padding:11px}
+ .field-grid{gap:7px}
+ .signal-chain-editor{padding:10px}
+ .signal-chain-canvas{min-height:170px}
+ .chain-slot{flex-basis:144px;width:144px}
+ .chain-slot--amp{flex-basis:162px;width:162px}
+ .chain-node{min-height:158px;padding:8px 7px 6px}
+ .chain-parameter-panels{padding:10px}
+ .chain-param-card{padding:10px}
+}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
