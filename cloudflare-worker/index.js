@@ -74,13 +74,7 @@ async function searchSpotify(q, env) {
 
 
 const toneAnalysisRateBuckets = new Map();
-function encodeBase64(bytes) {
-  let binary = "";
-  for (let i = 0; i < bytes.length; i += 0x8000) {
-    binary += String.fromCharCode(...bytes.subarray(i, Math.min(i + 0x8000, bytes.length)));
-  }
-  return btoa(binary);
-}
+
 function parseModelJson(text) {
   const cleaned = String(text || "").trim();
   const first = cleaned.indexOf("{"), last = cleaned.lastIndexOf("}");
