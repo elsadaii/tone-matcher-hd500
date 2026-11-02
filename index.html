@@ -1032,12 +1032,14 @@ function isDelaySyncEnabled(node,index,nodes){
  const params=getDelayTimeParams(node,getChainParameterSpecs(node));
  return params.some(param=>getDelaySyncValue(node,index,nodes,param)!=='Off');
 }
-function toggleDelaySyncForBlock(blockKey){
+function toggleDelaySyncForBlockByIndex(index){
  const nodes=getSignalChainNodes();
- const index=nodes.findIndex((node,i)=>getChainBlockKey(node,i,nodes)===blockKey);
- if(index<0)return;
- const node=nodes[index],params=getDelayTimeParams(node,getChainParameterSpecs(node));
- const enabled=isDelaySyncEnabled(node,index,nodes);
+ index=Number(index);
+ if(!Number.isInteger(index)||index<0||index>=nodes.length)return;
+ const node=nodes[index],spec=getChainParameterSpecs(node);
+ let params=getDelayTimeParams(node,spec);
+ if(!params.length&&spec.category==='Delay')params=['Time'];
+ const enabled=params.some(param=>getDelaySyncValue(node,index,nodes,param)!=='Off');
  params.forEach(param=>{
   const key=getDelaySyncKey(node,index,nodes,param),lastKey=key+'::Last';
   const current=getDelaySyncValue(node,index,nodes,param);
@@ -1055,7 +1057,7 @@ function renderDelayChainKnobs(node,index,nodes){
  const bpm=getActiveTempoBpm();
  const trailsEnabledNow=trailsEnabled==='On';
  const bpmAngle=-135+Math.max(0,Math.min(1,(bpm-40)/200))*270;
- const syncToggle='<button type="button" class="chain-toggle '+(syncEnabled?'is-on':'')+'" role="switch" aria-checked="'+String(syncEnabled)+'" data-chain-delay-toggle-sync="'+esc(getChainBlockKey(node,index,nodes))+'" title="Aktif/nonaktifkan Tempo Sync untuk efek ini"><span class="chain-toggle-track"><i></i></span><small>SYNC</small><small class="chain-toggle-state">'+(syncEnabled?'ON':'OFF')+'</small></button>';
+ const syncToggle='<button type="button" class="chain-toggle '+(syncEnabled?'is-on':'')+'" role="switch" aria-checked="'+String(syncEnabled)+'" data-chain-delay-toggle-sync="'+esc(getChainBlockKey(node,index,nodes))+'" data-chain-delay-toggle-index="'+index+'" onclick="toggleDelaySyncForBlockByIndex('+index+')" title="Aktif/nonaktifkan Tempo Sync untuk efek ini"><span class="chain-toggle-track"><i></i></span><small>SYNC</small><small class="chain-toggle-state">'+(syncEnabled?'ON':'OFF')+'</small></button>';
  const bpmKnob='<div class="chain-knob chain-knob--compact" title="BPM: '+esc(String(bpm))+'"><span class="chain-knob-dial" style="--knob-angle:'+bpmAngle+'deg"></span><small>BPM</small><small class="chain-knob-reading">'+esc(String(bpm))+'</small></div>';
  const trailsToggle='<button type="button" class="chain-toggle '+(trailsEnabledNow?'is-on':'')+'" role="switch" aria-checked="'+String(trailsEnabledNow)+'" data-chain-trails-toggle title="Aktif/nonaktifkan Delay Trails"><span class="chain-toggle-track"><i></i></span><small>TRAILS</small><small class="chain-toggle-state" data-toggle-state>'+(trailsEnabledNow?'ON':'OFF')+'</small></button>';
  return '<div class="chain-node-knobs chain-node-knobs--delay">'+syncToggle+bpmKnob+trailsToggle+'</div>';
@@ -1088,16 +1090,7 @@ function setupChainTrailsToggle(){
   });
  });
 }
-function setupChainSyncToggle(){
- const canvas=$('#signalChainCanvas');if(!canvas)return;
- canvas.querySelectorAll('[data-chain-delay-toggle-sync]').forEach(toggle=>{
-  toggle.addEventListener('click',event=>{
-   event.preventDefault();
-   event.stopPropagation();
-   toggleDelaySyncForBlock(toggle.getAttribute('data-chain-delay-toggle-sync'));
-  });
- });
-}function renderSignalChain(){
+function setupChainSyncToggle(){}function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
  const nodes=getSignalChainNodes();
