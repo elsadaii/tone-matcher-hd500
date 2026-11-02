@@ -720,18 +720,18 @@ function bindDelaySyncControls(){
   renderSignalChain();
  }));
  $$('[data-chain-delay-toggle-sync]').forEach(button=>button.addEventListener('click',()=>toggleDelaySyncForBlock(button.dataset.chainDelayToggleSync)));
- $document.querySelectorAll('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
+ document.querySelectorAll('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
   syncTempoSettingsUI();
   renderSignalChain();
  }));
- $document.querySelectorAll('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
+ document.querySelectorAll('[data-tempo-mode]').forEach(select=>select.addEventListener('change',()=>{
   tempoSystemSettings.mode=select.value==='Global'?'Global':'Preset';
   persistTempoSystemSettings();
   renderSignalChain();
  }));
- $document.querySelectorAll('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
+ document.querySelectorAll('[data-tempo-global]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoSystemSettings.globalBpm=bpm;
   persistTempoSystemSettings();
