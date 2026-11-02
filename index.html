@@ -877,6 +877,7 @@ function setupSignalChainScroll(){
  let dragging=false,startX=0,startScroll=0;
  canvas.addEventListener('pointerdown',e=>{
   if(e.pointerType!=='mouse'||e.button!==0)return;
+  if(e.target.closest('button, input, select, textarea, a, [role="switch"]'))return;
   dragging=true;startX=e.clientX;startScroll=canvas.scrollLeft;
   canvas.classList.add('is-dragging');
   canvas.setPointerCapture(e.pointerId);
