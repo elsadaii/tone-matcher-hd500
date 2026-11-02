@@ -730,7 +730,6 @@ function bindDelaySyncControls(){
   if(select.value!=='Off')chainDelaySettings[key+'::Last']=select.value;
   renderSignalChain();
  }));
- $$('[data-chain-delay-toggle-sync]').forEach(button=>button.addEventListener('click',()=>toggleDelaySyncForBlock(button.dataset.chainDelayToggleSync)));
  document.querySelectorAll('[data-tempo-preset]').forEach(input=>input.addEventListener('change',()=>{
   const bpm=Number(input.value);
   if(Number.isFinite(bpm)&&bpm>0)tempoPresetBpm=bpm;
@@ -1089,6 +1088,16 @@ function setupChainTrailsToggle(){
   });
  });
 }
+function setupChainSyncToggle(){
+ const canvas=$('#signalChainCanvas');if(!canvas)return;
+ canvas.querySelectorAll('[data-chain-delay-toggle-sync]').forEach(toggle=>{
+  toggle.addEventListener('click',event=>{
+   event.preventDefault();
+   event.stopPropagation();
+   toggleDelaySyncForBlock(toggle.dataset.chainDelayToggleSync);
+  });
+ });
+}
 function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
@@ -1106,6 +1115,7 @@ function renderSignalChain(){
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
  canvas.innerHTML=html;
  setupChainTrailsToggle();
+ setupChainSyncToggle();
  $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Geser tampilan untuk melihat blok lainnya</span>';
  renderChainParameterPanels(nodes);
 
