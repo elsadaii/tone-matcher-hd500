@@ -715,7 +715,7 @@ function collectYoutubeLiveFrame(){
  }
  const elapsed=(Date.now()-youtubeLiveStartedAt)/1000;
  const status=$("#audioAnalysisStatus");
- if(status)status.textContent="Audio YouTube tertangkap · "+Math.min(20,Math.floor(elapsed))+"/20 detik · dengarkan bagian gitar yang ingin dicocokkan.";
+ if(status)status.textContent="Audio YouTube tertangkap · "+Math.min(15,Math.floor(elapsed))+"/15 detik · dengarkan bagian gitar yang ingin dicocokkan.";
  if(elapsed>=15)finishYoutubeAudioCapture();
 }
 async function startYoutubeAudioCapture(){
@@ -1102,7 +1102,7 @@ async function analyzeYoutubeLink(){
    url:canonical
   };
   const thumbnail=/^https:\/\/i\.ytimg\.com\//.test(youtubeLinkMetadata.thumbnail)?youtubeLinkMetadata.thumbnail:'';
-  result.innerHTML=(thumbnail?'<img src="'+esc(thumbnail)+'" alt="">':'')+'<div><strong>'+esc(youtubeLinkMetadata.title)+'</strong><small>'+esc(youtubeLinkMetadata.channel)+'</small><small>Video dikenali. Putar video ini di tab YouTube, lalu mulai analisis audio.</small></div>';
+  result.innerHTML=(thumbnail?'<img src="'+esc(thumbnail)+'" alt="">':'')+'<div><strong>'+esc(youtubeLinkMetadata.title)+'</strong><small>'+esc(youtubeLinkMetadata.channel)+'</small><small>Video dikenali. <a href="'+youtubeLinkMetadata.url+'" target="_blank" rel="noopener noreferrer">Buka video YouTube di tab lain</a>, lalu mulai analisis audio.</small></div>';
   result.hidden=false;
   status.textContent='Video dikenali. Metadata hanya memberi konteks; preset belum dibuat sampai audio dianalisis.';
  }catch(error){
