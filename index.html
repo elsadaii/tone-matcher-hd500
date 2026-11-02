@@ -697,7 +697,7 @@ function renderDelaySyncControls(node,index,nodes,spec){
     '<label>Tempo Preset (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-preset value="'+tempoPresetBpm+'"></label>'+
     '<label>System Tempo Sync<select data-tempo-mode><option value="Preset"'+(tempoSystemSettings.mode==='Preset'?' selected':'')+'>Preset</option><option value="Global"'+(tempoSystemSettings.mode==='Global'?' selected':'')+'>Global</option></select></label>'+
     '<label>Global Tempo (BPM)<input type="number" min="1" step="0.1" inputmode="decimal" data-tempo-global value="'+tempoSystemSettings.globalBpm+'"'+(tempoSystemSettings.mode!=='Global'?' disabled':'')+'></label>'+
-    '<div class="delay-toggle-field"><span>Trails</span><button type="button" class="ui-toggle" role="switch" aria-checked="'+(trailsEnabled==='On'?'true':'false')+'" data-tempo-trails><span class="ui-toggle-track"><i></i></span><b data-toggle-state>'+(trailsEnabled==='On'?'ON':'OFF')+'</b></button></div>'+
+    '<div class="delay-toggle-field"><span>Trails</span><button type="button" class="ui-toggle '+(trailsEnabled==='On'?'is-on':'')+'" role="switch" aria-checked="'+(trailsEnabled==='On'?'true':'false')+'" data-tempo-trails><span class="ui-toggle-track"><i></i></span><b data-toggle-state>'+(trailsEnabled==='On'?'ON':'OFF')+'</b></button></div>'+
    '</div>'+
    '<div class="tempo-tap-row"><button type="button" class="secondary" data-tap-tempo>● TAP TEMPO</button><span class="muted" data-tempo-tap-status>'+esc(tempoTapStatus)+'</span></div>'+
   '</div>' : '';
