@@ -747,6 +747,9 @@ async function startYoutubeAudioCapture(){
  }catch(error){
   if(youtubeLiveStream)youtubeLiveStream.getTracks().forEach(track=>track.stop());
   youtubeLiveStream=null;
+  const failedContext=youtubeLiveContext;
+  youtubeLiveContext=null;youtubeLiveAnalyser=null;youtubeLiveTimeData=null;
+  if(failedContext){try{await failedContext.close();}catch{}}
   button.disabled=false;button.textContent="Tangkap Audio YouTube";
   stopButton.hidden=true;
   status.textContent=error?.name==="NotAllowedError"?"Izin berbagi tab dibatalkan. Tekan tombol dan izinkan berbagi tab YouTube.":(error?.message||"Audio tab tidak bisa ditangkap.");
