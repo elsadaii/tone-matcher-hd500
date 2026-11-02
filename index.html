@@ -357,6 +357,38 @@ footer{padding:18px 0 28px}
 }
 
 
+
+/* Restore Signal Chain pedal and knob proportions after compact sizing */
+.signal-chain-canvas{min-height:254px!important;padding:23px 19px 25px!important}
+.chain-endpoint{flex-basis:84px!important;gap:10px!important}
+.chain-endpoint-icon{width:50px!important;height:50px!important;font-size:21px!important}
+.chain-link{flex:0 0 48px!important;width:48px!important;height:48px!important;margin-top:-23px!important}
+.chain-slot{flex:0 0 190px!important;width:190px!important}
+.chain-slot--amp{flex-basis:220px!important;width:220px!important}
+.chain-node{min-height:208px!important;padding:14px 13px 11px!important;border-radius:15px!important}
+.chain-node-top{margin-bottom:11px!important}
+.chain-node-name{min-height:42px!important;font-size:15.5px!important;letter-spacing:-.025em!important}
+.chain-node-knobs{gap:5px!important;margin-top:13px!important;padding:11px 0 1px!important}
+.chain-knob-dial{width:30px!important;height:30px!important;margin-bottom:6px!important}
+.chain-node--amp .chain-knob-dial{width:31px!important;height:31px!important}
+.chain-knob small{font-size:7px!important;letter-spacing:.055em!important}
+.chain-knob .chain-knob-reading{font-size:9px!important;margin-top:3px!important}
+.chain-node-knobs--delay{margin-top:8px!important;padding-top:8px!important}
+.chain-knob--compact .chain-knob-dial{width:24px!important;height:24px!important;margin-bottom:4px!important}
+.chain-knob--compact small{font-size:7px!important}
+.chain-knob--compact .chain-knob-reading{font-size:8px!important}
+@media(max-width:760px){
+ .signal-chain-canvas{min-height:232px!important;padding:19px 13px 21px!important}
+ .chain-node{min-height:198px!important}
+}
+@media(max-width:600px){
+ .signal-chain-canvas{min-height:232px!important}
+ .chain-slot{flex:0 0 180px!important;width:180px!important}
+ .chain-slot--amp{flex-basis:206px!important;width:206px!important}
+ .chain-endpoint{flex-basis:68px!important}
+ .chain-link{flex:0 0 34px!important;width:34px!important;height:44px!important}
+}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="toneResults" class="tone-grid"></div>
