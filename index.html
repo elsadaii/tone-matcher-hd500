@@ -425,6 +425,36 @@ footer{padding:18px 0 28px}
 .audio-analysis-status{display:block;color:#91a2b3;font-size:11px;line-height:1.4}
 .audio-analysis-card button{white-space:nowrap}.audio-analysis-actions{display:flex;flex-wrap:wrap;gap:8px}.audio-analysis-actions button[hidden]{display:none}
 @media(max-width:600px){.audio-analysis-card{align-items:stretch;flex-direction:column;gap:12px}.audio-analysis-card button{width:100%}}
+
+/* Refined Signal Chain knob typography — typography only, no dial/layout changes */
+.chain-knob small:not(.chain-knob-reading){
+ font-family:Inter,"Segoe UI",system-ui,sans-serif!important;
+ font-size:8px!important;
+ font-weight:650!important;
+ letter-spacing:0!important;
+ line-height:1.2!important;
+ text-transform:none!important;
+ color:#c5d0da!important;
+}
+.chain-knob .chain-knob-reading{
+ font-family:Inter,"Segoe UI",system-ui,sans-serif!important;
+ font-size:10px!important;
+ font-weight:800!important;
+ font-variant-numeric:tabular-nums!important;
+ letter-spacing:.015em!important;
+ line-height:1.15!important;
+ margin-top:3px!important;
+}
+.chain-knob--compact small:not(.chain-knob-reading){
+ font-size:7.5px!important;
+ font-weight:700!important;
+ letter-spacing:.01em!important;
+}
+.chain-knob--compact .chain-knob-reading{
+ font-size:9px!important;
+ font-weight:800!important;
+ font-variant-numeric:tabular-nums!important;
+}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div>
