@@ -676,7 +676,8 @@ function getDelayTimePreview(node,index,nodes,timeParam,division){
 function renderDelaySyncControls(node,index,nodes,spec){
  if(spec.category!=='Delay')return '';
  const syncParams=getDelayTimeParams(node,spec);
- const sharedControls=
+ const firstDelayIndex=nodes.findIndex((item,itemIndex)=>getChainParameterSpecs(item).category==='Delay');
+ const sharedControls=index===firstDelayIndex ?
   '<div class="delay-tempo-shared">'+
    '<div class="delay-tempo-heading"><strong>Tempo & Trails</strong><span>PRESET / GLOBAL</span></div>'+
    '<div class="delay-tempo-grid">'+
@@ -686,7 +687,7 @@ function renderDelaySyncControls(node,index,nodes,spec){
     '<div class="delay-toggle-field"><span>Trails</span><button type="button" class="ui-toggle" role="switch" aria-checked="'+(trailsEnabled==='On'?'true':'false')+'" data-tempo-trails><span class="ui-toggle-track"><i></i></span><b data-toggle-state>'+(trailsEnabled==='On'?'ON':'OFF')+'</b></button></div>'+
    '</div>'+
    '<div class="tempo-tap-row"><button type="button" class="secondary" data-tap-tempo>● TAP TEMPO</button><span class="muted" data-tempo-tap-status>'+esc(tempoTapStatus)+'</span></div>'+
-  '</div>';
+  '</div>' : '';
  const fields=syncParams.map(param=>{
   const key=getDelaySyncKey(node,index,nodes,param);
   const selected=getDelaySyncValue(node,index,nodes,param);
@@ -728,7 +729,7 @@ function bindDelaySyncControls(){
   syncTempoSettingsUI();
   renderSignalChain();
  }));
- $('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
+ $$('[data-tap-tempo]').forEach(button=>button.addEventListener('click',event=>handleTempoTap(event)));
 }
 function formatDelayParameterValue(node,index,nodes,param,value){
  const spec=getChainParameterSpecs(node);
