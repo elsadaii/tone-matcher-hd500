@@ -1,10 +1,15 @@
 const ALLOWED_ORIGIN = "https://elsadaii.github.io";
+const ALLOWED_ORIGINS = new Set([
+  ALLOWED_ORIGIN,
+  "https://localhost"
+]);
+const isAllowedOrigin = origin => ALLOWED_ORIGINS.has(origin);
 
 let spotifyToken = null;
 let spotifyTokenExpiresAt = 0;
 
 function cors(origin) {
-  const allowed = origin === ALLOWED_ORIGIN ? origin : ALLOWED_ORIGIN;
+  const allowed = isAllowedOrigin(origin) ? origin : ALLOWED_ORIGIN;
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
@@ -196,14 +201,14 @@ export default {
       return new Response(null, { status: 204, headers: cors(origin) });
     }
     const requestUrl = new URL(request.url);
-    if (origin && origin !== ALLOWED_ORIGIN) return json({ error: "Origin tidak diizinkan" }, 403, origin);
+    if (origin && !isAllowedOrigin(origin)) return json({ error: "Origin tidak diizinkan" }, 403, origin);
     if (requestUrl.pathname === "/health") {
       if (request.method !== "GET") return json({ error: "Method not allowed" }, 405, origin);
       return json({ status: "ok", service: "tone-matcher-api", aiConfigured: Boolean(env.OPENAI_API_KEY), model: "gpt-audio-1.5", analysisPath: "/analyze-tone" }, 200, origin);
     }
     if (requestUrl.pathname === "/analyze-tone") {
       if (request.method !== "POST") return json({ error: "Method not allowed" }, 405, origin);
-      if (origin !== ALLOWED_ORIGIN) return json({ error: "Origin tidak diizinkan" }, 403, origin);
+      if (!isAllowedOrigin(origin)) return json({ error: "Origin tidak diizinkan" }, 403, origin);
       return analyzeToneAudio(request, env, origin);
     }
     if (request.method !== "GET") return json({ error: "Method not allowed" }, 405, origin);
