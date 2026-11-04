@@ -28,7 +28,7 @@ jobs:
           python3 - <<'PY'
           import re, subprocess
           html = open('index.html', encoding='utf-8').read()
-          scripts = re.findall(r'<script\\b[^>]*>(.*?)</script>', html, re.I | re.S)
+          scripts = re.findall(r'<script[^>]*>(.*?)</script>', html, re.I | re.S)
           for i, script in enumerate(scripts):
               if script.strip():
                   path = '/tmp/tone-matcher-inline-' + str(i) + '.js'
