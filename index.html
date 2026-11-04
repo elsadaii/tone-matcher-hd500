@@ -1902,7 +1902,7 @@ function renderSignalChain(){
  if(!nodes.length)html+=renderPatchCable()+'<div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
  else nodes.forEach((node,i)=>{
   const selected=i===selectedChainBlockIndex;
-  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.key===\\'Enter\\'||event.key===\\' \\'){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
+  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=(node.kind==='amp'||node.kind==='cab')?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
   html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+renderChainKnobs(node,i,nodes)+'<div class="chain-pedal-hardware"><span class="chain-pedal-led"></span><span class="chain-pedal-switch"></span></div></div>';
