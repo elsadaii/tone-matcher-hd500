@@ -1005,6 +1005,74 @@ header{box-sizing:border-box;min-width:0;gap:10px}
 .chain-node--amp .chain-amp-visual{margin-top:2px!important;padding-top:7px!important}
 .chain-amp-model{display:block;position:relative;z-index:2;margin:0 1px 5px;color:#f0d7b6;font-size:8px;font-weight:800;line-height:1.15;letter-spacing:.07em;text-transform:uppercase;text-align:left}
 .chain-node--amp .chain-node-sub{display:none!important}
+
+/* HD TUBE as one standalone black amp head — remove the former brown outer pedal shell. */
+.chain-slot--amp{align-self:center!important}
+.chain-node--amp{
+ min-height:0!important;height:auto!important;align-self:center!important;
+ justify-content:flex-start!important;gap:7px;
+ padding:0!important;overflow:visible!important;
+ border:0!important;border-top:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+}
+.chain-node--amp:before,.chain-node--amp:after{display:none!important}
+.chain-node--amp:hover{transform:translateY(-2px)!important;box-shadow:none!important}
+.chain-node--amp.is-selected{border:0!important;box-shadow:none!important}
+.chain-node--amp .chain-node-top{margin:0 0 2px!important;padding:0 2px!important}
+.chain-node--amp .chain-node-name,.chain-node--amp .chain-node-sub{display:none!important}
+.chain-amp-visual{
+ position:relative;display:flex;flex-direction:column;gap:0;
+ width:100%;height:auto!important;min-height:0;
+ margin:0!important;padding:7px 8px 10px!important;
+ overflow:visible;border:2px solid #68727c;border-radius:9px;
+ background:linear-gradient(155deg,#343a40 0%,#171b20 48%,#090c10 100%);
+ box-shadow:0 10px 20px #000b,inset 0 1px 0 #ffffff38,inset 0 -5px 10px #0009;
+ transform:none!important;
+}
+.chain-amp-grille{
+ position:relative;display:grid;place-items:center;
+ width:100%;height:88px!important;min-height:88px;margin:0!important;
+ overflow:hidden;border:1px solid #89939d;border-radius:4px;
+ background:
+  repeating-linear-gradient(0deg,#cbd2d90d 0 1px,#080b0f 1px 3px),
+  repeating-linear-gradient(90deg,#cbd2d90d 0 1px,#151a20 1px 3px),
+  linear-gradient(145deg,#252b31,#090c10 72%);
+ box-shadow:inset 0 2px 10px #000d,inset 0 0 0 2px #ffffff08;
+}
+.chain-amp-title{
+ color:#e6e9ed;font-size:clamp(19px,4vw,27px);font-style:italic;
+ font-weight:1000;line-height:1;letter-spacing:.07em;
+ text-shadow:0 2px 2px #000,0 0 10px #ffffff20;
+}
+.chain-amp-faceplate{
+ display:flex;align-items:center;gap:8px;min-height:27px;
+ margin-top:5px;padding:4px 8px;
+ border:1px solid #6e7881;border-radius:3px;
+ background:linear-gradient(180deg,#3b4147,#161a1f 65%,#0b0e12);
+ box-shadow:inset 0 1px 2px #ffffff23,0 2px 4px #0009;
+}
+.chain-amp-model{min-width:0;overflow:hidden;color:#e1e4e8;font-size:9px;font-weight:900;letter-spacing:.04em;text-overflow:ellipsis;white-space:nowrap}
+.chain-amp-mode{margin-left:auto;color:#aab4bd;font-size:7px;font-weight:800;white-space:nowrap}
+.chain-amp-lamp{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#ef463e;box-shadow:0 0 7px #fa443b,0 0 2px #fff inset}
+.chain-node--amp .chain-node-knobs{
+ display:flex;align-items:flex-start;justify-content:space-around;
+ gap:4px;margin:5px 0 0!important;padding:9px 3px 3px!important;
+ border:1px solid #555f68;border-radius:3px;
+ background:linear-gradient(180deg,#252b31,#101419);
+ box-shadow:inset 0 1px 2px #ffffff17,0 2px 4px #0008;
+}
+.chain-node--amp .chain-knob{min-width:0}
+.chain-node--amp .chain-knob-dial{
+ width:clamp(25px,5.7vw,35px)!important;height:clamp(25px,5.7vw,35px)!important;
+ border:2px solid #c4cbd1!important;
+ background:radial-gradient(circle at 32% 24%,#f2f4f5 0,#9ba3aa 24%,#4b535a 58%,#151a1f 79%)!important;
+ box-shadow:inset 0 2px 3px #fff9,0 3px 5px #000b!important;
+}
+.chain-node--amp .chain-knob-dial:after{background:#fff!important}
+.chain-node--amp .chain-knob small{color:#e4e8eb!important;font-size:7px!important}
+.chain-node--amp .chain-knob .chain-knob-reading{color:#ffbf78!important}
+.chain-amp-feet{position:absolute;bottom:-7px;left:10%;right:10%;display:flex;justify-content:space-between;pointer-events:none}
+.chain-amp-feet i{width:18px;height:7px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,#090b0e,#343a40,#090b0e);box-shadow:0 3px 3px #000}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button type="button" class="tab" data-tab="tones" onclick="switchPageTab('tones',this)">Tone Finder</button><button type="button" class="tab active" data-tab="editor" onclick="switchPageTab('editor',this)">Preset Builder</button><button type="button" class="tab" data-tab="database" onclick="switchPageTab('database',this)">Database Parameter</button><button type="button" class="tab" data-tab="saved" onclick="switchPageTab('saved',this)">Preset Tersimpan <span id="savedCount">0</span></button><button type="button" class="tab" data-tab="devicefiles" onclick="switchPageTab('devicefiles',this)">File POD (.h5e)</button></nav>
 <section id="tones" class="panel"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn" type="button">Cari tone ↗</button></div><div id="onlineArtistResults" class="tone-grid" style="margin-top:12px" aria-live="polite"></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
@@ -2302,13 +2370,9 @@ function renderSignalChain(){
   const slotWidth=Math.max(node.kind==='amp'?220:190,Math.min(760,knobCount*47+30));
   html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'" style="--chain-node-width:'+slotWidth+'px"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
-  const nodeSub=(node.kind==='amp'||node.kind==='cab')?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
-
-  const ampModel=node.kind==='amp'&&node.sub?'<small class="chain-amp-model">'+esc(node.sub)+'</small>':'';
-
-  const ampVisual=node.kind==='amp'?'<div class="chain-amp-visual">'+ampModel+'<div class="chain-amp-control"><span class="chain-amp-brand">HD TUBE SERIES</span><span class="chain-amp-lamp"></span><span class="chain-amp-mini-knobs"><i></i><i></i><i></i><i></i><i></i></span></div><div class="chain-amp-grille"><span class="chain-amp-badge">AMP</span><span class="chain-amp-speaker"><i></i></span></div><div class="chain-amp-feet"><i></i><i></i></div></div>':'';
-
-  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+(node.kind==='amp'?'':nodeSub)+ampVisual+renderChainKnobs(node,i,nodes);
+  const nodeSub=node.kind==='cab'?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
+  const ampVisual=node.kind==='amp'?'<div class="chain-amp-visual"><div class="chain-amp-grille"><span class="chain-amp-title">HD TUBE</span></div><div class="chain-amp-faceplate"><span class="chain-amp-model">'+esc(node.label)+'</span><span class="chain-amp-mode">'+esc(node.sub||'')+'</span><span class="chain-amp-lamp"></span></div>'+renderChainKnobs(node,i,nodes)+'<div class="chain-amp-feet"><i></i><i></i></div></div>':'';
+  html+=(node.kind==='amp'?'':'<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub)+ampVisual+(node.kind==='amp'?'':renderChainKnobs(node,i,nodes));
   html+='</article></div>';
  });
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
