@@ -756,6 +756,78 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
  .pedal-value-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 
+
+/* Typography and spacing polish: consistent baselines, readable labels, no clipped text */
+.signal-chain-heading h3,.chain-parameter-heading h3,.pedal-selected-top h3,
+.pedal-editor-controls-head h4{line-height:1.2;overflow-wrap:anywhere}
+.signal-chain-heading .muted,.pedal-selected-top p:not(.eyebrow){line-height:1.45}
+.chain-node-top{align-items:center;min-height:15px}
+.chain-node-type,.chain-node-number{line-height:1.25}
+.chain-node-name{
+ display:flex;align-items:center;justify-content:center;
+ min-height:40px;padding:2px 3px;text-align:center;
+ line-height:1.25;letter-spacing:0;overflow-wrap:anywhere;hyphens:auto;
+}
+.chain-node-sub{text-align:center;line-height:1.35;overflow-wrap:anywhere}
+.chain-node-knobs{align-items:flex-start!important}
+.chain-node .chain-knob{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px}
+.chain-node .chain-knob small{width:100%;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:anywhere}
+.chain-node .chain-knob .chain-knob-reading{min-height:11px;font-variant-numeric:tabular-nums}
+.chain-node .chain-knob-dial:after{
+ transform:translateX(-50%) rotate(var(--knob-angle,0deg))!important;
+}
+.chain-node-actions{align-items:center}
+.signal-chain-summary{align-items:center;flex-wrap:wrap;line-height:1.4}
+.pedal-editor-item{min-width:0;line-height:1.3}
+.pedal-editor-item strong{line-height:1.25;overflow-wrap:anywhere}
+.pedal-selected-top{min-width:0}
+.pedal-selected-top>div{min-width:0}
+.pedal-selected-top h3{line-height:1.2;overflow-wrap:anywhere}
+.pedal-selected-state{flex:0 0 auto;white-space:nowrap}
+.pedal-realistic-face{display:flex;flex-direction:column;justify-content:flex-start;gap:5px}
+.pedal-brandplate{min-width:0}
+.pedal-brandplate>span{min-width:0;line-height:1.25}
+.pedal-brandplate em{flex:0 0 auto}
+.pedal-realistic-name{display:flex;align-items:center;justify-content:center;line-height:1.2;min-height:38px;letter-spacing:.035em;overflow-wrap:anywhere;hyphens:auto}
+.pedal-realistic-knobs{align-items:flex-start;flex-wrap:wrap}
+.pedal-realistic-knobs .editor-mini-knob{min-width:48px}
+.pedal-realistic-knobs .editor-mini-knob small{width:100%;text-align:center;line-height:1.2;white-space:normal;overflow-wrap:anywhere}
+.pedal-status-row{min-height:28px}
+.pedal-status-row small{line-height:1.25}
+.pedal-model-stamp{line-height:1.3;overflow-wrap:anywhere}
+.pedal-editor-art-caption{line-height:1.35;text-align:center}
+.pedal-editor-controls-head{align-items:center}
+.pedal-value-field{line-height:1.35;overflow-wrap:anywhere}
+.pedal-value-field input{text-align:center;font-variant-numeric:tabular-nums}
+.pedal-value-field small{line-height:1.35}
+@media(max-width:600px){
+ .signal-chain-heading h3{font-size:18px;line-height:1.25}
+ .chain-node-name{font-size:13px;min-height:38px}
+ .chain-node .chain-knob small{font-size:7px}
+ .signal-chain-summary{justify-content:flex-start;gap:6px 14px}
+ .pedal-selected-top{align-items:flex-start}
+ .pedal-selected-top h3{font-size:19px}
+ .pedal-selected-state{padding:6px 8px;font-size:8px}
+ .pedal-realistic-unit{max-width:285px}
+ .pedal-realistic-face{padding:13px 10px 11px}
+ .pedal-brandplate{gap:6px;padding:6px}
+ .pedal-brandplate>span{font-size:8px}
+ .pedal-brandplate em{font-size:6px}
+ .pedal-realistic-name{font-size:17px;min-height:36px}
+ .pedal-realistic-knobs{gap:5px}
+ .pedal-realistic-knobs .editor-mini-knob{min-width:44px}
+ .pedal-editor-controls-head h4{font-size:17px}
+ .pedal-value-field{font-size:9px}
+ .pedal-value-field input{font-size:17px;padding:9px 6px}
+}
+@media(max-width:380px){
+ .pedal-realistic-unit{width:100%}
+ .pedal-realistic-knobs .editor-mini-knob i{width:33px;height:33px}
+ .pedal-brandplate em{letter-spacing:.04em}
+ .chain-slot{flex-basis:142px!important;width:142px!important;min-width:142px!important}
+ .chain-slot--amp{flex-basis:174px!important;width:174px!important;min-width:174px!important}
+}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab" data-tab="tones">Tone Finder</button><button class="tab active" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="onlineArtistResults" class="tone-grid" style="margin-top:12px" aria-live="polite"></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
