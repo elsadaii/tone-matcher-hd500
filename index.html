@@ -829,6 +829,72 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
 }
 
 
+/* Responsive pedal width: every parameter gets its own readable knob. */
+.signal-chain-canvas{
+ align-items:center!important;
+ width:100%;
+ max-width:100%;
+ overflow-x:auto!important;
+ overflow-y:hidden!important;
+}
+.chain-slot,
+.chain-slot--amp{
+ flex:0 0 var(--chain-node-width,190px)!important;
+ width:var(--chain-node-width,190px)!important;
+ min-width:var(--chain-node-width,190px)!important;
+ align-self:stretch;
+}
+.chain-node{
+ width:100%;
+ min-width:0;
+ height:100%;
+ min-height:224px;
+ overflow:visible;
+}
+.chain-node-knobs{
+ display:flex;
+ flex-wrap:nowrap;
+ justify-content:flex-start;
+ align-items:flex-start;
+ gap:4px;
+ width:100%;
+ min-width:0;
+}
+.chain-knob{
+ flex:0 0 42px;
+ width:42px;
+ min-width:42px;
+ overflow:visible;
+}
+.chain-knob small{
+ overflow:visible;
+ white-space:normal;
+ text-overflow:clip;
+ overflow-wrap:anywhere;
+ min-height:16px;
+}
+.chain-knob .chain-knob-reading{
+ min-height:14px;
+ overflow-wrap:anywhere;
+ word-break:break-word;
+}
+.chain-node-knobs--delay .chain-knob--compact{flex:0 0 42px;min-width:42px}
+.chain-toggle{flex:0 0 48px;min-width:48px}
+.chain-link{flex:0 0 34px;align-self:center;margin-top:0!important}
+.chain-endpoint{align-self:stretch;justify-content:center}
+@media(max-width:600px){
+ .signal-chain-canvas{min-height:260px;padding:18px 12px 20px}
+ .chain-node{min-height:224px;padding:12px 10px 10px}
+ .chain-knob{flex-basis:42px;width:42px;min-width:42px}
+ .chain-knob-dial{width:28px;height:28px}
+}
+@media(max-width:380px){
+ .chain-slot,.chain-slot--amp{
+  flex-basis:var(--chain-node-width,190px)!important;
+  width:var(--chain-node-width,190px)!important;
+  min-width:var(--chain-node-width,190px)!important;
+ }
+}
 /* Final layout: remove the detached pedal/parameter editor; keep the signal-chain pedals. */
 #chainParameterList,.chain-parameter-panels,.pedal-editor-layout,.pedal-editor-controls{display:none!important}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
@@ -1968,7 +2034,7 @@ function getSignalChainNodes(){
 }
 function getChainKnobLabels(node){
  const spec=getChainParameterSpecs(node);
- return spec.params.slice(0,node.kind==='amp'?6:5);
+ return Array.isArray(spec.params)?spec.params:[];
 }
 function getDelayKnobEffectiveMs(node,index,nodes,param,rawValue){
  if(getChainParameterSpecs(node).category!=='Delay')return Number(rawValue);
@@ -2116,7 +2182,9 @@ function renderSignalChain(){
  if(!nodes.length)html+=renderPatchCable()+'<div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
  else nodes.forEach((node,i)=>{
   const selected=i===selectedChainBlockIndex;
-  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
+  const knobCount=getChainKnobLabels(node).length+(getChainParameterSpecs(node).category==='Delay'?3:0);
+  const slotWidth=Math.max(node.kind==='amp'?220:190,Math.min(760,knobCount*47+30));
+  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'" style="--chain-node-width:'+slotWidth+'px"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=(node.kind==='amp'||node.kind==='cab')?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
   html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+renderChainKnobs(node,i,nodes)+'<div class="chain-pedal-hardware"><span class="chain-pedal-led"></span><span class="chain-pedal-switch"></span></div></div>';
