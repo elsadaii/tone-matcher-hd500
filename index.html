@@ -930,6 +930,14 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
 
 
 
+
+/* Keep mobile page width inside the viewport; only the signal-chain canvas scrolls horizontally. */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+header{width:100%;max-width:100%;min-width:0;overflow:hidden}
+main{width:100%;min-width:0}
+.signal-chain-editor,.signal-chain-canvas{max-width:100%;min-width:0}
+.fw{flex-shrink:0}
+
 /* Firmware badge alignment: keep its outline fitted to the label on narrow screens. */
 header{box-sizing:border-box;min-width:0;gap:10px}
 .fw{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;line-height:1.2;box-sizing:border-box}
