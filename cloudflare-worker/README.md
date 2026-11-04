@@ -50,4 +50,6 @@ The Tone Matcher page can capture a short audio-only recording from a YouTube br
 
 The endpoint is POST /analyze-tone. If the secret is missing or the updated Worker has not been deployed, the page still creates a clearly labelled local-analysis fallback preset; it does not label the fallback as AI.
 
+Before sending audio, verify the deployment without using OpenAI credits by opening `https://tone-matcher-api.elsadaiprivat.workers.dev/health` in a browser. A successful current deployment returns JSON with `status: "ok"` and `aiConfigured: true`. If `aiConfigured` is `false`, add `OPENAI_API_KEY` as a Secret and deploy again. A 404 or missing health fields means the latest Worker source has not been deployed to this Worker yet.
+
 The browser captures approximately 15 seconds, converts at most 12 seconds to 24 kHz mono WAV, and limits the request size. The Worker includes a lightweight per-IP request guard; configure a Cloudflare Rate Limiting rule for /analyze-tone as an additional cost safeguard. OpenAI API usage is billed separately from ChatGPT subscriptions. The model may still be uncertain when guitar is buried in the full mix; this does not isolate guitar stems.
