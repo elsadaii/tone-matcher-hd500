@@ -1153,6 +1153,16 @@ header{box-sizing:border-box;min-width:0;gap:10px}
  color:#e5edf4!important;font-size:36px!important;line-height:1!important;
 }
 
+/* Amp knob needles: rotate around the exact dial center, including enlarged dials. */
+.chain-node--amp .chain-knob-dial:after{
+ top:50%!important;
+ left:50%!important;
+ width:3px!important;
+ height:12px!important;
+ transform:translate(-50%,-100%) rotate(var(--knob-angle,0deg))!important;
+ transform-origin:50% 100%!important;
+ border-radius:3px!important;
+}
 /* Amp controls: larger readable parameter names and value readouts.
    Use the calculated amp width so a full set of controls has room to breathe. */
 .chain-slot--amp{
