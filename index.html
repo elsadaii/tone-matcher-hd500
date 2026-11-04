@@ -748,6 +748,11 @@ function collectYoutubeLiveFrame(){
  if(elapsed>=15)finishYoutubeAudioCapture();
 }
 async function startYoutubeAudioCapture(){
+ if(window.Capacitor?.isNativePlatform?.()&&!window.ToneMatcherAndroidAudioCapture){
+  const nativeStatus=$("#audioAnalysisStatus");
+  if(nativeStatus)nativeStatus.textContent="Di APK Android, rekaman audio YouTube memerlukan integrasi AudioPlaybackCapture native. Fitur ini belum diaktifkan; gunakan versi web desktop untuk analisis AI sementara.";
+  return;
+ }
  const button=$("#analyzeAudioBtn"),stopButton=$("#stopAudioCaptureBtn"),status=$("#audioAnalysisStatus");
  if(youtubeLiveStream||youtubeLiveFinishing)return;
  if(!navigator.mediaDevices?.getDisplayMedia){
