@@ -180,7 +180,7 @@ async function searchYouTube(q, env) {
   url.searchParams.set("type", "video");
   url.searchParams.set("maxResults", "50");
   url.searchParams.set("key", env.YOUTUBE_API_KEY);
-  const response = await fetch(url);
+  const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
   if (!response.ok) throw new Error("YouTube search gagal (" + response.status + ").");
   const data = await response.json();
   return (data.items || []).map(x => ({
@@ -204,7 +204,7 @@ export default {
     if (origin && !isAllowedOrigin(origin)) return json({ error: "Origin tidak diizinkan" }, 403, origin);
     if (requestUrl.pathname === "/health") {
       if (request.method !== "GET") return json({ error: "Method not allowed" }, 405, origin);
-      return json({ status: "ok", service: "tone-matcher-api", aiConfigured: Boolean(env.OPENAI_API_KEY), model: "gpt-audio-1.5", analysisPath: "/analyze-tone" }, 200, origin);
+      return json({ status: "ok", service: "tone-matcher-api", aiConfigured: Boolean(env.OPENAI_API_KEY), youtubeConfigured: Boolean(env.YOUTUBE_API_KEY), model: "gpt-audio-1.5", analysisPath: "/analyze-tone" }, 200, origin);
     }
     if (requestUrl.pathname === "/analyze-tone") {
       if (request.method !== "POST") return json({ error: "Method not allowed" }, 405, origin);
