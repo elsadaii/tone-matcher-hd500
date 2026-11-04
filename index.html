@@ -1082,13 +1082,13 @@ const tones=[
 ];
 
 // Android/WebView interaction fix: use querySelectorAll helper ($) for collections.
-function switchPageTab(pageId,button){
+window.switchPageTab=function(pageId,button){
  const target=document.getElementById(pageId);
  if(!target||!target.classList.contains('panel'))return false;
  document.querySelectorAll('nav .tab[data-tab]').forEach(tab=>tab.classList.toggle('active',tab===button));
  document.querySelectorAll('main > .panel').forEach(panel=>panel.classList.toggle('active',panel===target));
  return true;
-}
+};
 function init(){
  // Aktifkan pencarian terlebih dahulu agar tetap berfungsi jika inisialisasi Builder gagal.
  const searchButton=$('#searchBtn'),searchInput=$('#toneSearch');
