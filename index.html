@@ -509,6 +509,96 @@ footer{margin-top:18px}
  .searchbar{grid-template-columns:1fr}.searchbar button{width:100%}
  .signal-chain-heading{display:block}.chain-live-badge{display:inline-flex}
 }
+
+/* Illustrated pedalboard editor — preserves existing tone/preset logic */
+.signal-chain-editor{padding:20px;border-color:#42566b;background:linear-gradient(160deg,#172534,#0c131c 78%);box-shadow:0 18px 36px #0005,inset 0 1px 0 #ffffff10}
+.signal-chain-heading h3{font-size:24px}.signal-chain-canvas{align-items:center;min-height:258px;padding:22px 8px 24px;gap:0}
+.chain-slot{flex-basis:190px;width:190px}.chain-slot--amp{flex-basis:230px;width:230px}
+.chain-node{min-height:218px;padding:13px 12px 12px;border:1px solid #718092;border-top:4px solid var(--node-accent);border-radius:13px;background:linear-gradient(145deg,color-mix(in srgb,var(--node-accent) 25%,#293442),#121a24 76%);box-shadow:0 13px 22px #0008,inset 0 1px 0 #ffffff24;cursor:pointer;transition:transform .16s,border-color .16s,box-shadow .16s}
+.chain-node:hover{transform:translateY(-3px);box-shadow:0 17px 28px #0009,inset 0 1px 0 #ffffff30}
+.chain-node.is-selected{border-color:var(--node-accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--node-accent) 50%,transparent),0 0 24px color-mix(in srgb,var(--node-accent) 28%,transparent),0 15px 25px #0009}
+.chain-node--distortion{--node-accent:#ffb52e;background:linear-gradient(145deg,#805018,#291b10 78%)}
+.chain-node--modulation{--node-accent:#42caff;background:linear-gradient(145deg,#174c7d,#102538 78%)}
+.chain-node--delay{--node-accent:#a68aff;background:linear-gradient(145deg,#493080,#211638 78%)}
+.chain-node--reverb{--node-accent:#43d4c8;background:linear-gradient(145deg,#126b73,#12343b 78%)}
+.chain-node--amp{--node-accent:#ffad62;background:linear-gradient(145deg,#574237,#171b21 78%)}
+.chain-node--cab{--node-accent:#aeb9c7;background:linear-gradient(145deg,#35414e,#171d25 78%)}
+.chain-node-name{font-size:14px;min-height:34px;text-shadow:0 1px 2px #0008}
+.chain-node-knobs{gap:5px;margin-top:14px;padding-top:12px}
+.chain-knob-dial{width:34px;height:34px;border:2px solid #aeb9c6;background:radial-gradient(circle at 32% 25%,#d5dce2 0,#737e89 20%,#303a45 55%,#111820 78%);box-shadow:inset 0 2px 3px #fff8,0 4px 7px #000a}
+.chain-knob-dial:after{height:11px;background:#fff;transform:translateX(-50%) rotate(var(--knob-angle,0deg));transform-origin:50% 14px}
+.chain-knob small{font-size:8px;color:#e2e9ef}.chain-knob .chain-knob-reading{font-size:9px;color:#fff}
+.chain-pedal-hardware{display:flex;align-items:center;justify-content:center;gap:13px;margin-top:12px;padding-top:9px;border-top:1px solid #ffffff24}
+.chain-pedal-led{width:9px;height:9px;border-radius:50%;background:var(--node-accent);box-shadow:0 0 8px var(--node-accent),0 0 16px color-mix(in srgb,var(--node-accent) 65%,transparent)}
+.chain-pedal-switch{width:23px;height:23px;border:3px solid #c4ced7;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4f7fa,#596571 48%,#151c24 70%);box-shadow:0 3px 5px #0009}
+.chain-link{flex-basis:30px;background:linear-gradient(90deg,#318fca,#75d9ff);box-shadow:0 0 8px #45baff88}
+.chain-link:after{border-left-color:#75d9ff}
+.chain-parameter-panels{padding:18px;border-color:#405368;background:linear-gradient(145deg,#172432,#0c131c)}
+.chain-parameter-heading h3{font-size:22px}
+.chain-parameter-list{display:block}
+.pedal-editor-layout{display:grid;grid-template-columns:minmax(190px,.72fr) minmax(0,2.2fr);gap:14px}
+.pedal-editor-list{padding:12px;border:1px solid #34485c;border-radius:13px;background:#0e1721}
+.pedal-editor-list-title{display:flex;justify-content:space-between;padding:4px 5px 12px;color:#91a4b7;font-size:9px;font-weight:900;letter-spacing:.15em}
+.pedal-editor-list-title span{color:#c8f477}
+.pedal-editor-item{display:flex;align-items:center;gap:10px;width:100%;margin:4px 0;padding:10px;border:1px solid transparent;border-radius:9px;background:#172432;color:#eaf0f5;text-align:left;cursor:pointer}
+.pedal-editor-item.is-active{border-color:#4d9ed0;background:linear-gradient(100deg,#174b77,#172b3d);box-shadow:0 0 14px #239be52b}
+.pedal-editor-item-led{flex:0 0 8px;width:8px;height:8px;border-radius:50%;background:#65798d}
+.pedal-editor-item.is-active .pedal-editor-item-led{background:#59c6ff;box-shadow:0 0 9px #59c6ff}
+.pedal-editor-item span:nth-child(2){display:grid;min-width:0;gap:2px}
+.pedal-editor-item small{color:#91a5b8;font-size:8px;text-transform:uppercase;letter-spacing:.1em}
+.pedal-editor-item strong{overflow:hidden;font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.pedal-editor-item em{margin-left:auto;color:#74879a;font-size:9px;font-style:normal}
+.pedal-selected-editor{min-width:0;padding:17px;border:1px solid #3b5065;border-radius:14px;background:linear-gradient(145deg,#1a2938,#101923);box-shadow:inset 0 1px 0 #ffffff0b}
+.pedal-selected-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding-bottom:13px;border-bottom:1px solid #34485a}
+.pedal-selected-top .eyebrow{margin:0;font-size:9px}.pedal-selected-top h3{margin:3px 0;font-size:22px}.pedal-selected-top p:not(.eyebrow){margin:0;color:#9eafbf;font-size:11px}
+.pedal-selected-state{padding:7px 10px;border:1px solid #3e7658;border-radius:18px;background:#123321;color:#9ce7b4;font-size:9px;font-weight:900;letter-spacing:.12em}
+.pedal-editor-main{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(0,1.5fr);gap:18px;padding-top:15px}
+.pedal-editor-art{--pedal-accent:#e0b45b;min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:15px 12px;border:2px solid color-mix(in srgb,var(--pedal-accent) 75%,#fff);border-radius:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--pedal-accent) 65%,#222),color-mix(in srgb,var(--pedal-accent) 18%,#101820) 70%);box-shadow:0 12px 24px #0008,inset 0 1px 0 #ffffff55}
+.pedal-editor-art-top{display:flex;justify-content:space-between;width:100%;color:#fff;font-size:8px;font-weight:900;letter-spacing:.16em;text-shadow:0 1px 3px #000}
+.pedal-editor-art-top i{width:8px;height:8px;border-radius:50%;background:#7cff9b;box-shadow:0 0 10px #7cff9b}
+.pedal-editor-art-name{color:#fff;font-size:clamp(16px,2vw,23px);font-weight:950;text-align:center;text-shadow:0 2px 5px #000b;overflow-wrap:anywhere}
+.pedal-editor-art-knobs{display:flex;justify-content:center;gap:8px;width:100%}
+.editor-mini-knob{display:grid;justify-items:center;gap:3px;min-width:0;color:#fff;text-shadow:0 1px 3px #000}
+.editor-mini-knob i{position:relative;width:35px;height:35px;border:2px solid #cbd4dc;border-radius:50%;background:radial-gradient(circle at 32% 25%,#e8edf2,#66717d 28%,#1b222b 70%);box-shadow:0 3px 7px #0009}
+.editor-mini-knob i:after{position:absolute;top:3px;left:50%;width:2px;height:10px;background:#fff;transform:translateX(-50%) rotate(var(--knob-angle));transform-origin:50% 14px;content:""}
+.editor-mini-knob small{max-width:58px;overflow:hidden;font-size:8px;text-overflow:ellipsis;white-space:nowrap}
+.editor-mini-knob b{font-size:9px}
+.pedal-editor-footswitch{display:grid;place-items:center;width:43px;height:43px;border:4px solid #cbd3dc;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff,#7d8994 35%,#242c35 75%);box-shadow:0 4px 8px #000a}
+.pedal-editor-footswitch i{width:15px;height:15px;border-radius:50%;background:#aab5c0}
+.pedal-editor-art-caption{color:#ffffffb0;font-size:7px;letter-spacing:.18em}
+.pedal-editor-controls{min-width:0}
+.pedal-editor-controls-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.pedal-editor-controls-head .eyebrow{font-size:9px;margin:0}.pedal-editor-controls-head h4{margin:2px 0;font-size:18px}
+.pedal-value-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pedal-value-field{display:block;min-width:0;color:#aebdca;font-size:10px;font-weight:700}
+.pedal-value-field input{display:block;width:100%;margin-top:5px;padding:12px;border:1px solid #41576b;border-radius:9px;background:#0b141e;color:#f4f7fa;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.pedal-value-field input:focus{border-color:#63c7ff;box-shadow:0 0 0 2px #63c7ff22;outline:none}
+.pedal-value-field small{display:block;margin-top:4px;color:#8193a5;font-size:8px;font-weight:400}
+.pedal-editor-controls .chain-param-note{margin-top:13px}
+@media(max-width:760px){
+ .signal-chain-editor{padding:13px}.signal-chain-canvas{min-height:240px;padding:18px 4px}
+ .chain-slot{flex-basis:172px;width:172px}.chain-slot--amp{flex-basis:195px;width:195px}
+ .chain-node{min-height:210px;padding:11px 9px}
+ .pedal-editor-layout{grid-template-columns:1fr}
+ .pedal-editor-list{display:flex;gap:7px;overflow-x:auto;padding:9px}
+ .pedal-editor-list-title{display:none}
+ .pedal-editor-item{flex:0 0 145px;margin:0;padding:9px}
+ .pedal-editor-main{grid-template-columns:minmax(125px,.7fr) minmax(0,1.3fr);gap:11px}
+ .pedal-editor-art{min-height:230px;padding:12px 7px}
+ .pedal-editor-art-name{font-size:15px}
+ .editor-mini-knob i{width:29px;height:29px}
+ .pedal-value-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .pedal-value-field input{padding:10px 8px;font-size:14px}
+}
+@media(max-width:420px){
+ .pedal-selected-editor{padding:12px}
+ .pedal-editor-main{grid-template-columns:1fr}
+ .pedal-editor-art{min-height:205px}
+ .pedal-editor-art-knobs{gap:14px}
+ .pedal-editor-art-name{font-size:19px}
+ .pedal-value-grid{grid-template-columns:1fr 1fr}
+}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab active" data-tab="tones">Tone Finder</button><button class="tab" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel active"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="onlineArtistResults" class="tone-grid" style="margin-top:12px" aria-live="polite"></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
@@ -1275,6 +1365,7 @@ function download(blob,name){let a=document.createElement('a');a.href=URL.create
 let chainParameterValues={};
 let activeToneParameterValues={};
 let chainDelaySettings={};
+let selectedChainBlockIndex=0;
 let tempoSystemSettings={mode:'Preset',globalBpm:120};
 let tempoPresetBpm=120;
 let trailsEnabled='On';
@@ -1562,23 +1653,34 @@ function ensureChainParameterValues(nodes){
   });
  });
 }
+function selectChainBlockByIndex(index){
+ selectedChainBlockIndex=Number(index);
+ renderSignalChain();
+}
 function renderChainParameterPanels(nodes){
  const host=$('#chainParameterList');if(!host)return;
+ if(!nodes.length){host.innerHTML='<p class="chain-param-empty">Belum ada blok amp atau efek. Tambahkan blok untuk mulai menyusun pedalboard.</p>';return;}
+ if(!Number.isInteger(selectedChainBlockIndex)||selectedChainBlockIndex<0||selectedChainBlockIndex>=nodes.length)selectedChainBlockIndex=0;
  ensureChainParameterValues(nodes);
- const panels=[];
- nodes.forEach((node,index)=>{
-  const spec=getChainParameterSpecs(node);
-  const fields=spec.params.map(param=>{
-   const key=getChainParameterKey(node,index,nodes,param);
-   const meta=HD500_DB.parameterMeta?.[param];
-   const extra=meta?'<small>'+esc(meta.unit)+' · '+esc(meta.range)+'</small>':'';
-   const value=formatDelayParameterValue(node,index,nodes,param,chainParameterValues[key]);
-   return '<label>'+esc(param)+'<div class="chain-param-value"><strong>'+esc(value)+'</strong><small>AUTO</small></div>'+extra+'</label>';
-  }).join('');
-  const delayControls=renderDelaySyncControls(node,index,nodes,spec);
-  panels.push('<article class="chain-param-card chain-param-card--'+spec.type+'"><div class="chain-param-card-head"><div><span class="chain-param-category">'+esc(spec.category)+'</span><h4>'+esc(node.label)+'</h4><small>'+esc(spec.description)+'</small></div><span class="chain-node-number">'+String(index+1).padStart(2,'0')+'</span></div><div class="chain-param-grid">'+fields+'</div>'+delayControls+'<p class="chain-param-note">'+esc(spec.note)+'</p></article>');
- });
- host.innerHTML=panels.length?panels.join(''):'<p class="chain-param-empty">Belum ada blok amp atau efek. Panel parameter akan muncul otomatis setelah Signal Chain terisi.</p>';
+ const node=nodes[selectedChainBlockIndex],index=selectedChainBlockIndex,spec=getChainParameterSpecs(node);
+ const categoryButtons=nodes.map((item,i)=>'<button type="button" class="pedal-editor-item '+(i===index?'is-active':'')+'" onclick="selectChainBlockByIndex('+i+')"><span class="pedal-editor-item-led"></span><span><small>'+esc(item.category)+'</small><strong>'+esc(item.label)+'</strong></span><em>'+String(i+1).padStart(2,'0')+'</em></button>').join('');
+ const faceKnobs=getChainKnobLabels(node).slice(0,5).map(param=>{
+  const key=getChainParameterKey(node,index,nodes,param),value=chainParameterValues[key]??getAutoChainParameterValue(node,param,spec);
+  return '<div class="editor-mini-knob"><i style="--knob-angle:'+getChainKnobAngle(node,index,nodes,param)+'deg"></i><small>'+esc(param)+'</small><b>'+esc(getDelayKnobReading(node,index,nodes,param,String(value)))+'</b></div>';
+ }).join('');
+ const fields=spec.params.map(param=>{
+  const key=getChainParameterKey(node,index,nodes,param),meta=HD500_DB.parameterMeta?.[param],value=chainParameterValues[key]??getAutoChainParameterValue(node,param,spec);
+  const extra=meta?'<small>'+esc(meta.unit)+' · '+esc(meta.range)+'</small>':'';
+  return '<label class="pedal-value-field">'+esc(param)+'<input type="number" step="any" inputmode="decimal" value="'+esc(String(value))+'" data-chain-param-key="'+esc(key)+'" aria-label="'+esc(param)+'">'+extra+'</label>';
+ }).join('');
+ const delayControls=renderDelaySyncControls(node,index,nodes,spec);
+ const accent=node.kind==='amp'?'#f08c55':node.kind==='cab'?'#9aa9b8':spec.category==='Delay'?'#69a9ec':spec.category==='Reverb'?'#5cbf91':spec.category==='Distortion'?'#ef795e':spec.category==='Modulation'?'#5dc6bc':'#e0b45b';
+ host.innerHTML='<div class="pedal-editor-layout"><aside class="pedal-editor-list"><div class="pedal-editor-list-title">SIGNAL BLOCKS <span>'+nodes.length+'</span></div>'+categoryButtons+'</aside><section class="pedal-selected-editor"><div class="pedal-selected-top"><div><p class="eyebrow">SELECTED HARDWARE · '+String(index+1).padStart(2,'0')+'</p><h3>'+esc(node.label)+'</h3><p>'+esc(spec.description)+'</p></div><span class="pedal-selected-state">EDITING</span></div><div class="pedal-editor-main"><div class="pedal-editor-art" style="--pedal-accent:'+accent+'"><div class="pedal-editor-art-top"><span>'+esc(spec.category.toUpperCase())+'</span><i></i></div><div class="pedal-editor-art-name">'+esc(node.label)+'</div><div class="pedal-editor-art-knobs">'+faceKnobs+'</div><div class="pedal-editor-footswitch"><i></i></div><small class="pedal-editor-art-caption">TONE MATCHER · HD500</small></div><div class="pedal-editor-controls"><div class="pedal-editor-controls-head"><div><span class="eyebrow">CONTROL PANEL</span><h4>Parameter</h4></div><span class="tag">'+spec.params.length+' CONTROLS</span></div><div class="pedal-value-grid">'+fields+'</div>'+delayControls+'<p class="chain-param-note">'+esc(spec.note)+'</p></div></div></section></div>';
+ $$('[data-chain-param-key]').forEach(input=>input.addEventListener('change',()=>{
+  const key=input.dataset.chainParamKey;
+  if(key&&input.value.trim()!=='')chainParameterValues[key]=input.value.trim();
+  renderSignalChain();
+ }));
  bindDelaySyncControls();
 }
 function setupSignalChainScroll(){
@@ -1782,35 +1884,35 @@ function setupChainTrailsToggle(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  canvas.querySelectorAll('[data-chain-trails-toggle]').forEach(toggle=>{
   toggle.addEventListener('click',event=>{
-   event.preventDefault();
-   event.stopPropagation();
+   event.preventDefault();event.stopPropagation();
    trailsEnabled=trailsEnabled==='On'?'Off':'On';
-   syncTempoSettingsUI();
-   renderSignalChain();
+   syncTempoSettingsUI();renderSignalChain();
   });
  });
 }
-function setupChainSyncToggle(){}function renderSignalChain(){
+function setupChainSyncToggle(){}
+function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
  const nodes=getSignalChainNodes();
  ensureChainParameterValues(nodes);
- let html='<div class="chain-endpoint"><div class="chain-endpoint-icon">⌁</div><strong>INPUT</strong><small>Guitar</small></div>';
+ if(!nodes.length)selectedChainBlockIndex=0;
+ else if(selectedChainBlockIndex>=nodes.length)selectedChainBlockIndex=nodes.length-1;
+ let html='<div class="chain-endpoint"><div class="chain-endpoint-icon">🎸</div><strong>INPUT</strong><small>Guitar</small></div>';
  if(!nodes.length)html+=renderPatchCable()+'<div class="chain-empty">Belum ada blok efek.<br>Tambahkan efek dari pilihan di atas.</div>';
  else nodes.forEach((node,i)=>{
-  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article class="chain-node chain-node--'+esc(node.kind)+'">';
+  const selected=i===selectedChainBlockIndex;
+  html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.key===\\'Enter\\'||event.key===\\' \\'){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=(node.kind==='amp'||node.kind==='cab')?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
-  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+renderChainKnobs(node,i,nodes)+'</div>';
+  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+renderChainKnobs(node,i,nodes)+'<div class="chain-pedal-hardware"><span class="chain-pedal-led"></span><span class="chain-pedal-switch"></span></div></div>';
   html+='</article></div>';
  });
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
  canvas.innerHTML=html;
- setupChainTrailsToggle();
- setupChainSyncToggle();
- $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Geser tampilan untuk melihat blok lainnya</span>';
+ setupChainTrailsToggle();setupChainSyncToggle();
+ $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Sentuh pedal untuk membuka kontrol parameternya</span>';
  renderChainParameterPanels(nodes);
-
 }
 function writeSignalChainNodes(nodes){
  $('#fxChain').value=nodes.map(n=>n.label).join(' → ');renderSignalChain();
