@@ -575,7 +575,7 @@ function init(){
  $('#ampSelect').innerHTML=HD500_DB.amps.map(a=>`<option>${a[0]}</option>`).join('');$('#cabSelect').innerHTML=HD500_DB.cabs.map(x=>`<option>${x}</option>`).join('');$('#micSelect').innerHTML=HD500_DB.mics.map(x=>`<option>${x}</option>`).join('');$('#cabSelect').addEventListener('change',()=>{syncMicChoices();renderSignalChain();});syncMicChoices();
  setupSignalChainEditor();setupTempoControls();renderSignalChain();
  renderTones(tones);renderDb();renderSaved();
- $('.tab').forEach(b=>b.addEventListener('click',()=>{ $('.tab').forEach(x=>x.classList.toggle('active',x===b));$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
+ $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
  $('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
  $('#analyzeAudioBtn').onclick=startYoutubeAudioCapture;$('#stopAudioCaptureBtn').onclick=finishYoutubeAudioCapture;
  $('#analyzeYoutubeLinkBtn').onclick=analyzeYoutubeLink;$('#ytVideoLink').addEventListener('keydown',event=>{if(event.key==='Enter')analyzeYoutubeLink();});
@@ -597,7 +597,7 @@ async function searchTones(){
   window.youtubeMatches=videos;
   if(!videos.length){box.innerHTML='<p class="hint">Belum ada video YouTube yang cocok. Coba nama lagu atau gitaris yang lebih spesifik.</p>';return;}
   box.innerHTML='<h3 style="grid-column:1/-1">Hasil YouTube terkait pencarian</h3><p class="hint" style="grid-column:1/-1">Pilih satu video, lalu aplikasi akan membuat starting preset berdasarkan metadata yang tersedia.</p>'+videos.map((v,i)=>'<article class="tone-card"><div class="meta">YOUTUBE · '+esc(v.detail||'VIDEO')+'</div>'+(v.image?'<img src="'+esc(v.image)+'" alt="" loading="lazy" style="width:100%;border-radius:8px;margin:6px 0">':'')+'<h3>'+esc(v.name||'Video YouTube')+'</h3><p>'+esc((v.description||'Deskripsi tidak tersedia.').slice(0,260))+'</p><button data-youtube-tone="'+i+'">Cocokkan & isi Preset Builder</button></article>').join('');
-  $('[data-youtube-tone]').forEach(b=>b.onclick=()=>{
+  $$('[data-youtube-tone]').forEach(b=>b.onclick=()=>{
    try{applyYouTubeTone(Number(b.dataset.youtubeTone));}
    catch(err){
     const msg='Preset belum berhasil diisi: '+(err?.message||'kesalahan tidak diketahui');
@@ -1182,7 +1182,7 @@ function applyYouTubeTone(index){
  if(detectedMic&&[...$('#micSelect').options].some(o=>o.value===detectedMic))$('#micSelect').value=detectedMic;
  renderSignalChain();
 }
-function renderTones(list){$('#toneResults').innerHTML=list.length?list.map(t=>`<article class="tone-card"><div class="meta">${t.genre}</div><h3>${t.artist}</h3><p>${t.song}</p><p><b>Amp:</b> ${t.amp}</p><p>${t.chain}</p><button data-tone="${tones.indexOf(t)}">Pakai tone ini ↗</button></article>`).join(''):'<p class="muted">Tidak ditemukan. Coba nama gitaris atau judul lagu lain.</p>';$('[data-tone]').forEach(b=>b.onclick=()=>applyTone(tones[+b.dataset.tone]));}
+function renderTones(list){$('#toneResults').innerHTML=list.length?list.map(t=>`<article class="tone-card"><div class="meta">${t.genre}</div><h3>${t.artist}</h3><p>${t.song}</p><p><b>Amp:</b> ${t.amp}</p><p>${t.chain}</p><button data-tone="${tones.indexOf(t)}">Pakai tone ini ↗</button></article>`).join(''):'<p class="muted">Tidak ditemukan. Coba nama gitaris atau judul lagu lain.</p>';$$('[data-tone]').forEach(b=>b.onclick=()=>applyTone(tones[+b.dataset.tone]));}
 function applyTone(t){
  chainParameterValues={};
  activeToneParameterValues={};
@@ -1202,8 +1202,8 @@ function openPresetBuilderTab(){const tab=document.querySelector('.tab[data-tab=
 function currentPreset(){captureChainParameterValues();let params={...activeToneParameterValues};$$('[data-knob]').forEach(i=>{if(i.value.trim())params[i.dataset.knob]=i.value.trim()});return {input1:$('#input1').value,input2:$('#input2').value,inputZ:$('#inputZ').value,tempoBpm:tempoPresetBpm,trails:trailsEnabled,chainDelaySettings:{...chainDelaySettings},mixer:{panA:$('#panA').value,levelA:$('#levelA').value,panB:$('#panB').value,levelB:$('#levelB').value},id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name:$('#presetName').value.trim()||'Untitled',amp:$('#ampSelect').value,cab:$('#cabSelect').value,mic:$('#micSelect').value,ampType:$('#ampType').value,outputMode:$('#outputMode').value,params,chainParameters:{...chainParameterValues},chain:$('#fxChain').value,notes:$('#notes').value,updated:new Date().toISOString()}}
 function getSaved(){try{return JSON.parse(localStorage.getItem('hd500-presets')||'[]')}catch{return []}}
 function savePreset(){let p=currentPreset(),all=getSaved();all=all.filter(x=>x.name!==p.name);all.unshift(p);localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset tersimpan di browser ini.');}
-function renderSaved(){let a=getSaved();$('#savedCount').textContent=a.length;$('#savedResults').innerHTML=a.length?a.map(p=>`<div class="saved-card"><div><b>${esc(p.name)}</b><p>${esc(p.amp)} · ${esc(p.cab)} · ${new Date(p.updated).toLocaleDateString('id-ID')}</p></div><div class="saved-actions"><button class="secondary" data-load="${p.id}">Buka</button><button class="secondary" data-del="${p.id}">Hapus</button></div></div>`).join(''):'<p class="muted">Belum ada preset tersimpan di browser ini.</p>';$('[data-load]').forEach(b=>b.onclick=()=>loadPreset(a.find(x=>x.id===b.dataset.load)));$('[data-del]').forEach(b=>b.onclick=()=>{localStorage.setItem('hd500-presets',JSON.stringify(getSaved().filter(x=>x.id!==b.dataset.del)));renderSaved()});}
-function loadPreset(p){if(!p)return;$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};activeToneParameterValues={...(p.params||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';tempoPresetBpm=Number(p.tempoBpm)>0?Number(p.tempoBpm):120;trailsEnabled=p.trails||'On';tempoTapStatus='Ketuk beberapa kali untuk menghitung BPM.';chainDelaySettings={...(p.chainDelaySettings||{})};$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
+function renderSaved(){let a=getSaved();$('#savedCount').textContent=a.length;$('#savedResults').innerHTML=a.length?a.map(p=>`<div class="saved-card"><div><b>${esc(p.name)}</b><p>${esc(p.amp)} · ${esc(p.cab)} · ${new Date(p.updated).toLocaleDateString('id-ID')}</p></div><div class="saved-actions"><button class="secondary" data-load="${p.id}">Buka</button><button class="secondary" data-del="${p.id}">Hapus</button></div></div>`).join(''):'<p class="muted">Belum ada preset tersimpan di browser ini.</p>';$$('[data-load]').forEach(b=>b.onclick=()=>loadPreset(a.find(x=>x.id===b.dataset.load)));$$('[data-del]').forEach(b=>b.onclick=()=>{localStorage.setItem('hd500-presets',JSON.stringify(getSaved().filter(x=>x.id!==b.dataset.del)));renderSaved()});}
+function loadPreset(p){if(!p)return;$$('[data-chain-param-key]').forEach(i=>i.value='');chainParameterValues={...(p.chainParameters||{})};activeToneParameterValues={...(p.params||{})};$('#presetName').value=p.name;$('#ampSelect').value=p.amp;$('#ampType').value=p.ampType||'Full Amp';$('#outputMode').value=p.outputMode||'Studio/Direct';$('#input1').value=p.input1||'Guitar';$('#input2').value=p.input2||'Same';$('#inputZ').value=p.inputZ||'Auto';tempoPresetBpm=Number(p.tempoBpm)>0?Number(p.tempoBpm):120;trailsEnabled=p.trails||'On';tempoTapStatus='Ketuk beberapa kali untuk menghitung BPM.';chainDelaySettings={...(p.chainDelaySettings||{})};$('#panA').value=p.mixer?.panA||'';$('#levelA').value=p.mixer?.levelA||'';$('#panB').value=p.mixer?.panB||'';$('#levelB').value=p.mixer?.levelB||'';$('#cabSelect').value=p.cab;syncMicChoices();$('#micSelect').value=p.mic;$('#fxChain').value=p.chain||'';$('#notes').value=p.notes||'';$$('[data-knob]').forEach(i=>i.value='');renderSignalChain();$$('[data-knob]').forEach(i=>{if(p.params?.[i.dataset.knob])i.value=p.params[i.dataset.knob];});captureChainParameterValues();openPresetBuilderTab();}
 function exportCurrent(){let blob=new Blob([JSON.stringify(currentPreset(),null,2)],{type:'application/json'});download(blob,'pod-hd500-preset.json')}
 function importFile(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let p=JSON.parse(r.result);if(!p.name||!p.amp)throw Error();let all=getSaved();all.unshift({...p,id:String(Date.now()),updated:new Date().toISOString()});localStorage.setItem('hd500-presets',JSON.stringify(all));renderSaved();alert('Preset berhasil diimpor.')}catch{alert('File JSON tidak dikenali sebagai preset Tone Matcher.')}};r.readAsText(f);e.target.value=''}
 function download(blob,name){let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
@@ -1217,7 +1217,7 @@ let trailsEnabled='On';
 let tempoTapStatus='Ketuk beberapa kali untuk menghitung BPM.';
 let tempoTapMoments=[];
 function captureChainParameterValues(){
- $('[data-chain-param-key]').forEach(input=>{
+ $$('[data-chain-param-key]').forEach(input=>{
   const key=input.dataset.chainParamKey;
   if(!key)return;
   if(input.value.trim())chainParameterValues[key]=input.value.trim();
@@ -1360,7 +1360,7 @@ function renderDelaySyncControls(node,index,nodes,spec){
  return '<div class="delay-tempo-controls">'+sharedControls+syncControls+'</div>';
 }
 function bindDelaySyncControls(){
- $('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
+ $$('[data-delay-sync-key]').forEach(select=>select.addEventListener('change',()=>{
   const key=select.dataset.delaySyncKey;
   chainDelaySettings[key]=select.value;
   if(select.value!=='Off')chainDelaySettings[key+'::Last']=select.value;
