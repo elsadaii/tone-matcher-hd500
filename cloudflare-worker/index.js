@@ -197,6 +197,10 @@ export default {
     }
     const requestUrl = new URL(request.url);
     if (origin && origin !== ALLOWED_ORIGIN) return json({ error: "Origin tidak diizinkan" }, 403, origin);
+    if (requestUrl.pathname === "/health") {
+      if (request.method !== "GET") return json({ error: "Method not allowed" }, 405, origin);
+      return json({ status: "ok", service: "tone-matcher-api", aiConfigured: Boolean(env.OPENAI_API_KEY), model: "gpt-audio-1.5", analysisPath: "/analyze-tone" }, 200, origin);
+    }
     if (requestUrl.pathname === "/analyze-tone") {
       if (request.method !== "POST") return json({ error: "Method not allowed" }, 405, origin);
       if (origin !== ALLOWED_ORIGIN) return json({ error: "Origin tidak diizinkan" }, 403, origin);
