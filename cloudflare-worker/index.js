@@ -1,7 +1,11 @@
 const ALLOWED_ORIGIN = "https://elsadaii.github.io";
 const ALLOWED_ORIGINS = new Set([
   ALLOWED_ORIGIN,
-  "https://localhost"
+  "https://localhost",
+  "http://localhost",
+  "https://127.0.0.1",
+  "http://127.0.0.1",
+  "capacitor://localhost"
 ]);
 const isAllowedOrigin = origin => ALLOWED_ORIGINS.has(origin);
 
