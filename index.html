@@ -615,7 +615,7 @@ async function searchTones(){
   });
  }catch(err){
   window.youtubeMatches=[];
-  box.innerHTML='<p class="hint">Pencarian data YouTube gagal: '+esc(err.message||'gangguan jaringan')+'. Tone lokal tetap tersedia di atas.</p>';
+  box.innerHTML='<p class="hint">Pencarian data YouTube gagal [TM-SEARCH-DIAG-20261104]: '+esc(err.message||'gangguan jaringan')+'. Tone lokal tetap tersedia di atas.</p>';
  }
 }
 
