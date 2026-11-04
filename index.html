@@ -1083,6 +1083,20 @@ const tones=[
 
 // Android/WebView interaction fix: use querySelectorAll helper ($) for collections.
 function init(){
+ // Navigasi dipasang paling awal agar tetap aktif meski inisialisasi fitur lain gagal.
+ const pageNav=document.querySelector('nav');
+ if(pageNav&&!pageNav.dataset.navigationReady){
+  pageNav.dataset.navigationReady='true';
+  pageNav.addEventListener('click',event=>{
+   const tab=event.target.closest('.tab[data-tab]');
+   if(!tab||!pageNav.contains(tab))return;
+   const target=document.getElementById(tab.dataset.tab);
+   if(!target||!target.classList.contains('panel'))return;
+   event.preventDefault();
+   pageNav.querySelectorAll('.tab').forEach(button=>button.classList.toggle('active',button===tab));
+   document.querySelectorAll('main > .panel').forEach(panel=>panel.classList.toggle('active',panel===target));
+  });
+ }
  // Aktifkan pencarian terlebih dahulu agar tetap berfungsi jika inisialisasi Builder gagal.
  const searchButton=$('#searchBtn'),searchInput=$('#toneSearch');
  if(searchButton)searchButton.addEventListener('click',searchTones);
@@ -1090,7 +1104,6 @@ function init(){
  $('#ampSelect').innerHTML=HD500_DB.amps.map(a=>`<option>${a[0]}</option>`).join('');$('#cabSelect').innerHTML=HD500_DB.cabs.map(x=>`<option>${x}</option>`).join('');$('#micSelect').innerHTML=HD500_DB.mics.map(x=>`<option>${x}</option>`).join('');$('#cabSelect').addEventListener('change',()=>{syncMicChoices();renderSignalChain();});syncMicChoices();
  setupSignalChainEditor();setupTempoControls();renderSignalChain();
  renderTones(tones);renderDb();renderSaved();
- $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));}));
  $('#dbSearch').oninput=renderDb;$('#dbCategory').onchange=renderDb;$('#savePreset').onclick=savePreset;$('#exportPreset').onclick=exportCurrent;$('#importPreset').onclick=()=>$('#importFile').click();$('#importFile').onchange=importFile;$('#podFile').onchange=inspectPodFile;
  $('#analyzeAudioBtn').onclick=startYoutubeAudioCapture;$('#stopAudioCaptureBtn').onclick=finishYoutubeAudioCapture;
  $('#analyzeYoutubeLinkBtn').onclick=analyzeYoutubeLink;$('#ytVideoLink').addEventListener('keydown',event=>{if(event.key==='Enter')analyzeYoutubeLink();});
