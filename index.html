@@ -2047,7 +2047,19 @@ function setupChainTrailsToggle(){
   });
  });
 }
-function setupChainSyncToggle(){}
+function setupChainSyncToggle(){
+ const canvas=$('#signalChainCanvas');if(!canvas)return;
+ canvas.querySelectorAll('[data-chain-delay-toggle-sync]').forEach(toggle=>{
+  if(toggle.dataset.syncToggleReady==='1')return;
+  toggle.dataset.syncToggleReady='1';
+  toggle.addEventListener('click',event=>{
+   event.preventDefault();event.stopPropagation();
+   const index=Number(toggle.dataset.chainDelayToggleIndex);
+   if(!Number.isInteger(index))return;
+   toggleDelaySyncForBlockByIndex(index);
+  });
+ });
+}
 function renderSignalChain(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
  captureChainParameterValues();
