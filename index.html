@@ -2274,7 +2274,7 @@ function renderSignalChain(){
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=(node.kind==='amp'||node.kind==='cab')?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
   const ampVisual=node.kind==='amp'?'<div class="chain-amp-visual" aria-hidden="true"><div class="chain-amp-control"><span class="chain-amp-brand">HD TUBE SERIES</span><span class="chain-amp-lamp"></span><span class="chain-amp-mini-knobs"><i></i><i></i><i></i><i></i><i></i></span></div><div class="chain-amp-grille"><span class="chain-amp-badge">AMP</span><span class="chain-amp-speaker"><i></i></span></div><div class="chain-amp-feet"><i></i><i></i></div></div>':'';
-  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+ampVisual+renderChainKnobs(node,i,nodes)+;
+  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+ampVisual+renderChainKnobs(node,i,nodes);
   html+='</article></div>';
  });
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
