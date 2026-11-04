@@ -895,29 +895,35 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
   min-width:var(--chain-node-width,190px)!important;
  }
 }
-/* Patch cable refinement: compact horizontal lead with a small natural sag. */
+/* Patch cable refinement: stronger cable body and clearly visible metal plugs. */
 .chain-link{
- flex:0 0 52px!important;
- width:52px!important;
- height:24px!important;
+ flex:0 0 62px!important;
+ width:62px!important;
+ height:30px!important;
  margin:0!important;
  align-self:center!important;
  background:none!important;
  border:0!important;
  box-shadow:none!important;
- filter:drop-shadow(0 3px 3px #0008);
+ filter:drop-shadow(0 3px 3px #0009);
 }
 .chain-link:after{content:none!important}
 .patch-cable-art{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.patch-jack{top:8px!important}
-.patch-cable-shadow{stroke-width:8;stroke:#080d13}
-.patch-cable-wire{stroke-width:5;stroke:#71889a}
-.patch-cable-highlight{stroke-width:1.2;stroke:#dbe5ec;stroke-opacity:.65}
+.patch-jack{
+ top:8px!important;
+ width:14px!important;
+ height:10px!important;
+ border-width:1.5px!important;
+ border-radius:4px!important;
+}
+.patch-cable-shadow{stroke-width:11;stroke:#080d13}
+.patch-cable-wire{stroke-width:7.5;stroke:#71899c}
+.patch-cable-highlight{stroke-width:1.6;stroke:#e0e9ef;stroke-opacity:.7}
 @media(max-width:600px){
- .chain-link{flex:0 0 46px!important;width:46px!important;height:22px!important}
- .patch-jack{top:7px!important}
- .patch-cable-shadow{stroke-width:7}
- .patch-cable-wire{stroke-width:4.5}
+ .chain-link{flex:0 0 56px!important;width:56px!important;height:28px!important}
+ .patch-jack{top:7px!important;width:13px!important;height:9px!important}
+ .patch-cable-shadow{stroke-width:10}
+ .patch-cable-wire{stroke-width:7}
 }
 /* Final layout: remove the detached pedal/parameter editor; keep the signal-chain pedals. */
 #chainParameterList,.chain-parameter-panels,.pedal-editor-layout,.pedal-editor-controls{display:none!important}
@@ -2172,7 +2178,7 @@ function renderChainKnobs(node,index,nodes){
  return parameters+delayControls;
 }
 function renderPatchCable(){
- return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 52 24" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M8 12 C 18 17 34 17 44 12"></path><path class="patch-cable-wire" d="M8 12 C 18 17 34 17 44 12"></path><path class="patch-cable-highlight" d="M8 11 C 18 16 34 16 44 11"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
+ return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 52 30" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M8 12 C 18 19 34 19 44 12"></path><path class="patch-cable-wire" d="M8 12 C 18 19 34 19 44 12"></path><path class="patch-cable-highlight" d="M8 11 C 18 18 34 18 44 11"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
 }
 function setupChainTrailsToggle(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
