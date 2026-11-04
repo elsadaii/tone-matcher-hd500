@@ -1,0 +1,22 @@
+{
+  "name": "tone-matcher-hd500",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Android wrapper for Tone Matcher HD500",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "android:prepare": "node scripts/prepare-android.mjs",
+    "android:add": "npm run android:prepare && cap add android",
+    "android:sync": "npm run android:prepare && cap sync android",
+    "android:debug": "npm run android:sync && cd android && ./gradlew --no-daemon assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/core": "8.6.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0"
+  }
+}
