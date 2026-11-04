@@ -897,6 +897,29 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
 }
 /* Final layout: remove the detached pedal/parameter editor; keep the signal-chain pedals. */
 #chainParameterList,.chain-parameter-panels,.pedal-editor-layout,.pedal-editor-controls{display:none!important}
+
+/* More breathing room between pedals; keep the patch lead clearly visible */
+.chain-link{
+ flex:0 0 72px!important;
+ width:72px!important;
+ height:54px!important;
+ margin-top:-23px!important;
+}
+.patch-cable-art{inset:0;width:100%;height:100%}
+.patch-cable-shadow{stroke-width:8}
+.patch-cable-wire{stroke-width:5.5}
+.patch-cable-highlight{stroke-width:1.4}
+@media(max-width:600px){
+ .chain-link{
+  flex:0 0 60px!important;
+  width:60px!important;
+  height:52px!important;
+  margin-top:-21px!important;
+ }
+ .patch-cable-shadow{stroke-width:8}
+ .patch-cable-wire{stroke-width:5}
+}
+
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab" data-tab="tones">Tone Finder</button><button class="tab active" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="onlineArtistResults" class="tone-grid" style="margin-top:12px" aria-live="polite"></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
@@ -2146,7 +2169,7 @@ function renderChainKnobs(node,index,nodes){
  return parameters+delayControls;
 }
 function renderPatchCable(){
- return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 52 46" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-wire" d="M8 7 C 9 39 43 39 44 7"></path><path class="patch-cable-highlight" d="M9 8 C 10 36 42 36 43 8"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
+ return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 72 46" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M10 7 C 12 43 60 43 62 7"></path><path class="patch-cable-wire" d="M10 7 C 12 43 60 43 62 7"></path><path class="patch-cable-highlight" d="M11 8 C 13 39 59 39 61 8"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
 }
 function setupChainTrailsToggle(){
  const canvas=$('#signalChainCanvas');if(!canvas)return;
