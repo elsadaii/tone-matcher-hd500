@@ -45,4 +45,4 @@ The existing AI workflow captures a YouTube browser tab using the desktop browse
 
 The initial APK keeps the other app features available, but clearly explains that YouTube audio capture needs a native Android `AudioPlaybackCapture` integration before it can run inside the APK. Android may also refuse capture when the source app's playback-capture policy does not allow it. The user must explicitly grant the Android capture permission.
 
-The Cloudflare Worker and OpenAI API integration can be reused after the native Android audio capture bridge is implemented and tested.
+The Cloudflare Worker and OpenAI API integration can be reused after the native Android audio capture bridge is implemented and tested. The Worker source also needs to be redeployed from the latest `cloudflare-worker/index.js`, which now allows the app's `https://localhost` origin in addition to GitHub Pages.
