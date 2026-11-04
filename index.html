@@ -929,6 +929,22 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
 #chainParameterList,.chain-parameter-panels,.pedal-editor-layout,.pedal-editor-controls{display:none!important}
 
 
+
+/* Firmware badge alignment: keep its outline fitted to the label on narrow screens. */
+header{box-sizing:border-box;min-width:0;gap:10px}
+.fw{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;line-height:1.2;box-sizing:border-box}
+.fw b{margin:0}
+@media(max-width:760px){
+ header{width:100%;padding-left:12px;padding-right:12px;gap:8px}
+ .brand{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden}
+ .brand b{overflow:hidden;text-overflow:ellipsis}
+ .fw{flex:0 0 auto;max-width:none;padding:6px 8px;font-size:8px;letter-spacing:.08em;gap:5px}
+ .fw b{font-size:9px;letter-spacing:.04em}
+}
+@media(max-width:390px){
+ .fw{font-size:7px;padding:5px 6px;letter-spacing:.05em;gap:4px}
+ .fw b{font-size:8px}
+}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab" data-tab="tones">Tone Finder</button><button class="tab active" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="onlineArtistResults" class="tone-grid" style="margin-top:12px" aria-live="polite"></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
