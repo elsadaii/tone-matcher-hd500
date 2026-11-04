@@ -29,7 +29,7 @@ GET `/search?q=Metallica&source=both`
 - `source=youtube`: YouTube videos
 - `source=both`: both services
 
-The only allowed browser origin is currently `https://elsadaii.github.io`.
+The allowed browser origins are `https://elsadaii.github.io` (GitHub Pages) and `https://localhost` (the Capacitor Android app).
 
 ## Notes
 
@@ -44,7 +44,7 @@ The only allowed browser origin is currently `https://elsadaii.github.io`.
 The Tone Matcher page can capture a short audio-only recording from a YouTube browser tab after the user explicitly chooses the tab and shares its audio. It converts a short excerpt to mono WAV in the browser and sends that excerpt to this Worker. The Worker forwards it to OpenAI's gpt-audio-1.5 model and returns a structured tone description. The model request uses store=false; normal API data-handling terms still apply.
 
 1. In Cloudflare Dashboard, open the Worker that serves tone-matcher-api.elsadaiprivat.workers.dev.
-2. Replace its source with the updated cloudflare-worker/index.js from this repository and deploy.
+2. Replace its source with the latest `cloudflare-worker/index.js` from this repository and deploy. This version includes the Android `https://localhost` CORS origin.
 3. Under Worker Settings → Variables and Secrets, add OPENAI_API_KEY as a Secret. Never add the key to index.html or commit it.
 4. Deploy the Worker again and reload the Tone Matcher site.
 
