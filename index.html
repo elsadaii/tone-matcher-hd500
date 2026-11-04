@@ -925,6 +925,28 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
  .patch-cable-shadow{stroke-width:10}
  .patch-cable-wire{stroke-width:7}
 }
+
+/* Animated combo-amplifier illustration for the Amp block (CSS-drawn, no photos). */
+.chain-node--amp{min-height:286px!important;padding:12px 12px 11px!important;border:1px solid #a17b5d!important;border-top:4px solid #ffc078!important;border-radius:12px!important;background:linear-gradient(145deg,#44332b 0%,#211d1d 72%,#14171c 100%)!important}
+.chain-node--amp .chain-node-name{min-height:0!important;margin-bottom:2px;text-align:left}
+.chain-node--amp .chain-node-sub{margin-bottom:7px}
+.chain-amp-visual{position:relative;height:104px;margin:8px 2px 9px;padding:7px 8px 9px;border:1px solid #b38a68;border-radius:8px;background:linear-gradient(145deg,#69503d,#302820 48%,#1b1a1b);box-shadow:inset 0 2px 5px #fff3,0 7px 12px #0009;transform:perspective(420px) rotateX(2deg)}
+.chain-amp-control{position:relative;display:flex;align-items:center;gap:5px;height:25px;padding:3px 6px;border:1px solid #b9a58b;border-radius:4px;background:linear-gradient(180deg,#e0d1b5,#8d795e);box-shadow:inset 0 1px 2px #fff9,0 2px 3px #0008}
+.chain-amp-brand{color:#34291f;font-size:6px;font-weight:1000;letter-spacing:.11em;white-space:nowrap}
+.chain-amp-lamp{width:5px;height:5px;flex:0 0 5px;border-radius:50%;background:#ffb45b;box-shadow:0 0 7px #ff9b39}
+.chain-amp-mini-knobs{display:flex;align-items:center;gap:4px;margin-left:auto}
+.chain-amp-mini-knobs i{display:block;width:8px;height:8px;border:1px solid #eee0c9;border-radius:50%;background:radial-gradient(circle at 30% 25%,#555,#111 70%);box-shadow:0 1px 2px #0009}
+.chain-amp-grille{position:relative;height:53px;margin-top:6px;overflow:hidden;border:1px solid #8b715a;border-radius:3px;background:repeating-linear-gradient(0deg,#b5a18a18 0 1px,#171b20 1px 3px),repeating-linear-gradient(90deg,#d8c3a51a 0 1px,#25282b 1px 3px),linear-gradient(135deg,#34383b,#171a1d);box-shadow:inset 0 2px 7px #000b}
+.chain-amp-speaker{position:absolute;left:50%;top:50%;width:42px;height:42px;transform:translate(-50%,-50%);border:2px solid #98836d;border-radius:50%;background:radial-gradient(circle,#9b8a76 0 8%,#292a2a 10% 23%,#6d6256 25% 30%,#1a1d20 33% 66%,#84715d 68% 72%,#191b1e 75%);box-shadow:0 0 0 2px #090c10,0 2px 5px #000}
+.chain-amp-speaker i{position:absolute;inset:7px;border:1px solid #b4a18b;border-radius:50%;opacity:.65}
+.chain-amp-badge{position:absolute;right:7px;top:5px;color:#e4d1b6;font-size:6px;font-weight:900;letter-spacing:.15em}
+.chain-amp-feet{position:absolute;bottom:-4px;left:12px;right:12px;display:flex;justify-content:space-between}
+.chain-amp-feet i{width:10px;height:4px;border-radius:0 0 3px 3px;background:#111;box-shadow:0 2px 2px #000}
+.chain-node--amp .chain-node-knobs{margin-top:5px!important;padding-top:8px!important;gap:4px}
+.chain-node--amp .chain-knob-dial{width:30px!important;height:30px!important}
+.chain-node--amp .chain-pedal-hardware{display:none}
+@media(max-width:600px){.chain-node--amp{min-height:286px!important}.chain-amp-visual{height:100px}}
+
 /* Final layout: remove the detached pedal/parameter editor; keep the signal-chain pedals. */
 #chainParameterList,.chain-parameter-panels,.pedal-editor-layout,.pedal-editor-controls{display:none!important}
 
@@ -2243,7 +2265,8 @@ function renderSignalChain(){
   html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'" style="--chain-node-width:'+slotWidth+'px"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=(node.kind==='amp'||node.kind==='cab')?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
-  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+renderChainKnobs(node,i,nodes)+'<div class="chain-pedal-hardware"><span class="chain-pedal-led"></span><span class="chain-pedal-switch"></span></div></div>';
+  const ampVisual=node.kind==='amp'?'<div class="chain-amp-visual" aria-hidden="true"><div class="chain-amp-control"><span class="chain-amp-brand">HD TUBE SERIES</span><span class="chain-amp-lamp"></span><span class="chain-amp-mini-knobs"><i></i><i></i><i></i><i></i><i></i></span></div><div class="chain-amp-grille"><span class="chain-amp-badge">AMP</span><span class="chain-amp-speaker"><i></i></span></div><div class="chain-amp-feet"><i></i><i></i></div></div>':'';
+  html+='<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+ampVisual+renderChainKnobs(node,i,nodes)+'<div class="chain-pedal-hardware"><span class="chain-pedal-led"></span><span class="chain-pedal-switch"></span></div></div>';
   html+='</article></div>';
  });
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
