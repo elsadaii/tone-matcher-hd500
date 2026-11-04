@@ -828,6 +828,9 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
  .chain-slot--amp{flex-basis:174px!important;width:174px!important;min-width:174px!important}
 }
 
+
+/* Final layout: remove the detached pedal/parameter editor; keep the signal-chain pedals. */
+#chainParameterList,.chain-parameter-panels,.pedal-editor-layout,.pedal-editor-controls{display:none!important}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button class="tab" data-tab="tones">Tone Finder</button><button class="tab active" data-tab="editor">Preset Builder</button><button class="tab" data-tab="database">Database Parameter</button><button class="tab" data-tab="saved">Preset Tersimpan <span id="savedCount">0</span></button><button class="tab" data-tab="devicefiles">File POD (.h5e)</button></nav>
 <section id="tones" class="panel"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn">Cari tone ↗</button></div><div id="onlineArtistResults" class="tone-grid" style="margin-top:12px" aria-live="polite"></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
@@ -1881,32 +1884,7 @@ function selectChainBlockByIndex(index){
  selectedChainBlockIndex=Number(index);
  renderSignalChain();
 }
-function renderChainParameterPanels(nodes){
- const host=$('#chainParameterList');if(!host)return;
- if(!nodes.length){host.innerHTML='<p class="chain-param-empty">Belum ada blok amp atau efek. Tambahkan blok untuk mulai menyusun pedalboard.</p>';return;}
- if(!Number.isInteger(selectedChainBlockIndex)||selectedChainBlockIndex<0||selectedChainBlockIndex>=nodes.length)selectedChainBlockIndex=0;
- ensureChainParameterValues(nodes);
- const node=nodes[selectedChainBlockIndex],index=selectedChainBlockIndex,spec=getChainParameterSpecs(node);
- const categoryButtons=nodes.map((item,i)=>'<button type="button" class="pedal-editor-item '+(i===index?'is-active':'')+'" onclick="selectChainBlockByIndex('+i+')"><span class="pedal-editor-item-led"></span><span><small>'+esc(item.category)+'</small><strong>'+esc(item.label)+'</strong></span><em>'+String(i+1).padStart(2,'0')+'</em></button>').join('');
- const faceKnobs=getChainKnobLabels(node).slice(0,5).map(param=>{
-  const key=getChainParameterKey(node,index,nodes,param),value=chainParameterValues[key]??getAutoChainParameterValue(node,param,spec);
-  return '<div class="editor-mini-knob"><i style="--knob-angle:'+getChainKnobAngle(node,index,nodes,param)+'deg"></i><small>'+esc(param)+'</small><b>'+esc(getDelayKnobReading(node,index,nodes,param,String(value)))+'</b></div>';
- }).join('');
- const fields=spec.params.map(param=>{
-  const key=getChainParameterKey(node,index,nodes,param),meta=HD500_DB.parameterMeta?.[param],value=chainParameterValues[key]??getAutoChainParameterValue(node,param,spec);
-  const extra=meta?'<small>'+esc(meta.unit)+' · '+esc(meta.range)+'</small>':'';
-  return '<label class="pedal-value-field">'+esc(param)+'<input type="number" step="any" inputmode="decimal" value="'+esc(String(value))+'" data-chain-param-key="'+esc(key)+'" aria-label="'+esc(param)+'">'+extra+'</label>';
- }).join('');
- const delayControls=renderDelaySyncControls(node,index,nodes,spec);
- const accent=node.kind==='amp'?'#f08c55':node.kind==='cab'?'#9aa9b8':spec.category==='Delay'?'#69a9ec':spec.category==='Reverb'?'#5cbf91':spec.category==='Distortion'?'#ef795e':spec.category==='Modulation'?'#5dc6bc':'#e0b45b';
- host.innerHTML='<div class="pedal-editor-layout"><aside class="pedal-editor-list"><div class="pedal-editor-list-title">SIGNAL BLOCKS <span>'+nodes.length+'</span></div>'+categoryButtons+'</aside><section class="pedal-selected-editor"><div class="pedal-selected-top"><div><p class="eyebrow">SELECTED HARDWARE · '+String(index+1).padStart(2,'0')+'</p><h3>'+esc(node.label)+'</h3><p>'+esc(spec.description)+'</p></div><span class="pedal-selected-state">EDITING</span></div><div class="pedal-editor-main"><div class="pedal-realistic-stage" style="--pedal-accent:'+accent+'"><div class="pedal-realistic-shadow"></div><div class="pedal-realistic-unit"><div class="pedal-realistic-side"></div><div class="pedal-realistic-face"><i class="pedal-screw screw-a"></i><i class="pedal-screw screw-b"></i><i class="pedal-screw screw-c"></i><i class="pedal-screw screw-d"></i><div class="pedal-jack-row"><span></span><small>IN</small><span></span><small>OUT</small></div><div class="pedal-brandplate"><b>TM</b><span>TONE MATCHER <small>HD500 SERIES</small></span><em>'+esc(spec.category.toUpperCase())+'</em></div><div class="pedal-realistic-name">'+esc(node.label)+'</div><div class="pedal-realistic-knobs">'+faceKnobs+'</div><div class="pedal-status-row"><span class="pedal-led-lens"></span><small>STATUS / ACTIVE</small><span class="pedal-status-line"></span></div><div class="pedal-foot-row"><div class="pedal-footswitch-ring"><i></i></div><small>FOOTSWITCH</small></div><div class="pedal-model-stamp">ANALOG CONTROL SURFACE · '+String(index+1).padStart(2,'0')+'</div></div></div><small class="pedal-editor-art-caption">HARDWARE VIEW · CONTROLS FOLLOW LIVE PARAMETERS</small></div><div class="pedal-editor-controls"><div class="pedal-editor-controls-head"><div><span class="eyebrow">CONTROL PANEL</span><h4>Parameter</h4></div><span class="tag">'+spec.params.length+' CONTROLS</span></div><div class="pedal-value-grid">'+fields+'</div>'+delayControls+'<p class="chain-param-note">'+esc(spec.note)+'</p></div></div></section></div>';
- $$('[data-chain-param-key]').forEach(input=>input.addEventListener('change',()=>{
-  const key=input.dataset.chainParamKey;
-  if(key&&input.value.trim()!=='')chainParameterValues[key]=input.value.trim();
-  renderSignalChain();
- }));
- bindDelaySyncControls();
-}
+/* Parameter editor terpisah dihapus: nilai ditampilkan pada pedal signal chain. */
 function setupSignalChainScroll(){
  const canvas=$('#signalChainCanvas');if(!canvas||canvas.dataset.dragScrollReady)return;
  canvas.dataset.dragScrollReady='1';
@@ -2091,7 +2069,7 @@ function renderDelayChainKnobs(node,index,nodes){
 function renderChainKnobs(node,index,nodes){
  const labels=getChainKnobLabels(node);
  const spec=getChainParameterSpecs(node);
- const parameters='<div class="chain-node-knobs" aria-label="Knob visual mengikuti nilai pada panel parameter">'+labels.map(name=>{
+ const parameters='<div class="chain-node-knobs" aria-label="Knob dan nilai parameter pada pedal">'+labels.map(name=>{
   const key=getChainParameterKey(node,index,nodes,name);
   const raw=String(chainParameterValues[key]??getAutoChainParameterValue(node,name,spec));
   const value=getDelayKnobReading(node,index,nodes,name,raw);
@@ -2147,8 +2125,8 @@ function renderSignalChain(){
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
  canvas.innerHTML=html;
  setupChainTrailsToggle();setupChainSyncToggle();
- $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Sentuh pedal untuk membuka kontrol parameternya</span>';
- renderChainParameterPanels(nodes);
+ $('#signalChainSummary').innerHTML='<span><strong>'+nodes.length+'</strong> blok dalam jalur sinyal</span><span>Nilai parameter ditampilkan langsung pada setiap pedal</span>';
+ /* Tidak ada panel parameter terpisah. */
 }
 function writeSignalChainNodes(nodes){
  $('#fxChain').value=nodes.map(n=>n.label).join(' → ');renderSignalChain();
