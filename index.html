@@ -2371,7 +2371,7 @@ function renderSignalChain(){
   html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'" style="--chain-node-width:'+slotWidth+'px"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=node.kind==='cab'?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
-  const ampVisual=node.kind==='amp'?'<div class="chain-amp-visual"><div class="chain-amp-grille"><span class="chain-amp-title">HD TUBE</span></div><div class="chain-amp-faceplate"><span class="chain-amp-model">'+esc(node.label)+'</span><span class="chain-amp-mode">'+esc(node.sub||'')+'</span><span class="chain-amp-lamp"></span></div>'+renderChainKnobs(node,i,nodes)+'<div class="chain-amp-feet"><i></i><i></i></div></div>':'';
+  const ampVisual=node.kind==='amp'?'<div class="chain-amp-visual"><div class="chain-amp-grille"><span class="chain-amp-title">'+esc(node.label)+'</span></div><div class="chain-amp-faceplate"><span class="chain-amp-mode">'+esc(node.sub||'')+'</span><span class="chain-amp-lamp"></span></div>'+renderChainKnobs(node,i,nodes)+'<div class="chain-amp-feet"><i></i><i></i></div></div>':'';
   html+=(node.kind==='amp'?'':'<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub)+ampVisual+(node.kind==='amp'?'':renderChainKnobs(node,i,nodes));
   html+='</article></div>';
  });
