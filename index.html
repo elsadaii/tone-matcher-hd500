@@ -1086,7 +1086,7 @@ window.switchPageTab=function(pageId,button){
  const target=document.getElementById(pageId);
  if(!target||!target.classList.contains('panel'))return false;
  document.querySelectorAll('nav .tab[data-tab]').forEach(tab=>tab.classList.toggle('active',tab===button));
- document.querySelectorAll('main > .panel').forEach(panel=>panel.classList.toggle('active',panel===target));
+ document.querySelectorAll('section.panel').forEach(panel=>panel.classList.toggle('active',panel===target));
  return true;
 };
 function init(){
