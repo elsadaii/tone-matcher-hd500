@@ -2320,4 +2320,22 @@ async function inspectPodFile(e){
  $('#downloadPodReport').onclick=()=>{const report=`POD HD500 FILE INSPECTION\nFile: ${f.name}\nType: ${type}\nSize: ${f.size}\nSHA-256: ${digest}\nHeader: ${head}\nText fragments:\n${fragments.join('\n')}\n\nDecode status: Not decoded.`;download(new Blob([report],{type:'text/plain'}),'pod-file-inspection.txt')};
 }
 
+</script>
+<script>
+/* Isolated navigation handler: independent from the main application initializer. */
+(function(){
+ document.addEventListener('click',function(event){
+  var tab=event.target.closest('nav button.tab[data-tab]');
+  if(!tab)return;
+  var target=document.getElementById(tab.getAttribute('data-tab'));
+  if(!target||!target.classList.contains('panel'))return;
+  event.preventDefault();
+  document.querySelectorAll('nav button.tab[data-tab]').forEach(function(item){
+   item.classList.toggle('active',item===tab);
+  });
+  document.querySelectorAll('section.panel').forEach(function(panel){
+   panel.classList.toggle('active',panel===target);
+  });
+ },true);
+})();
 </script></body></html>
