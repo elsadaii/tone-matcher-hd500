@@ -1402,17 +1402,23 @@ header{box-sizing:border-box;min-width:0;gap:10px}
  padding:2px 0!important;
 }
 .chain-node-knobs--delay .chain-toggle-track{
- display:flex!important;
- width:26px!important;
- height:15px!important;
+ display:inline-flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:flex-end!important;
+ width:16px!important;
+ height:28px!important;
+ padding:2px!important;
  margin:0 auto!important;
 }
 .chain-node-knobs--delay .chain-toggle-track i{
- width:11px!important;
- height:11px!important;
+ width:10px!important;
+ height:10px!important;
+ flex:0 0 10px!important;
+ transform:translateY(0)!important;
 }
 .chain-node-knobs--delay .chain-toggle.is-on .chain-toggle-track i{
- transform:translateX(11px)!important;
+ transform:translateY(-12px)!important;
 }
 .chain-node-knobs--delay .chain-toggle small{
  display:block!important;
