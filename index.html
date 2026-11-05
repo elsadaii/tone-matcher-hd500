@@ -2525,7 +2525,7 @@ function renderSignalChain(){
  else nodes.forEach((node,i)=>{
   const selected=i===selectedChainBlockIndex;
   const knobCount=getChainKnobLabels(node).length+(getChainParameterSpecs(node).category==='Delay'?2:0);
-  const slotWidth=node.kind==='cab'?Math.max(300,Math.min(900,knobCount*68+34)):node.kind==='amp'?Math.max(280,Math.min(900,knobCount*58+44)):Math.max(190,Math.min(760,knobCount*47+30));
+  const slotWidth=node.kind==='cab'?Math.max(300,Math.min(900,knobCount*68+34)):node.kind==='amp'?Math.max(280,Math.min(900,knobCount*58+44)):node.kind==='delay'?218:Math.max(190,Math.min(760,knobCount*47+30));
   html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'" style="--chain-node-width:'+slotWidth+'px"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=node.kind==='cab'?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
