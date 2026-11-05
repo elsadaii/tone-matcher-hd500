@@ -943,7 +943,7 @@ nav{position:sticky;top:0;z-index:20;gap:6px;padding:9px 0;background:#0c121a;bo
 .chain-amp-feet{position:absolute;bottom:-4px;left:12px;right:12px;display:flex;justify-content:space-between}
 .chain-amp-feet i{width:10px;height:4px;border-radius:0 0 3px 3px;background:#111;box-shadow:0 2px 2px #000}
 .chain-node--amp .chain-node-knobs{margin-top:5px!important;padding-top:8px!important;gap:4px}
-.chain-node--amp .chain-knob-dial{width:30px!important;height:30px!important}
+.chain-node--amp .chain-knob-dial{width:26px!important;height:26px!important}
 .chain-node--amp .chain-pedal-hardware{display:none}
 @media(max-width:600px){.chain-node--amp{min-height:286px!important}.chain-amp-visual{height:100px}}
 
@@ -2525,7 +2525,7 @@ function renderSignalChain(){
  else nodes.forEach((node,i)=>{
   const selected=i===selectedChainBlockIndex;
   const knobCount=getChainKnobLabels(node).length+(getChainParameterSpecs(node).category==='Delay'?2:0);
-  const slotWidth=node.kind==='cab'?Math.max(300,Math.min(900,knobCount*68+34)):Math.max(node.kind==='amp'?220:190,Math.min(760,knobCount*47+30));
+  const slotWidth=node.kind==='cab'?Math.max(300,Math.min(900,knobCount*68+34)):node.kind==='amp'?Math.max(280,Math.min(900,knobCount*58+44)):Math.max(190,Math.min(760,knobCount*47+30));
   html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(node.kind)+'" style="--chain-node-width:'+slotWidth+'px"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(node.kind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=node.kind==='cab'?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
