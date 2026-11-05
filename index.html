@@ -1261,6 +1261,115 @@ header{box-sizing:border-box;min-width:0;gap:10px}
  overflow-wrap:anywhere!important;
  line-height:1.1!important;
 }
+
+/* Delay layout revision: BPM LCD at upper left, SYNC/TRAILS stacked vertically at right. */
+.chain-slot--delay{
+ flex:0 0 190px!important;
+ width:190px!important;
+ min-width:190px!important;
+}
+.chain-node--delay{
+ width:100%!important;
+ min-width:0!important;
+ box-sizing:border-box!important;
+}
+.chain-delay-top-row{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ gap:6px!important;
+ width:100%!important;
+ min-width:0!important;
+ margin:3px 0 7px!important;
+}
+.chain-delay-top-row .chain-delay-lcd{
+ flex:0 1 auto!important;
+ min-width:82px!important;
+ padding:3px 6px!important;
+ gap:4px!important;
+ margin:0!important;
+}
+.chain-node-knobs--delay{
+ display:flex!important;
+ flex:0 0 64px!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ justify-content:center!important;
+ gap:3px!important;
+ width:64px!important;
+ min-width:64px!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+}
+.chain-node-knobs--delay .chain-toggle{
+ display:flex!important;
+ flex:0 0 auto!important;
+ flex-direction:row!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:4px!important;
+ width:100%!important;
+ min-width:0!important;
+ padding:1px 0!important;
+}
+.chain-node-knobs--delay .chain-toggle-track{
+ width:24px!important;
+ height:14px!important;
+ padding:1px!important;
+}
+.chain-node-knobs--delay .chain-toggle-track i{
+ width:10px!important;
+ height:10px!important;
+}
+.chain-node-knobs--delay .chain-toggle.is-on .chain-toggle-track i{
+ transform:translateX(10px)!important;
+}
+.chain-node-knobs--delay .chain-toggle small{
+ font-size:7px!important;
+ line-height:1!important;
+ letter-spacing:.03em!important;
+ white-space:nowrap!important;
+}
+.chain-node--delay .chain-node-knobs:not(.chain-node-knobs--delay){
+ display:flex!important;
+ flex-wrap:nowrap!important;
+ justify-content:space-between!important;
+ align-items:flex-start!important;
+ gap:2px!important;
+ width:100%!important;
+ min-width:0!important;
+ margin-top:5px!important;
+}
+.chain-node--delay .chain-node-knobs:not(.chain-node-knobs--delay) .chain-knob{
+ flex:0 0 28px!important;
+ width:28px!important;
+ min-width:28px!important;
+ max-width:28px!important;
+}
+.chain-node--delay .chain-node-knobs:not(.chain-node-knobs--delay) .chain-knob-dial{
+ width:22px!important;
+ height:22px!important;
+}
+.chain-node--delay .chain-node-knobs:not(.chain-node-knobs--delay) .chain-knob small:not(.chain-knob-reading){
+ font-size:7px!important;
+ line-height:1.1!important;
+ white-space:normal!important;
+ overflow:visible!important;
+ text-overflow:clip!important;
+ overflow-wrap:anywhere!important;
+}
+.chain-node--delay .chain-node-knobs:not(.chain-node-knobs--delay) .chain-knob .chain-knob-reading{
+ font-size:7px!important;
+ line-height:1.1!important;
+ white-space:normal!important;
+ overflow:visible!important;
+ overflow-wrap:anywhere!important;
+}
+@media(max-width:600px){
+ .chain-slot--delay{flex-basis:190px!important;width:190px!important;min-width:190px!important}
+ .chain-delay-top-row .chain-delay-lcd{min-width:80px!important}
+}
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button type="button" class="tab" data-tab="tones" onclick="switchPageTab('tones',this)">Tone Finder</button><button type="button" class="tab active" data-tab="editor" onclick="switchPageTab('editor',this)">Preset Builder</button><button type="button" class="tab" data-tab="database" onclick="switchPageTab('database',this)">Database Parameter</button><button type="button" class="tab" data-tab="saved" onclick="switchPageTab('saved',this)">Preset Tersimpan <span id="savedCount">0</span></button><button type="button" class="tab" data-tab="devicefiles" onclick="switchPageTab('devicefiles',this)">File POD (.h5e)</button></nav>
 <section id="tones" class="panel"><div class="section-head"><div><p class="eyebrow">01 / SEARCH</p><h2>Cari referensi tone</h2></div><span class="tag">STARTING POINTS</span></div><div class="searchbar"><input id="toneSearch" placeholder="Cari gitaris atau lagu… contoh: David Gilmour, Sweet Child O' Mine"><button id="searchBtn" type="button">Cari tone ↗</button></div><div id="onlineArtistResults" class="tone-grid" style="margin-top:12px" aria-live="polite"></div><div class="yt-link-card"><div class="yt-link-copy"><strong>1. Tempel link YouTube</strong><p>Link hanya dipakai untuk mengenali judul dan channel. Suara lagu akan dianalisis pada langkah berikutnya, bukan dari metadata.</p><span id="ytLinkStatus" class="yt-link-status">Kenali link terlebih dahulu, lalu putar lagu di tab YouTube.</span></div><div class="yt-link-entry"><input id="ytVideoLink" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…"><button id="analyzeYoutubeLinkBtn" type="button">Kenali Video</button></div><div id="ytLinkResult" class="yt-link-result" hidden></div></div><div class="audio-analysis-card"><div><strong>2. Analisis audio dengan AI</strong><p>Putar bagian lagu yang ingin dicocokkan, tekan tombol, lalu pilih tab YouTube dan aktifkan berbagi audio tab. Setelah sekitar 15 detik, cuplikan audio dikirim ke AI melalui server untuk dianalisis.</p><span id="audioAnalysisStatus" class="audio-analysis-status">Tidak perlu memilih atau mengunggah file. Gunakan Chrome/Edge desktop dan izinkan berbagi audio tab. Cuplikan audio dikirim ke AI; perlu OPENAI_API_KEY di Cloudflare Worker.</span></div><div class="audio-analysis-actions"><button id="analyzeAudioBtn" type="button">Mulai Analisis AI</button><button id="stopAudioCaptureBtn" type="button" class="secondary" hidden>Kirim &amp; buat preset</button></div></div><div id="toneResults" class="tone-grid"></div><p class="hint">Video YouTube digunakan sebagai referensi metadata untuk membuat starting preset. Hasilnya berupa perkiraan yang bisa disesuaikan.</p><p class="hint">Setting tone adalah titik awal buatan aplikasi, bukan preset resmi artis. Sesuaikan dengan gitar, pickup, speaker, dan output mode.</p></section>
@@ -2529,8 +2638,7 @@ function renderChainKnobs(node,index,nodes){
   const angle=getChainKnobAngle(node,index,nodes,name);
   return '<div class="chain-knob" title="'+esc(name+': '+value)+'"><span class="chain-knob-dial" style="--knob-angle:'+angle+'deg"></span><small>'+esc(name)+'</small><small class="chain-knob-reading">'+esc(value)+'</small></div>';
  }).join('')+'</div>';
- const delayControls=spec.category==='Delay'?renderDelayChainKnobs(node,index,nodes):'';
- return parameters+delayControls;
+ return parameters;
 }
 function renderPatchCable(){
  return '<div class="chain-link" aria-hidden="true"><span class="patch-jack patch-jack--start"></span><svg class="patch-cable-art" viewBox="0 0 52 30" preserveAspectRatio="none"><path class="patch-cable-shadow" d="M8 12 C 18 19 34 19 44 12"></path><path class="patch-cable-wire" d="M8 12 C 18 19 34 19 44 12"></path><path class="patch-cable-highlight" d="M8 11 C 18 18 34 18 44 11"></path></svg><span class="patch-jack patch-jack--end"></span></div>';
@@ -2572,14 +2680,14 @@ function renderSignalChain(){
   const isDelayCategory=getChainParameterSpecs(node).category==='Delay';
   const visualKind=isDelayCategory?'delay':node.kind;
   const knobCount=getChainKnobLabels(node).length+(isDelayCategory?2:0);
-  const slotWidth=node.kind==='cab'?Math.max(300,Math.min(900,knobCount*68+34)):node.kind==='amp'?Math.max(280,Math.min(900,knobCount*58+44)):isDelayCategory?218:Math.max(190,Math.min(760,knobCount*47+30));
+  const slotWidth=node.kind==='cab'?Math.max(300,Math.min(900,knobCount*68+34)):node.kind==='amp'?Math.max(280,Math.min(900,knobCount*58+44)):isDelayCategory?190:Math.max(190,Math.min(760,knobCount*47+30));
   html+=renderPatchCable()+'<div class="chain-slot chain-slot--'+esc(visualKind)+'" style="--chain-node-width:'+slotWidth+'px"><article role="button" tabindex="0" aria-pressed="'+String(selected)+'" onclick="selectChainBlockByIndex('+i+')" onkeydown="if(event.keyCode===13||event.keyCode===32){event.preventDefault();selectChainBlockByIndex('+i+')}" class="chain-node chain-node--'+esc(visualKind)+(selected?' is-selected':'')+'">';
   html+='<div><div class="chain-node-top"><span class="chain-node-type">'+esc(node.category)+'</span><span class="chain-node-number">'+String(i+1).padStart(2,'0')+'</span></div>';
   const nodeSub=node.kind==='cab'?'<small class="chain-node-sub">'+esc(node.sub||'')+'</small>':'';
   const ampVisual=node.kind==='amp'?'<div class="chain-amp-visual"><div class="chain-amp-grille"><span class="chain-amp-title">'+esc(node.label)+'</span></div><div class="chain-amp-faceplate"><span class="chain-amp-mode">'+esc(node.sub||'')+'</span><span class="chain-amp-lamp"></span></div>'+renderChainKnobs(node,i,nodes)+'<div class="chain-amp-feet"><i></i><i></i></div></div>':'';
   const isDelayBlock=node.kind==='delay'||node.category==='Delay'||getChainParameterSpecs(node).category==='Delay'||/delay|echo/i.test(node.label);
-  const delayLcd=isDelayBlock?renderDelayBpmLcd():'';
-  html+=(node.kind==='amp'?'':'<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+delayLcd)+ampVisual+(node.kind==='amp'?'':renderChainKnobs(node,i,nodes));
+  const delayHeader=isDelayBlock?'<div class="chain-delay-top-row">'+renderDelayBpmLcd()+renderDelayChainKnobs(node,i,nodes)+'</div>':'';
+  html+=(node.kind==='amp'?'':'<strong class="chain-node-name">'+esc(node.label)+'</strong>'+nodeSub+delayHeader)+ampVisual+(node.kind==='amp'?'':renderChainKnobs(node,i,nodes));
   html+='</article></div>';
  });
  html+=renderPatchCable()+'<div class="chain-endpoint"><div class="chain-endpoint-icon">↗</div><strong>OUTPUT</strong><small>'+esc($('#outputMode').value)+'</small></div>';
