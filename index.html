@@ -1163,6 +1163,25 @@ header{box-sizing:border-box;min-width:0;gap:10px}
  transform-origin:50% 100%!important;
  border-radius:3px!important;
 }
+
+/* Amp parameter alignment: keep every label and numeric readout on shared baselines. */
+.chain-node--amp .chain-node-knobs{align-items:flex-start!important}
+.chain-node--amp .chain-knob{
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:flex-start!important;min-width:0!important;
+}
+.chain-node--amp .chain-knob small:not(.chain-knob-reading){
+ display:flex!important;align-items:flex-end!important;justify-content:center!important;
+ box-sizing:border-box!important;height:27px!important;min-height:27px!important;
+ width:100%!important;margin:0!important;padding:0 1px!important;
+ text-align:center!important;line-height:1.15!important;
+}
+.chain-node--amp .chain-knob .chain-knob-reading{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;height:18px!important;min-height:18px!important;
+ width:100%!important;margin:2px 0 0!important;padding:0!important;
+ text-align:center!important;line-height:1!important;white-space:nowrap!important;
+}
 /* Amp controls: larger readable parameter names and value readouts.
    Use the calculated amp width so a full set of controls has room to breathe. */
 .chain-slot--amp{
