@@ -1372,33 +1372,39 @@ header{box-sizing:border-box;min-width:0;gap:10px}
  .chain-delay-top-row .chain-delay-lcd{min-width:80px!important}
 }
 
-/* Make the Delay SYNC and TRAILS controls unmistakably vertical beside the BPM LCD. */
+/* Keep both Delay controls side by side; each switch itself moves vertically. */
 .chain-delay-top-row{
  display:flex!important;
  flex-direction:row!important;
  align-items:center!important;
  justify-content:space-between!important;
+ gap:4px!important;
+}
+.chain-delay-top-row .chain-delay-lcd{
+ flex:0 1 auto!important;
+ min-width:78px!important;
+ align-self:center!important;
 }
 .chain-node-knobs--delay{
  display:flex!important;
- flex-direction:column!important;
+ flex-direction:row!important;
  flex-wrap:nowrap!important;
  align-items:center!important;
- justify-content:center!important;
- gap:5px!important;
- flex:0 0 58px!important;
- width:58px!important;
- min-width:58px!important;
+ justify-content:space-between!important;
+ gap:4px!important;
+ flex:0 0 74px!important;
+ width:74px!important;
+ min-width:74px!important;
 }
 .chain-node-knobs--delay .chain-toggle{
  display:flex!important;
- flex:0 0 auto!important;
+ flex:0 0 35px!important;
  flex-direction:column!important;
  align-items:center!important;
  justify-content:center!important;
  gap:2px!important;
- width:58px!important;
- min-width:58px!important;
+ width:35px!important;
+ min-width:35px!important;
  padding:2px 0!important;
 }
 .chain-node-knobs--delay .chain-toggle-track{
@@ -1426,9 +1432,6 @@ header{box-sizing:border-box;min-width:0;gap:10px}
  font-size:7px!important;
  line-height:1!important;
  white-space:nowrap!important;
-}
-.chain-delay-top-row .chain-delay-lcd{
- align-self:center!important;
 }
 </style></head><body><header><div class="brand"><span class="mark">HD</span><div><b>TONE MATCHER</b><small>POD HD500 · WEB EDITION</small></div></div><div class="fw">FIRMWARE DATABASE <b>2.62</b></div></header><main><section class="hero"><div><p class="eyebrow">LINE 6 POD HD500</p><h1>Find your tone.<br><em>Dial it in.</em></h1><p class="sub">Cari tone gitaris atau lagu, susun preset, dan cek referensi parameter asli POD HD500.</p></div><div class="hero-art"><div class="ring"></div><div class="pedal"><div class="screen">TONE<br>MATCHER <span>HD500</span></div><div class="knobs"><i></i><i></i><i></i><i></i><i></i></div><div class="foots"><b></b><b></b><b></b><b></b></div><small>LINE 6 · MODELING FLOORBOARD</small></div></div></section>
 <nav><button type="button" class="tab" data-tab="tones" onclick="switchPageTab('tones',this)">Tone Finder</button><button type="button" class="tab active" data-tab="editor" onclick="switchPageTab('editor',this)">Preset Builder</button><button type="button" class="tab" data-tab="database" onclick="switchPageTab('database',this)">Database Parameter</button><button type="button" class="tab" data-tab="saved" onclick="switchPageTab('saved',this)">Preset Tersimpan <span id="savedCount">0</span></button><button type="button" class="tab" data-tab="devicefiles" onclick="switchPageTab('devicefiles',this)">File POD (.h5e)</button></nav>
